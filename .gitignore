@@ -1,0 +1,24 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OpenClaw output (don't commit pipeline state)
+output/
+minimax-output/
+*.mp3
+*.wav
+*.opus
+
+# Album pipeline state files
+album-output/
+state/
+
+# Temp
+tmp/
+*.tmp
