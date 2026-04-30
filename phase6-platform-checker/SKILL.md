@@ -1,91 +1,91 @@
 # Phase 6 — Platform Checker Skill
 
-> 检查最终产物是否符合目标平台（网易云/QQ 音乐）的上传要求。
+> Check if final products meet upload requirements for target platforms (NetEase Cloud/QQ Music).
 
 ---
 
-## 触发
+## Trigger
 
-phase6-cover-designer 完成后自动启动。
-
----
-
-## 输入
-
-| 来源 | 文件 | 内容 |
-|------|------|------|
-| Phase 5 | `generate/cn_320k/*.mp3` | 中文最终音频 |
-| Phase 5 | `generate/en_320k/*.mp3` | 英文最终音频 |
-| Phase 5 | `generate/loudness-report.txt` | 响度/时长报告 |
-| Phase 1 | `docs/album-overview.md` | 专辑信息 |
+Automatically initiated after phase6-cover-designer completes.
 
 ---
 
-## 执行
+## Input
 
-### ⚠️ 修改范围
-- **读取**：Phase 5 转码文件、响度报告、专辑统筹文档
-- **写入**：`docs/platform-check.txt`
-- **禁止**：修改任何 .mp3 文件或 Phase 1-5 产出
+| Source | File | Content |
+|--------|------|---------|
+| Phase 5 | `generate/cn_320k/*.mp3` | Chinese final audio |
+| Phase 5 | `generate/en_320k/*.mp3` | English final audio |
+| Phase 5 | `generate/loudness-report.txt` | Loudness/duration report |
+| Phase 1 | `docs/album-overview.md` | Album info |
 
-### 平台适配检查表
+---
 
-| 检查项 | 网易云 | QQ 音乐 |
-|--------|--------|--------|
-| 格式 | MP3 320kbps | FLAC 优先，MP3 320kbps 兼容 |
-| 采样率 | 44.1kHz | 44.1kHz |
-| 响度 | -14 LUFS | -14 LUFS |
-| 最短时长 | ≥ 60 秒 | ≥ 60 秒 |
-| 最长时长 | ≤ 6 分钟 | ≤ 6 分钟 |
-| 最低曲目数 | 3 首 | 3 首 |
-| 必填信息 | 专辑名/曲目/艺人 | 专辑名/曲目/艺人 |
-| 封面尺寸 | 3000×3000px | 3000×3000px |
-| 歌词 | LRC 格式 | LRC 格式 |
+## Execution
 
-### 逐项验证
+### ⚠️ Modification Scope
+- **Read**: Phase 5 transcoded files, loudness report, album overview document
+- **Write**: `docs/platform-check.txt`
+- **Forbidden**: Modify any .mp3 files or Phase 1-5 outputs
 
-对每首转码文件：
-1. `ffprobe` 验证 bitrate=320000, sample_rate=44100
-2. 从 loudness-report.txt 验证响度 -14 ± 0.5 LUFS
-3. 验证时长 ≥ 1:00 且 ≤ 6:00
+### Platform Adaptation Checklist
 
-### 输出格式
+| Check Item | NetEase Cloud | QQ Music |
+|------------|---------------|----------|
+| Format | MP3 320kbps | FLAC preferred, MP3 320kbps compatible |
+| Sample Rate | 44.1kHz | 44.1kHz |
+| Loudness | -14 LUFS | -14 LUFS |
+| Min Duration | ≥ 60 seconds | ≥ 60 seconds |
+| Max Duration | ≤ 6 minutes | ≤ 6 minutes |
+| Min Track Count | 3 tracks | 3 tracks |
+| Required Info | Album name/tracks/artist | Album name/tracks/artist |
+| Cover Dimensions | 3000×3000px | 3000×3000px |
+| Lyrics | LRC format | LRC format |
 
-`docs/platform-check.txt`：
+### Item-by-Item Verification
+
+For each transcoded file:
+1. `ffprobe` verify bitrate=320000, sample_rate=44100
+2. From loudness-report.txt verify loudness -14 ± 0.5 LUFS
+3. Verify duration ≥ 1:00 and ≤ 6:00
+
+### Output Format
+
+`docs/platform-check.txt`:
 
 ```
-[平台适配检查报告]
-日期：YYYY-MM-DD
+[Platform Adaptation Check Report]
+Date: YYYY-MM-DD
 
-网易云音乐：
-  格式: ✅ MP3 320kbps
-  采样率: ✅ 44.1kHz
-  响度: ✅ -14 LUFS（全部在范围内）
-  时长: ✅ 全部 ≥ 60s 且 ≤ 6:00
-  曲目数: ✅ N 首（≥ 3）
-  必填信息: ✅ 专辑名/曲目/艺人齐全
-  结果: ✅ 全部通过
+NetEase Cloud Music:
+  Format: ✅ MP3 320kbps
+  Sample Rate: ✅ 44.1kHz
+  Loudness: ✅ -14 LUFS (all within range)
+  Duration: ✅ All ≥ 60s and ≤ 6:00
+  Track Count: ✅ N tracks (≥ 3)
+  Required Info: ✅ Album name/tracks/artist complete
+  Result: ✅ All passed
 
-QQ 音乐：
-  格式: ✅ MP3 320kbps（兼容）
-  采样率: ✅ 44.1kHz
-  响度: ✅ -14 LUFS
-  时长: ✅ 全部在范围内
-  曲目数: ✅ N 首
-  必填信息: ✅ 齐全
-  结果: ✅ 全部通过
+QQ Music:
+  Format: ✅ MP3 320kbps (compatible)
+  Sample Rate: ✅ 44.1kHz
+  Loudness: ✅ -14 LUFS
+  Duration: ✅ All within range
+  Track Count: ✅ N tracks
+  Required Info: ✅ Complete
+  Result: ✅ All passed
 ```
 
 ---
 
 ## Checklist
 
-| # | 检查项 | 打勾标准 |
-|---|--------|---------|
-| 1 | 网易云全项通过 | 格式/采样率/响度/时长/曲目数/信息全 ✅ |
-| 2 | QQ 音乐全项通过 | 同上 |
-| 3 | platform-check.txt 已生成 | 包含两个平台的完整检查结果 |
-| 4 | 无遗漏曲目 | 每首都被验证过 |
-| 5 | 如有不通过项已标注 | 明确标注不通过项 + 修复建议 |
+| # | Check Item | Completion Criteria |
+|---|------------|---------------------|
+| 1 | NetEase Cloud all items passed | Format/sample rate/loudness/duration/track count/info all ✅ |
+| 2 | QQ Music all items passed | Same as above |
+| 3 | platform-check.txt generated | Contains complete check results for both platforms |
+| 4 | No tracks missed | Each track verified |
+| 5 | Any failures annotated | Clearly mark failed items + fix suggestions |
 
-全部 ✅ → 进入最终打包阶段（phase6-packager）
+All ✅ → Proceed to final packaging phase (phase6-packager)

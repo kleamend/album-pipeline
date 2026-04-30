@@ -1,185 +1,185 @@
-# Music Generator — 音乐生成 Skill
+# Music Generator — Music Generation Skill
 
-> Phase 4 总入口。编排 3 个子模块：Prompt 生成 → Prompt 审查 → CLI 并行生成。
-
----
-
-## 核心原则
-
-1. **绝对文件契约**：所有输入/输出严格遵循 `FILE_CONTRACTS.md`，不得偏离
-2. **子 agent 强制分离**：prompt-generator ≠ prompt-reviewer ≠ music-executor，3 个独立的 `sessions_spawn` 调用
-3. **主 agent 只编排**：主 agent 负责启动/等待/判断完成，不直接生成 Prompt 或执行 CLI
+> Phase 4 main entry point. Orchestrates 3 sub-modules: Prompt Generation → Prompt Review → CLI Parallel Generation.
 
 ---
 
-## 子模块索引
+## Core Principles
 
-| 子模块 | 路径 | 说明 |
-|--------|------|------|
-| Phase 4.1 | `phase4-prompt-generator/SKILL.md` | 3 版本 Prompt 生成（编曲忠实/情绪叙事/听感质感） |
-| Phase 4.2 | `phase4-prompt-reviewer/SKILL.md` | Prompt 审查优化（6 项检查） |
-| Phase 4.3 | `phase4-music-executor/SKILL.md` | MiniMax CLI 并行生成 |
-
-**执行顺序**：4.1 → 4.2 → 4.3（串行依赖，每个阶段完成后才能进入下一个）
+1. **Strict File Contract**: All input/output must strictly follow `FILE_CONTRACTS.md` — no deviations
+2. **Mandatory Sub-agent Separation**: prompt-generator ≠ prompt-reviewer ≠ music-executor — 3 independent `sessions_spawn` calls
+3. **Main Agent Only Orchestrates**: The main agent handles launch/wait/completion judgment — it does not generate Prompts or execute CLI directly
 
 ---
 
-## 启动前提示（用户心理预期管理）
+## Sub-Module Index
 
-**⚠️ 飞书推送机制关键：消息在 turn 结束后才推送。必须先输出提示文本，然后 spawn 子 agent，最后 `sessions_yield`。**
+| Sub-module | Path | Description |
+|-----------|------|-------------|
+| Phase 4.1 | `phase4-prompt-generator/SKILL.md` | 3-version Prompt generation (arrangement-faithful / emotional-narrative / sonic-texture) |
+| Phase 4.2 | `phase4-prompt-reviewer/SKILL.md` | Prompt review and optimization (6 checks) |
+| Phase 4.3 | `phase4-music-executor/SKILL.md` | MiniMax CLI parallel generation |
 
-**正确流程：**
-1. 主 agent 输出提示：
-   > 🪚 Phase 4 音乐生成已启动。{N} 首歌 × 3 个 Prompt 版本 × {语言数} 语言 = {总数} 个生成任务。预计约 **{N × 10 分钟}** 完成。完成后我会主动通知你，无需等待。
-2. 按顺序 spawn 子 agent（4.1 → 4.2 → 4.3）
-3. `sessions_yield` 结束当前 turn
-
----
-
-## 触发
-
-Phase 3 完成后，用户指令：
-- 「生成音乐」
-- 「Phase 4」
-- 「music generation」
+**Execution order**: 4.1 → 4.2 → 4.3 (serial dependency; each phase must complete before the next begins)
 
 ---
 
-## 输入
+## Pre-Launch Notice (User Expectation Management)
 
-- `generate/lyrics/cn/` 下的中文标准歌词文件
-- `generate/lyrics/en/` 下的英文标准歌词文件
-- `docs/album-overview.md` 中的曲目定位表（BPM/调性/风格）
-- `songs/TN-*.md` 中的完整编曲设计（用于生成 Prompt）
+**⚠️ Feishu push mechanism: messages are delivered after the turn ends. You must output the notice first, then spawn sub-agents, then `sessions_yield`.**
+
+**Correct flow:**
+1. Main agent outputs notice:
+   > 🪚 Phase 4 music generation started. {N} songs × 3 Prompt versions × {language count} languages = {total} generation tasks. Estimated ~ **{N × 10 minutes}** to complete. I will notify you proactively when done — no need to wait.
+2. Spawn sub-agents in order (4.1 → 4.2 → 4.3)
+3. `sessions_yield` to end the current turn
 
 ---
 
-## 执行
+## Triggers
 
-### ⚠️ 修改范围
-- **读取**：`generate/lyrics/cn/*.txt` + `en/*.txt`、`songs/T{N}-*.md` 编曲设计
-- **写入**：`generate/cn/` 和 `generate/en/` 下的新 .mp3 文件、`generate/prompts/` 下的 Prompt 文件
-- **禁止**：修改歌词文件或歌曲设计文件
+After Phase 3 completes, user commands:
+- "Generate music"
+- "Phase 4"
+- "Music generation"
 
-### 1. 3 版本 Prompt 生成
+---
 
-每首歌从 `songs/TN-曲名.md` 的完整编曲设计出发，生成 **3 个不同凝练方式的 Prompt 版本**。
+## Input
 
-**核心原则：压满 2000 字符上限。** 编曲设计信息太多，无法全部塞入一个 Prompt，因此用三种不同凝练策略各写一个版本，确保每个版本都尽可能详细地呈现之前的劳动成果。
+- Chinese standard lyrics files under `generate/lyrics/cn/`
+- English standard lyrics files under `generate/lyrics/en/`
+- Track positioning table from `docs/album-overview.md` (BPM / key / style)
+- Complete arrangement designs from `songs/TN-*.md` (used for Prompt generation)
 
-#### Prompt 版本 1 — 编曲忠实还原型
+---
 
-**凝练策略**：按编曲段落时间线顺序凝练，保留最精确的结构描述。
+## Execution
 
-**格式（≤ 2000 字符）：**
+### ⚠️ Scope of Modification
+- **Read**: `generate/lyrics/cn/*.txt` + `en/*.txt`, `songs/T{N}-*.md` arrangement designs
+- **Write**: New .mp3 files under `generate/cn/` and `generate/en/`, Prompt files under `generate/prompts/`
+- **Forbidden**: Modify lyrics files or song design files
+
+### 1. 3-Version Prompt Generation
+
+For each song, start from the complete arrangement design in `songs/TN-title.md` and generate **3 Prompt versions with different condensation strategies**.
+
+**Core principle: Fill the 2000-character limit.** Arrangement design has too much information to fit in a single Prompt, so three different condensation strategies are used, each presenting the previous labor as fully as possible.
+
+#### Prompt Version 1 — Arrangement-Faithful Reconstruction
+
+**Condensation strategy**: Condense in arrangement paragraph timeline order, preserving the most precise structural descriptions.
+
+**Format (≤ 2000 characters):**
 ```
-{流派} {风格}, {BPM}BPM, {调性}
+{Genre} {Style}, {BPM}BPM, {Key}
 
-Mood Arc: {起点情绪} → {终点情绪}
+Mood Arc: {Starting emotion} → {Ending emotion}
 
 Structure Timeline:
-[Intro 0:00-{end}] {音色/乐器/氛围}
-[Verse {start}-{end}] {人声处理/伴奏密度/空间感}
-[Pre Chorus {start}-{end}] {张力构建方式}
-[Hook {start}-{end}] {高潮编曲特征/和声层次}
-[Bridge {start}-{end}] {变化/留白/转折点}
-[Outro {start}-{end}] {收尾方式/渐弱/留白}
+[Intro {start}-{end}] {Timbre/Instruments/Atmosphere}
+[Verse {start}-{end}] {Vocal processing/Accompaniment density/Spatial feel}
+[Pre Chorus {start}-{end}] {Tension-building method}
+[Hook {start}-{end}] {Climax arrangement characteristics/Harmonic layers}
+[Bridge {start}-{end}] {Variation/Space/Turnaround}
+[Outro {start}-{end}] {Closing method/Fade-out/Space}
 
-Vocals: {人声类型、处理手法、和声编排}
-Instruments: {主奏乐器列表 + 音色特征}
-Key Elements: {关键音效/Sound Design 核心项}
-Scene: {使用场景}
+Vocals: {Vocal type, processing methods, harmonic arrangement}
+Instruments: {Lead instrument list + timbre characteristics}
+Key Elements: {Key sound effects / Sound Design core items}
+Scene: {Usage scenario}
 ```
 
-#### Prompt 版本 2 — 情绪叙事驱动型
+#### Prompt Version 2 — Emotional Narrative Driven
 
-**凝练策略**：按情绪弧线和叙事线索组织，突出歌曲的身体感和哲学内核。
+**Condensation strategy**: Organize by emotional arc and narrative thread, highlighting physical sensation and philosophical core.
 
-**格式（≤ 2000 字符）：**
+**Format (≤ 2000 characters):**
 ```
-{流派} {风格}, {BPM}BPM, {调性}
+{Genre} {Style}, {BPM}BPM, {Key}
 
-Narrative: {核心悖论 → 情绪转化路径}
+Narrative: {Core paradox → Emotional transformation path}
 
 Emotional Journey:
-- Opening: {开篇氛围 + 身体感暗示}
-- Build: {张力累积方式 + 意象对应的音乐处理}
-- Climax: {Hook 情绪峰值 + 核心 Hook 的音乐表现}
-- Resolution: {收尾情绪 + 悖论的音乐化解答}
+- Opening: {Opening atmosphere + physical sensation cues}
+- Build: {Tension accumulation method + imagery-corresponding music treatment}
+- Climax: {Hook emotional peak + core Hook's musical expression}
+- Resolution: {Closing emotion + musical resolution of the paradox}
 
-Body & Texture: {身体感关键词对应的声音质感}
-Vocal Character: {人声性格 + 情感距离（贴近/疏离）}
-Instrument Palette: {乐器选择 + 音色隐喻}
-Spatial Design: {空间感/混/远近层次}
-Key Elements: {Sound Design 中服务叙事的音效}
-Scene: {使用场景}
+Body & Texture: {Sonic texture mapped from physical sensation keywords}
+Vocal Character: {Vocal personality + emotional distance (intimate/distant)}
+Instrument Palette: {Instrument selection + timbre metaphor}
+Spatial Design: {Spatial feel/Reverb/Distance layers}
+Key Elements: {Sound Design effects that serve the narrative}
+Scene: {Usage scenario}
 ```
 
-#### Prompt 版本 3 — 听感质感优先型
+#### Prompt Version 3 — Sonic Texture Priority
 
-**凝练策略**：从最终听感出发，用质感关键词驱动，适合 AI 生成模型理解。
+**Condensation strategy**: Start from the final listening experience, driven by texture keywords — best suited for AI generation models.
 
-**格式（≤ 2000 字符）：**
+**Format (≤ 2000 characters):**
 ```
-{流派} {风格}, {BPM}BPM, {调性}
+{Genre} {Style}, {BPM}BPM, {Key}
 
-Overall Texture: {整体听感描述，如 "温暖颗粒感 + 低频呼吸感"}
+Overall Texture: {Overall sonic description, e.g. "warm granular texture + low-frequency breathing sensation"}
 
 Sonic Layers:
-Layer 1 (Foreground): {人声/主旋律 + 质感}
-Layer 2 (Mid): {伴奏 + 和声 + 节奏骨架}
-Layer 3 (Background): {氛围层 + Space + Drone}
+Layer 1 (Foreground): {Vocals/Lead melody + texture}
+Layer 2 (Mid): {Accompaniment + Harmony + Rhythmic framework}
+Layer 3 (Background): {Atmosphere layer + Space + Drone}
 
 Timbre Focus:
-- Vocals: {音色特征 + 处理手法（近场/远场/气声/嘶吼/和声）}
-- Rhythm: {鼓组特征 + 节奏密度 + Groove}
-- Harmony: {和声风格 + 紧张度}
-- Bass: {低频角色 + 质感}
-- Lead: {主奏乐器 + 音色}
-- FX: {音效/空间效果/特殊处理}
+- Vocals: {Timbre characteristics + processing methods (close-mic/distant/breathy/shattered/harmonic)}
+- Rhythm: {Drum characteristics + rhythm density + Groove}
+- Harmony: {Harmonic style + tension level}
+- Bass: {Low-frequency role + texture}
+- Lead: {Lead instrument + timbre}
+- FX: {Sound effects/Spatial effects/Special processing}
 
-Dynamic Shape: {整曲动态曲线 — 哪里密/哪里疏}
-Emotional Weight: {情绪重心 — 哪里最重/哪里最轻}
-Reference Vibe: {最接近的参考感觉，但不写具体艺人名}
-Scene: {使用场景}
+Dynamic Shape: {Overall dynamic curve — where dense/where sparse}
+Emotional Weight: {Emotional center of gravity — where heaviest/where lightest}
+Reference Vibe: {Closest reference feel, without naming specific artists}
+Scene: {Usage scenario}
 ```
 
-### 2. Prompt 写入文件
+### 2. Write Prompts to Files
 
-将 3 个 Prompt 版本写入 `generate/prompts/`：
+Write the 3 Prompt versions to `generate/prompts/`:
 
 ```
-generate/prompts/TN-曲名-prompt1.txt
-generate/prompts/TN-曲名-prompt2.txt
-generate/prompts/TN-曲名-prompt3.txt
+generate/prompts/TN-title-prompt1.txt
+generate/prompts/TN-title-prompt2.txt
+generate/prompts/TN-title-prompt3.txt
 ```
 
-每个文件内容即对应 Prompt 文本（纯文本，≤ 2000 字符）。
+Each file contains the corresponding Prompt text (plain text, ≤ 2000 characters).
 
-同时生成 `generate/prompts/index.json`：
+Also generate `generate/prompts/index.json`:
 
 ```json
 {
   "songs": [
     {
-      "track": "T1-出发",
+      "track": "T1-Departure",
       "prompts": [
         {
           "version": 1,
-          "strategy": "编曲忠实还原型",
-          "file": "generate/prompts/T1-出发-prompt1.txt",
+          "strategy": "Arrangement-Faithful Reconstruction",
+          "file": "generate/prompts/T1-Departure-prompt1.txt",
           "char_count": 1980
         },
         {
           "version": 2,
-          "strategy": "情绪叙事驱动型",
-          "file": "generate/prompts/T1-出发-prompt2.txt",
+          "strategy": "Emotional Narrative Driven",
+          "file": "generate/prompts/T1-Departure-prompt2.txt",
           "char_count": 1950
         },
         {
           "version": 3,
-          "strategy": "听感质感优先型",
-          "file": "generate/prompts/T1-出发-prompt3.txt",
+          "strategy": "Sonic Texture Priority",
+          "file": "generate/prompts/T1-Departure-prompt3.txt",
           "char_count": 1970
         }
       ]
@@ -188,117 +188,117 @@ generate/prompts/TN-曲名-prompt3.txt
 }
 ```
 
-### 3. Prompt 审查优化
+### 3. Prompt Review and Optimization
 
-spawn 独立的 **Prompt 审查 Agent**，对所有 Prompt 进行审查优化。
+Spawn an independent **Prompt Review Agent** to review and optimize all Prompts.
 
-**审查 Agent 输入**：`generate/prompts/` 下所有 Prompt 文件 + `generate/prompts/index.json`
+**Review Agent input**: All Prompt files under `generate/prompts/` + `generate/prompts/index.json`
 
-**审查 Agent 执行**：
+**Review Agent execution**:
 
-对每个 Prompt 版本逐项检查：
+For each Prompt version, check each item:
 
-| # | 检查项 | 标准 |
-|---|--------|------|
-| 1 | 字符数 | ≤ 2000 且 ≥ 1500（压满上限） |
-| 2 | 包含所有核心参数 | 流派/风格/BPM/调性/Mood/Vocals/Instruments |
-| 3 | 无无效信息 | 不含时间戳精确到毫秒、不含 dB 值、不含 Sound Design 表格 |
-| 4 | 编曲信息传递 | 至少覆盖编曲设计的 60% 核心信息 |
-| 5 | 可读性 | MiniMax 音乐模型能理解的结构化文本 |
-| 6 | 三版本差异化 | 3 个版本有明显差异，不是同一段文字的微调 |
+| # | Checkpoint | Standard |
+|---|-----------|---------|
+| 1 | Character count | ≤ 2000 and ≥ 1500 (fill the upper limit) |
+| 2 | All core parameters present | Genre/Style/BPM/Key/Mood/Vocals/Instruments |
+| 3 | No invalid information | No millisecond-precision timestamps, no dB values, no Sound Design tables |
+| 4 | Arrangement information coverage | At least 60% of core arrangement design information covered |
+| 5 | Readability | Structured text that the MiniMax music model can understand |
+| 6 | 3-version differentiation | 3 versions are distinctly different, not minor tweaks of the same text |
 
-**优化动作**：
-- 如果字符数 < 1500 → 补充编曲细节直到接近 2000
-- 如果遗漏核心参数 → 从 `songs/TN-曲名.md` 补充
-- 如果包含无效信息 → 改写为模型可理解的描述
-- 如果三版本差异不足 → 强化差异化
+**Optimization actions**:
+- If character count < 1500 → supplement arrangement details until close to 2000
+- If core parameters are missing → supplement from `songs/TN-title.md`
+- If invalid information is present → rewrite as model-understandable descriptions
+- If 3-version differentiation is insufficient → strengthen differentiation
 
-**输出**：更新 `generate/prompts/` 下的 Prompt 文件（覆盖原版），更新 `index.json` 中的 char_count。
+**Output**: Update Prompt files under `generate/prompts/` (overwrite originals), update char_count in `index.json`.
 
-### 4. 音乐生成
+### 4. Music Generation
 
-使用审查优化后的 3 个 Prompt 版本，分别生成 3 个 Take。
+Using the review-optimized 3 Prompt versions, generate 3 Takes each.
 
-**N 首歌 = N 个并行 agent 群**，每个 agent 群负责一首歌的全部 Prompt 版本生成。每首歌内部：
-- 3 个 Prompt 版本 → 3 个并行生成任务
-- 双语专辑 → 中文 × 3 + 英文 × 3 = 6 个并行任务
+**N songs = N parallel agent groups**, each agent group handles all Prompt versions for one song. Per song:
+- 3 Prompt versions → 3 parallel generation tasks
+- Bilingual album → Chinese × 3 + English × 3 = 6 parallel tasks
 
-⚠️ **注意**：MiniMax music-2.6 有 API rate limit。如遇 429 限流，降级为串行生成，每首完成后间隔 2-3 秒再发起下一首。
+⚠️ **Note**: MiniMax music-2.6 has API rate limits. On 429 response, degrade to serial generation, waiting 2-3 seconds between each song.
 
-**CLI 命令**：
+**CLI commands**:
 
 ```bash
-# Prompt 版本 1
+# Prompt Version 1
 minimax music generate \
   --model music-2.6 \
-  --prompt "$(cat generate/prompts/T1-出发-prompt1.txt)" \
-  --lyrics-file generate/lyrics/cn/T1-出发.txt \
-  --vocals {从 prompt 中提取} \
-  --genre {从 prompt 中提取} \
-  --mood {从 prompt 中提取} \
-  --instruments {从 prompt 中提取} \
-  --bpm {从 prompt 中提取} \
-  --key {从 prompt 中提取} \
-  --structure {曲式结构} \
-  --extra "{额外细粒度要求}" \
-  --out generate/cn/T1-出发-p1.mp3
+  --prompt "$(cat generate/prompts/T1-Departure-prompt1.txt)" \
+  --lyrics-file generate/lyrics/cn/T1-Departure.txt \
+  --vocals {extracted from prompt} \
+  --genre {extracted from prompt} \
+  --mood {extracted from prompt} \
+  --instruments {extracted from prompt} \
+  --bpm {extracted from prompt} \
+  --key {extracted from prompt} \
+  --structure {song structure} \
+  --extra "{additional granular requirements}" \
+  --out generate/cn/T1-Departure-p1.mp3
 
-# Prompt 版本 2 → T1-出发-p2.mp3
-# Prompt 版本 3 → T1-出发-p3.mp3
+# Prompt Version 2 → T1-Departure-p2.mp3
+# Prompt Version 3 → T1-Departure-p3.mp3
 ```
 
-### 5. 产物管理
+### 5. Output Management
 
 ```
-generate/cn/TN-曲名-p1.mp3
-generate/cn/TN-曲名-p2.mp3
-generate/cn/TN-曲名-p3.mp3
-generate/en/TN-曲名-p1.mp3
-generate/en/TN-曲名-p2.mp3
-generate/en/TN-曲名-p3.mp3
+generate/cn/TN-title-p1.mp3
+generate/cn/TN-title-p2.mp3
+generate/cn/TN-title-p3.mp3
+generate/en/TN-title-p1.mp3
+generate/en/TN-title-p2.mp3
+generate/en/TN-title-p3.mp3
 ```
 
-3 个 Prompt 版本对应 3 个 Take（p1/p2/p3），用户听评后选定最佳版本。
+The 3 Prompt versions correspond to 3 Takes (p1/p2/p3); the user selects the best version after listening.
 
 ---
 
 ## Checklist
 
-| # | 检查项 | 打勾标准 |
-|---|--------|---------|
-| 1 | 歌词文件路径正确 | 指向 `generate/lyrics/` 下的标准文件 |
-| 2 | 3 个 Prompt 版本已生成 | 每首歌有 prompt1/prompt2/prompt3，策略不同 |
-| 3 | Prompt 压满上限 | 每个 Prompt ≥ 1500 且 ≤ 2000 字符 |
-| 4 | Prompt 已写入文件 | `generate/prompts/TN-曲名-promptN.txt` 存在 |
-| 5 | Prompt 审查优化完成 | 审查 Agent 逐项检查通过，6 项全 ✅ |
-| 6 | 生成成功验证 | 文件存在、可播放、非静音/错误音频 |
-| 7 | 全部 Take 完成 | 每首歌 × 3 个 Prompt 版本 × 每语言 都有产物 |
+| # | Checkpoint | Completion Criteria |
+|---|-----------|-------------------|
+| 1 | Lyrics file paths correct | Point to standard files under `generate/lyrics/` |
+| 2 | 3 Prompt versions generated | Each song has prompt1/prompt2/prompt3 with different strategies |
+| 3 | Prompts fill upper limit | Each Prompt ≥ 1500 and ≤ 2000 characters |
+| 4 | Prompts written to files | `generate/prompts/TN-title-promptN.txt` exists |
+| 5 | Prompt review and optimization complete | Review Agent passed all 6 checks; all ✅ |
+| 6 | Generation success verified | Files exist, playable, not silent/error audio |
+| 7 | All Takes complete | Each song × 3 Prompt versions × each language has output |
 
 ---
 
-## 输出文件契约
+## Output File Contract
 
-严格遵循 `FILE_CONTRACTS.md` 中 Phase 4 契约。
-
----
-
-## 进入 Phase 5 条件
-
-- [ ] 每首歌 3 个 Prompt 版本均已生成
-- [ ] Prompt 审查优化通过
-- [ ] 所有产物文件存在且可播放
-- [ ] 产物目录结构正确（cn/ + en/ 下按 p1/p2/p3 命名）
-
-全部 ✅ → 进入 Phase 5（选定 + 转码）
+Strictly follows Phase 4 contract in `FILE_CONTRACTS.md`.
 
 ---
 
-## 关键限制
+## Conditions to Enter Phase 5
 
-| 参数 | 值 |
-|------|-----|
-| 可用模型 | music-2.6（需额度）、music-2.6-free（按量付费） |
-| 单次生成时长 | 可生成 3-5 分钟优质内容，质量通常随时长正比例提升（详见调优实验数据，待补充） |
-| 歌词长度 | ≤ 3,500 字符 |
-| Prompt 长度 | ≤ 2,000 字符（压满上限） |
-| 每首歌 Take 数 | 3（对应 3 个 Prompt 版本） |
+- [ ] All 3 Prompt versions generated for each song
+- [ ] Prompt review and optimization passed
+- [ ] All output files exist and are playable
+- [ ] Output directory structure correct (cn/ + en/ named by p1/p2/p3)
+
+All ✅ → Enter Phase 5 (Selection + Transcoding)
+
+---
+
+## Key Constraints
+
+| Parameter | Value |
+|-----------|-------|
+| Available models | music-2.6 (requires credits), music-2.6-free (pay-per-use) |
+| Single generation duration | Can generate 3-5 minutes of high-quality content; quality typically scales with duration (see tuning experiment data, pending) |
+| Lyrics length | ≤ 3,500 characters |
+| Prompt length | ≤ 2,000 characters (fill the upper limit) |
+| Takes per song | 3 (corresponding to 3 Prompt versions) |

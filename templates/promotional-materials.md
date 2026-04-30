@@ -1,75 +1,75 @@
-# 《{中文名}》宣传物料
+# {Chinese Name} — Promotional Materials
 
-> 生成日期：YYYY-MM-DD
-> 版本：v1.0
-
----
-
-## 一句话专辑概念
-
-> "{一句话，适合社交媒体传播}"
+> Generated: YYYY-MM-DD
+> Version: v1.0
 
 ---
 
-## 专辑简介（~300 字）
+## One-Liner Album Concept
 
-{300 字左右，包含核心悖论、叙事架构、创作动机、AI 生成事实}
-
----
-
-## 核心宣传语
-
-1. "{第一句，情感钩子}"
-2. "{第二句，概念深度}"
-3. "{第三句，市场传播}"
+> "{One sentence, suitable for social media dissemination}"
 
 ---
 
-## 各曲高光文案
+## Album Introduction (~300 words)
 
-| # | 曲目 | 一句话文案 | 适用场景 |
-|---|------|-----------|---------|
-| 01 | T1《{曲名}》 | "{文案}" | 微博/朋友圈 |
-| 02 | T2《{曲名}》 | "{文案}" | 小红书 |
+{~300 words, including core paradox, narrative structure, creative motivation, AI generation fact}
+
+---
+
+## Core Promotional Lines
+
+1. "{Line 1, emotional hook}"
+2. "{Line 2, conceptual depth}"
+3. "{Line 3, market dissemination}"
+
+---
+
+## Per-Track Highlight Copy
+
+| # | Track | One-Sentence Copy | Applicable Scenario |
+|---|-------|-------------------|---------------------|
+| 01 | T1"{Track}" | "{Copy}" | Weibo/Moments |
+| 02 | T2"{Track}" | "{Copy}" | Xiaohongshu |
 | ... | | | |
 
 ---
 
-## Social Media 文案
+## Social Media Copy
 
-### 微博/朋友圈
+### Weibo/Moments
 
-{140 字以内，含 1-2 个话题标签}
+{Within 140 characters, including 1-2 topic hashtags}
 
-### 小红书
+### Xiaohongshu
 
-{200-300 字，含 3-5 个话题标签}
+{200-300 characters, including 3-5 topic hashtags}
 
-### 微信公众号推文标题
+### WeChat Official Account Article Titles
 
-- {标题1}
-- {标题2}
-- {标题3}
-
----
-
-## 制作信息
-
-- **专辑名称**：《{中文名}》/ {English Name}
-- **曲目数**：N 首
-- **总时长**：约 XX 分钟
-- **制作工具**：MiniMax Music Generator (music-2.6)
-- **制作流程**：AI 全流程生成（概念设计→歌词创作→编曲设计→音乐生成→转码输出）
-- **输出标准**：320kbps MP3 / 44.1kHz / -14 LUFS
-- **语言**：{中文 / 中文+英文 / 英文}
-- **发行平台**：网易云音乐 / QQ 音乐
+- {Title 1}
+- {Title 2}
+- {Title 3}
 
 ---
 
-## 潜在争议点与回应预案
+## Production Info
 
-| 争议点 | 回应策略 |
-|--------|---------|
-| "AI 生成的音乐算什么音乐？" | {回应} |
-| "没有人类情感" | {回应} |
-| "版权问题" | {回应} |
+- **Album Name**: {Chinese Name} / {English Name}
+- **Number of Tracks**: N
+- **Total Duration**: ~XX minutes
+- **Production Tool**: MiniMax Music Generator (music-2.6)
+- **Production Process**: Full AI pipeline (concept design → lyrics creation → arrangement design → music generation → transcoding output)
+- **Output Standards**: 320kbps MP3 / 44.1kHz / -14 LUFS
+- **Language**: {Chinese / Chinese+English / English}
+- **Release Platforms**: NetEase Cloud Music / QQ Music
+
+---
+
+## Potential Controversy Points and Response Plans
+
+| Controversy | Response Strategy |
+|-------------|-------------------|
+| "What kind of music is AI-generated music?" | {Response} |
+| "No human emotion" | {Response} |
+| "Copyright issues" | {Response} |

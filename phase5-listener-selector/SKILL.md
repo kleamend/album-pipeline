@@ -1,97 +1,97 @@
 # Phase 5 — Listener Selector Skill
 
-> 听评选定最佳 Prompt 版本，输出选定表供转码使用。
+> Select the best Prompt version via listening review, output selection table for transcoding.
 
 ---
 
-## 触发
+## Trigger
 
-Phase 4 所有生成物完成后，主 agent 启动听评流程。
-
----
-
-## 输入
-
-| 来源 | 文件 | 内容 |
-|------|------|------|
-| Phase 4 | `generate/cn/T{N}-曲名-p{1,2,3}.mp3` | 中文 3 个 Prompt 版本 |
-| Phase 4 | `generate/en/T{N}-曲名-p{1,2,3}.mp3` | 英文 3 个 Prompt 版本 |
-| Phase 4 | `generate/prompts/index.json` | Prompt 版本索引 |
-| Phase 2 | `songs/T{N}-曲名.md` | 编曲设计（听评参考） |
+Automatically initiated by main agent after all Phase 4 outputs are complete.
 
 ---
 
-## 执行
+## Input
 
-### ⚠️ 修改范围
-- **读取**：Phase 4 生成物、编曲设计文件
-- **写入**：用户选定表（内存或临时文件）
-- **禁止**：修改或删除任何 .mp3 文件
+| Source | File | Content |
+|--------|------|---------|
+| Phase 4 | `generate/cn/T{N}-track-p{1,2,3}.mp3` | Chinese 3 Prompt versions |
+| Phase 4 | `generate/en/T{N}-track-p{1,2,3}.mp3` | English 3 Prompt versions |
+| Phase 4 | `generate/prompts/index.json` | Prompt version index |
+| Phase 2 | `songs/T{N}-track.md` | Arrangement design (listening reference) |
 
-### 听评流程
+---
 
-1. 将每首歌的 3 个 Prompt 版本按顺序播放
-2. 用户听完每首的 3 个版本后，给出选定：
+## Execution
+
+### ⚠️ Modification Scope
+- **Read**: Phase 4 outputs, arrangement design files
+- **Write**: User selection table (memory or temp file)
+- **Forbidden**: Modify or delete any .mp3 files
+
+### Listening Review Flow
+
+1. Play each song's 3 Prompt versions in sequence
+2. After user listens to all 3 versions of each song, they provide selection:
    ```
-   T1: p1 (编曲忠实还原型) — Hook 清晰，编曲还原度高
-   T2: p1 (编曲忠实还原型) — 低频有力
-   T3: p3 (听感质感优先型) — 质感最舒适
+   T1: p1 (Arrangement-Faithful Type) — Hook clear, high arrangement fidelity
+   T2: p1 (Arrangement-Faithful Type) — Strong low-end
+   T3: p3 (Sensory-Quality Priority Type) — Most comfortable texture
    ...
    ```
-3. 主 agent 整理选定表
+3. Main agent compiles selection table
 
-### 选定标准
+### Selection Criteria
 
-| 维度 | 权重 | 说明 |
-|------|------|------|
-| 旋律/主题清晰度 | 高 | 核心旋律/主题是否突出、可独立辨识（纯音乐无 Hook，以主旋律替代） |
-| 情绪表达 | 高 | 是否准确传达了情绪弧线和身体感 |
-| 编曲还原度 | 中 | 是否忠实于编曲设计的关键音效和段落 |
-| 听感舒适度 | 中 | 混音是否平衡，纯音乐无人声时更注重音色层次 |
-| 时长合理 | 低 | 是否在 1:00-6:00 范围内 |
+| Dimension | Weight | Description |
+|-----------|--------|-------------|
+| Melody/Theme Clarity | High | Core melody/theme prominent and independently identifiable (instrumental uses main melody as Hook substitute) |
+| Emotional Expression | High | Accurately conveys emotional arc and physical sensation |
+| Arrangement Fidelity | Medium | Faithful to key sound effects and sections in arrangement design |
+| Listening Comfort | Medium | Mix balance; for instrumental, focus on timbre layers |
+| Duration Reasonableness | Low | Within 1:00-6:00 range |
 
-### 选定表格式
+### Selection Table Format
 
 ```
-CN版选定：
-T1-出发 → p1 (编曲忠实还原型)
-T2-数据 → p1 (编曲忠实还原型)
-T3-赝品标本 → p1 (编曲忠实还原型)
-T4-笼 → p3 (听感质感优先型)
-T5-真空 → p3 (听感质感优先型)
-T6-双生 → p3 (听感质感优先型)
-T7-决定 → p2 (情绪叙事驱动型)
-T8-告别 → p2 (情绪叙事驱动型)
-T9-候鸟 → p1 (编曲忠实还原型)
+CN Version Selection:
+T1-Departure → p1 (Arrangement-Faithful Type)
+T2-Data → p1 (Arrangement-Faithful Type)
+T3-Counterfeit Specimen → p1 (Arrangement-Faithful Type)
+T4-Cage → p3 (Sensory-Quality Priority Type)
+T5-Vacuum → p3 (Sensory-Quality Priority Type)
+T6-Twin → p3 (Sensory-Quality Priority Type)
+T7-Decision → p2 (Emotional-Narrative Driven Type)
+T8-Goodbye → p2 (Emotional-Narrative Driven Type)
+T9-Migrant Bird → p1 (Arrangement-Faithful Type)
 
-EN版选定：
-T1-出发 → p1 (编曲忠实还原型)
-T2-数据 → p2 (情绪叙事驱动型)
-T3-赝品标本 → p1 (编曲忠实还原型)
-T4-笼 → p3 (听感质感优先型)
-T5-真空 → p3 (听感质感优先型)
-T6-双生 → p3 (听感质感优先型)
-T7-决定 → p2 (情绪叙事驱动型)
-T8-告别 → p2 (情绪叙事驱动型)
-T9-候鸟 → p1 (编曲忠实还原型)
+EN Version Selection:
+T1-Departure → p1 (Arrangement-Faithful Type)
+T2-Data → p2 (Emotional-Narrative Driven Type)
+T3-Counterfeit Specimen → p1 (Arrangement-Faithful Type)
+T4-Cage → p3 (Sensory-Quality Priority Type)
+T5-Vacuum → p3 (Sensory-Quality Priority Type)
+T6-Twin → p3 (Sensory-Quality Priority Type)
+T7-Decision → p2 (Emotional-Narrative Driven Type)
+T8-Goodbye → p2 (Emotional-Narrative Driven Type)
+T9-Migrant Bird → p1 (Arrangement-Faithful Type)
 ```
 
-### 版本分布规律（参考）
+### Version Distribution Pattern (Reference)
 
-从《赝品候鸟》实际选定数据：
-- **Prompt 1（编曲忠实还原型）**：方向轴两端和数据轴（T1/T2/T3/T9）→ 编曲设计本身已经很好
-- **Prompt 2（情绪叙事驱动型）**：告别轴（T7/T8）→ 情绪叙事是核心
-- **Prompt 3（听感质感优先型）**：自我轴（T4/T5/T6）→ 需要更强的身体感和质感
+From "Counterfeit Migrants" actual selection data:
+- **Prompt 1 (Arrangement-Faithful Type)**: Direction axis endpoints and data axis (T1/T2/T3/T9) → arrangement design itself is already excellent
+- **Prompt 2 (Emotional-Narrative Driven Type)**: Farewell axis (T7/T8) → emotional narrative is core
+- **Prompt 3 (Sensory-Quality Priority Type)**: Self axis (T4/T5/T6) → needs stronger physical sensation and texture
 
 ---
 
 ## Checklist
 
-| # | 检查项 | 打勾标准 |
-|---|--------|---------|
-| 1 | 每首都有选定 | N 首 × 2 语言 = 2N 个选定，无遗漏 |
-| 2 | 选定版本存在 | 选定的 p1/p2/p3 文件确实存在于 generate/cn/ 和 generate/en/ |
-| 3 | 选定理由记录 | 每首选定附带简短理由（Hook/情绪/编曲/舒适度） |
-| 4 | 版本分布合理 | 3 个 Prompt 版本都有被选中的（不应全选同一个版本） |
+| # | Check Item | Completion Criteria |
+|---|------------|---------------------|
+| 1 | Each track has selection | N tracks × 2 languages = 2N selections, no omissions |
+| 2 | Selected version exists | p1/p2/p3 files confirmed in generate/cn/ and generate/en/ |
+| 3 | Selection reasoning recorded | Each selection includes brief reason (Hook/emotion/arrangement/comfort) |
+| 4 | Version distribution reasonable | All 3 Prompt versions have selections (should not select same version for all) |
 
-全部 ✅ → 进入转码阶段（主 agent 执行 ffmpeg 转码 + phase5-quality-verifier 验证）
+All ✅ → Enter transcoding phase (main agent executes ffmpeg + phase5-quality-verifier)

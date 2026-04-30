@@ -1,18 +1,18 @@
-# 艺人说（中文长版）
+# Artist Statement (Chinese Long Version)
 
-> {艺人/创作者名}，{身份标签}
+> {Artist/Creator Name}, {Identity Tags}
 
 ---
 
-{第一段：引入话题，讲述创作动机，~300 字}
+{Paragraph 1: Introduce topic, describe creative motivation, ~300 words}
 
-{第二段：展开专辑概念，核心悖论，叙事架构，~400 字}
+{Paragraph 2: Expand album concept, core paradox, narrative structure, ~400 words}
 
-{第三段：具体歌曲背后的故事，2-3 首曲目的细节，~400 字}
+{Paragraph 3: Stories behind specific songs, details of 2-3 tracks, ~400 words}
 
-{第四段：创作过程中的突破与困惑，~300 字}
+{Paragraph 4: Breakthroughs and confusion during creative process, ~300 words}
 
-{第五段：对听众说的话，~200 字}
+{Paragraph 5: Message to listeners, ~200 words}
 
 ---
 
@@ -34,11 +34,11 @@
 
 ---
 
-# 艺人说（中英文短版）
+# Artist Statement (Chinese/English Short Version)
 
-## 中文（~400 字）
+## Chinese (~400 words)
 
-{精简版，保留核心概念和创作动机}
+{Condensed version, retaining core concept and creative motivation}
 
 ## English (~400 words)
 
@@ -46,12 +46,12 @@
 
 ---
 
-# 金句提取（5 条中英对照）
+# Quote Extraction (5 Chinese-English Pairs)
 
-| # | 中文 | English |
-|---|------|---------|
-| 1 | "{金句}" | "{Quote}" |
-| 2 | "{金句}" | "{Quote}" |
-| 3 | "{金句}" | "{Quote}" |
-| 4 | "{金句}" | "{Quote}" |
-| 5 | "{金句}" | "{Quote}" |
+| # | Chinese | English |
+|---|---------|---------|
+| 1 | "{Quote}" | "{Quote}" |
+| 2 | "{Quote}" | "{Quote}" |
+| 3 | "{Quote}" | "{Quote}" |
+| 4 | "{Quote}" | "{Quote}" |
+| 5 | "{Quote}" | "{Quote}" |

@@ -1,91 +1,91 @@
 # Phase 6 — Cover Designer Skill
 
-> 设计封面概念方案，包含多个视觉方向、配色方案和应用场景。
+> Design cover concept plans, including multiple visual directions, color schemes, and application scenarios.
 
 ---
 
-## 触发
+## Trigger
 
-phase6-artist-story-writer 完成后自动启动。
-
----
-
-## 输入
-
-| 来源 | 文件 | 内容 |
-|------|------|------|
-| Phase 1 | `docs/album-overview.md` | 核心概念/叙事轴/调性主线 |
-| Phase 2 | `songs/T{N}-曲名.md` | 每首歌的核心意象/身体感 |
-| Phase 6 | `templates/cover-concept.md` | 封面概念模板 |
-| Phase 6 | `assets/` | 已有概念图（如有） |
+Automatically initiated after phase6-artist-story-writer completes.
 
 ---
 
-## 执行
+## Input
 
-### ⚠️ 修改范围
-- **读取**：`docs/album-overview.md`、`songs/T{N}-曲名.md`、`templates/cover-concept.md`、`assets/`
-- **写入**：`docs/cover-concept.md`
-- **禁止**：修改模板文件或 `songs/`/`generate/` 中的任何文件
+| Source | File | Content |
+|--------|------|---------|
+| Phase 1 | `docs/album-overview.md` | Core concept/narrative axis/tonality main line |
+| Phase 2 | `songs/T{N}-track.md` | Core imagery/physical sensation for each track |
+| Phase 6 | `templates/cover-concept.md` | Cover concept template |
+| Phase 6 | `assets/` | Existing concept images (if any) |
 
-### 封面方案结构
+---
 
-从模板 `templates/cover-concept.md` 初始化，填充以下内容：
+## Execution
 
-1. **≥ 3 个视觉方向**：
-   - 每个方向有概念描述 + 设计理由
-   - 与专辑核心概念/叙事轴关联
-   - 配色方案（含 HEX 色值）
+### ⚠️ Modification Scope
+- **Read**: `docs/album-overview.md`, `songs/T{N}-track.md`, `templates/cover-concept.md`, `assets/`
+- **Write**: `docs/cover-concept.md`
+- **Forbidden**: Modify template files or any files in `songs/`/`generate/` directories
 
-2. **每首歌的封面概念**：
-   - 从 `songs/T{N}-曲名.md` 的核心意象/身体感提取
-   - 统一视觉语言下的小变体
+### Cover Concept Structure
 
-3. **图片生成结构化描述**（供 phase6-cover-prompt-generator 使用）：
+Initialize from template `templates/cover-concept.md`, fill the following:
 
-   每个视觉方向必须包含以下**可用于 image generation 的结构化字段**：
+1. **≥ 3 Visual Directions**:
+   - Each direction has concept description + design rationale
+   - Connected to album core concept/narrative axis
+   - Color scheme (with HEX values)
 
-   | 字段 | 说明 | 示例 |
-   |------|------|------|
-   | `主视觉` | 画面核心元素描述 | "一个人影站在废弃火车站台，逆光剪影" |
-   | `色调` | 整体色彩倾向 + HEX 色值 | "冷暖对比，#1A1A2E 深蓝背景 + #E94560 暖光点缀" |
-   | `构图` | 构图方式 + 留白方向 | "居中构图，上方 40% 留白用于专辑名排版" |
-   | `风格/质感` | 视觉风格关键词 | "胶片颗粒感，低饱和，高对比" |
-   | `光线` | 光源方向 + 氛围 | "侧逆光，长阴影，丁达尔效应" |
-   | `排版暗示` | 文字排版预留空间 | "顶部留白，底部右侧小面积留白" |
+2. **Per-Track Cover Concept**:
+   - Extracted from `songs/T{N}-track.md` core imagery/physical sensation
+   - Small variations under unified visual language
 
-4. **应用场景**：
-   | 场景 | 尺寸 | 要求 |
-   |------|------|------|
-   | 流媒体封面 | 3000×3000px | 正方形，主体居中，小图可辨识 |
-   | 实体 CD | 300×300mm | 高分辨率，可印刷 |
-   | 社交媒体 | 800×800px | 缩略图清晰 |
-   | MV 背景 | 1920×1080px | 横版，可动画化 |
+3. **Structured Image Generation Descriptions** (for phase6-cover-prompt-generator):
 
-### 配色方案格式
+   Each visual direction must include the following **structured fields usable for image generation**:
+
+   | Field | Description | Example |
+   |-------|-------------|---------|
+   | `Main Visual` | Core visual element description | "A silhouette standing on an abandoned train platform, backlit" |
+   | `Color Tone` | Overall color tendency + HEX values | "Cold-warm contrast, #1A1A2E deep blue background + #E94560 warm light accents" |
+   | `Composition` | Composition method + whitespace direction | "Centered composition, 40% top whitespace for album title layout" |
+   | `Style/Texture` | Visual style keywords | "Film grain, low saturation, high contrast" |
+   | `Lighting` | Light source direction + atmosphere | "Raking light from side, long shadows, Tyndall effect" |
+   | `Typography Hint` | Text layout reserved space | "Top whitespace, small bottom-right whitespace" |
+
+4. **Application Scenarios**:
+   | Scenario | Dimensions | Requirements |
+   |----------|------------|--------------|
+   | Streaming cover | 3000×3000px | Square, subject centered, recognizable at small size |
+   | Physical CD | 300×300mm | High resolution, print-ready |
+   | Social media | 800×800px | Thumbnail clear |
+   | MV background | 1920×1080px | Landscape, animatable |
+
+### Color Scheme Format
 
 ```markdown
-### 配色方案
+### Color Scheme
 
-| 角色 | 色值 | 用途 |
-|------|------|------|
-| 主色 | #XXXXXX | 背景/主视觉 |
-| 辅色 1 | #XXXXXX | 强调/高光 |
-| 辅色 2 | #XXXXXX | 对比/张力 |
-| 点缀色 | #XXXXXX | Hook 元素 |
+| Role | Color Value | Purpose |
+|------|-------------|---------|
+| Primary | #XXXXXX | Background/main visual |
+| Secondary 1 | #XXXXXX | Accent/highlight |
+| Secondary 2 | #XXXXXX | Contrast/tension |
+| Accent | #XXXXXX | Hook element |
 ```
 
 ---
 
 ## Checklist
 
-| # | 检查项 | 打勾标准 |
-|---|--------|---------|
-| 1 | ≥ 3 个视觉方向 | 每个方向有概念描述 + 设计理由 |
-| 2 | 配色方案完整 | 含 HEX 色值 + 用途说明 |
-| 3 | 每首歌有封面概念 | N 首歌，统一视觉语言下的小变体 |
-| 4 | 应用场景齐全 | 流媒体/实体/社交/MV 四个场景 |
-| 5 | 尺寸要求标注 | 每个场景有明确像素/mm 要求 |
-| 6 | 与专辑概念关联 | 封面方向反映核心悖论/叙事轴 |
+| # | Check Item | Completion Criteria |
+|---|------------|---------------------|
+| 1 | ≥ 3 visual directions | Each with concept description + design rationale |
+| 2 | Color scheme complete | With HEX values + purpose descriptions |
+| 3 | Each track has cover concept | N tracks, small variations under unified visual language |
+| 4 | Application scenarios complete | Streaming/physical/social/MV four scenarios |
+| 5 | Dimension requirements noted | Each scenario has explicit pixel/mm requirements |
+| 6 | Connected to album concept | Cover direction reflects core paradox/narrative axis |
 
-全部 ✅ → 进入下一步（phase6-platform-checker）
+All ✅ → Proceed to next step (phase6-platform-checker)

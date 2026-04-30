@@ -1,40 +1,40 @@
-# T{N}《{曲名}》
+# T{N} "{Track Name}"
 
-**{叙事轴名} · 专辑第{N}首**
-
----
-
-## 基本信息
-
-| 项目 | 内容 |
-|------|------|
-| 语言 | {中文 / 中文+英文 / 英文 / 纯音乐} |
-| 方向 | {叙事轴}（{轴含义简述}） |
-| 核心Hook | {≤ 8 字} |
-| 核心悖论 | {1 句话} |
-| 核心意象 | {3-5 个，用 / 分隔} |
-| 身体感 | {≥ 2 个身体意象} |
-| 情绪弧线 | {起点→终点} |
-| 估计时长 | ~{M}:{SS} |
-| 编曲风格 | {风格}，{调性}，{BPM} BPM |
+**{Narrative Axis Name} · Album Track {N}**
 
 ---
 
-## 歌词（Round{N} · {状态描述}）
+## Basic Information
+
+| Item | Content |
+|------|---------|
+| Language | {Chinese / Chinese+English / English / Instrumental} |
+| Axis | {Narrative axis} ({axis meaning brief}) |
+| Core Hook | {≤ 8 characters} |
+| Core Paradox | {One sentence} |
+| Core Imagery | {3-5 items, separated by /} |
+| Physical Sensation | {≥ 2 physical imagery items} |
+| Emotional Arc | {Start}→{End} |
+| Est. Duration | ~{M}:{SS} |
+| Arrangement Style | {Style}, {Key}, {BPM} BPM |
+
+---
+
+## Lyrics (Round{N} · {Status Description})
 
 ```
-[结构标签]
-歌词行...
+[Structure Tag]
+Lyrics line...
 
-[结构标签]
-歌词行...
+[Structure Tag]
+Lyrics line...
 ```
 
 ---
 
-## 英文歌词（English Lyrics）（Round{N} · {状态描述}）
+## English Lyrics (Round{N} · {Status Description})
 
-> 仅双语/英文专辑时填写。纯中文专辑可删除此区块。纯音乐曲目标注「纯音乐，无」。
+> Fill only for bilingual/English albums. Delete for Chinese-only albums. For instrumental tracks, mark "纯音乐，无".
 
 ```
 [Structure Tag]
@@ -46,94 +46,94 @@ Lyrics...
 
 ---
 
-## 完整编曲设计
+## Complete Arrangement Design
 
-> **BPM: {N} BPM · {调性} · {风格}**
+> **BPM: {N} · {Key} · {Style}**
 
-### 1. {段落名}设计（{起始时间}-{结束时间}）
+### 1. {Section Name} Design ({start time}-{end time})
 
-{详细编曲描述，含音色/乐器/人声处理/情绪}
+{Detailed arrangement description including timbre/instruments/vocal processing/emotion}
 
-### 2. {段落名}设计（{起始时间}-{结束时间}）
+### 2. {Section Name} Design ({start time}-{end time})
 ...
 
 ---
 
-## 关键 Sound Design
+## Key Sound Design
 
-| 音效 | 描述 | 出现位置 | 音量 |
-|------|------|---------|------|
-| {名称} | {描述} | {位置} | {dB} |
+| Sound Effect | Description | Position | Volume |
+|--------------|-------------|----------|--------|
+| {Name} | {Description} | {Position} | {dB} |
 | ... | | | |
 
 ---
 
-## 韵脚分析（Round{N}）
+## Rhyme Analysis (Round{N})
 
-### 韵部分布
+### Rhyme Distribution
 
-| 韵部 | 音 | 出现位置 | 情绪质感 |
-|------|---|---------|---------|
-| {韵名} | {音} | {位置} | {描述} |
+| Rhyme | Sound | Position | Emotional Texture |
+|-------|-------|----------|-------------------|
+| {Rhyme name} | {Sound} | {Position} | {Description} |
 
-### Hook 韵脚设计逻辑
-{说明}
+### Hook Rhyme Design Logic
+{Description}
 
-### 韵脚×编曲配合评分
+### Rhyme × Arrangement Coordination Score
 
-| 维度 | 评分 | 说明 |
-|------|------|------|
-| {维度} | {X}/10 | {说明} |
-
----
-
-## 封面高光文案
-
-> **"{一句话文案}"**
-> {补充说明}
+| Dimension | Score | Description |
+|-----------|-------|-------------|
+| {Dimension} | {X}/10 | {Description} |
 
 ---
 
-## 市场评估报告
+## Cover Highlight Copy
 
-### 核心竞争力
-- {卖点 1}
-- {卖点 2}
+> **"{One-sentence copy}"**
+> {Supplementary description}
+
+---
+
+## Market Assessment Report
+
+### Core Competitiveness
+- {Selling point 1}
+- {Selling point 2}
 - ...
 
-### 目标受众分析
+### Target Audience Analysis
 
-| 受众层 | 特征 | 接受度评估 |
-|--------|------|-----------|
-| {层名} | {描述} | {星级} |
+| Audience Layer | Characteristics | Acceptance Assessment |
+|----------------|-----------------|----------------------|
+| {Layer name} | {Description} | {Stars} |
 | ... | | |
 
 ---
 
-## 需要修改的具体问题清单（Round{N}）
+## Specific Issues Requiring Modification (Round{N})
 
-| # | 优先级 | 模块 | 问题描述 | 修改方案 |
-|---|--------|------|---------|---------|
-| {N} | 🔴/🟡/🟢 | {模块} | {描述} | {方案} |
+| # | Priority | Module | Issue Description | Modification Plan |
+|---|----------|--------|-------------------|-------------------|
+| {N} | 🔴/🟡/🟢 | {Module} | {Description} | {Plan} |
 | ... | | | | |
 
 ---
 
-## 数据
+## Data
 
-- **评分**：{总分}/100（Round{N} {版本描述}）
-- **韵律**：{0-20}/20
-- **市场**：{0-20}/20
-- **结构**：{0-20}/20
-- **哲学**：{0-20}/20
-- **编排**：{0-20}/20
-- **状态**：{✅ 定稿 / 🔄 优化中}
+- **Score**: {Total}/100 (Round{N} {Version description})
+- **Rhythm**: {0-20}/20
+- **Market**: {0-20}/20
+- **Structure**: {0-20}/20
+- **Philosophy**: {0-20}/20
+- **Arrangement**: {0-20}/20
+- **Status**: {✅ Finalized / 🔄 Optimizing}
 
 ---
 
-## 评分进化史
+## Score Evolution History
 
-| 阶段 | 分数 | 主要改动 |
-|------|------|---------|
-| Round{N-1} | {总分} | {改动描述} |
-| Round{N}（本次） | {总分} | {改动描述} |
+| Stage | Score | Major Changes |
+|-------|-------|---------------|
+| Round{N-1} | {Total} | {Change description} |
+| Round{N} (this) | {Total} | {Change description} |

@@ -1,77 +1,77 @@
-# 《{中文名}》封面概念方案
+# {Chinese Name} — Cover Concept Plan
 
-> 生成日期：YYYY-MM-DD
-> 版本：v1.0
-
----
-
-## 视觉方向 A：{方向名称}
-
-**概念**：{一句话描述核心视觉隐喻}
-
-**配色方案**：
-
-| 色名 | HEX | 用途 |
-|------|-----|------|
-| 主色 | #{颜色} | {用途} |
-| 辅色1 | #{颜色} | {用途} |
-| 辅色2 | #{颜色} | {用途} |
-| 点缀色 | #{颜色} | {用途} |
-
-**参考风格**：{摄影/插画/3D/拼贴/抽象等}
+> Generated: YYYY-MM-DD
+> Version: v1.0
 
 ---
 
-## 视觉方向 B：{方向名称}
+## Visual Direction A: {Direction Name}
 
-**概念**：{一句话描述核心视觉隐喻}
+**Concept**: {One sentence describing core visual metaphor}
 
-**配色方案**：
+**Color Scheme**:
 
-| 色名 | HEX | 用途 |
-|------|-----|------|
-| 主色 | #{颜色} | {用途} |
-| 辅色1 | #{颜色} | {用途} |
-| 辅色2 | #{颜色} | {用途} |
-| 点缀色 | #{颜色} | {用途} |
+| Color Role | HEX | Purpose |
+|------------|-----|---------|
+| Primary | #{color} | {Purpose} |
+| Secondary 1 | #{color} | {Purpose} |
+| Secondary 2 | #{color} | {Purpose} |
+| Accent | #{color} | {Purpose} |
 
-**参考风格**：{摄影/插画/3D/拼贴/抽象等}
-
----
-
-## 视觉方向 C：{方向名称}
-
-**概念**：{一句话描述核心视觉隐喻}
-
-**配色方案**：
-
-| 色名 | HEX | 用途 |
-|------|-----|------|
-| 主色 | #{颜色} | {用途} |
-| 辅色1 | #{颜色} | {用途} |
-| 辅色2 | #{颜色} | {用途} |
-| 点缀色 | #{颜色} | {用途} |
-
-**参考风格**：{摄影/插画/3D/拼贴/抽象等}
+**Reference Style**: {Photography/illustration/3D/collage/abstract/etc.}
 
 ---
 
-## 各曲目封面概念
+## Visual Direction B: {Direction Name}
 
-| # | 曲目 | 主视觉元素 | 配色 | 情绪 |
-|---|------|-----------|------|------|
-| 01 | T1《{曲名}》 | {元素} | {HEX} | {情绪} |
-| 02 | T2《{曲名}》 | {元素} | {HEX} | {情绪} |
+**Concept**: {One sentence describing core visual metaphor}
+
+**Color Scheme**:
+
+| Color Role | HEX | Purpose |
+|------------|-----|---------|
+| Primary | #{color} | {Purpose} |
+| Secondary 1 | #{color} | {Purpose} |
+| Secondary 2 | #{color} | {Purpose} |
+| Accent | #{color} | {Purpose} |
+
+**Reference Style**: {Photography/illustration/3D/collage/abstract/etc.}
+
+---
+
+## Visual Direction C: {Direction Name}
+
+**Concept**: {One sentence describing core visual metaphor}
+
+**Color Scheme**:
+
+| Color Role | HEX | Purpose |
+|------------|-----|---------|
+| Primary | #{color} | {Purpose} |
+| Secondary 1 | #{color} | {Purpose} |
+| Secondary 2 | #{color} | {Purpose} |
+| Accent | #{color} | {Purpose} |
+
+**Reference Style**: {Photography/illustration/3D/collage/abstract/etc.}
+
+---
+
+## Per-Track Cover Concept
+
+| # | Track | Main Visual Elements | Color | Emotion |
+|---|-------|---------------------|-------|---------|
+| 01 | T1"{Track}" | {Elements} | {HEX} | {Emotion} |
+| 02 | T2"{Track}" | {Elements} | {HEX} | {Emotion} |
 | ... | | | | |
 
 ---
 
-## 应用场景
+## Application Scenarios
 
-| 场景 | 尺寸 | 要求 |
-|------|------|------|
-| 网易云专辑封面 | 3000×3000 px | 方形，主视觉居中 |
-| QQ 音乐专辑封面 | 3000×3000 px | 方形 |
-| 社交媒体分享图 | 1200×630 px | 横版，含专辑名 |
-| MV 封面 | 1920×1080 px | 横版 |
-| 实体 CD 封面 | 140×140 mm（含出血 3mm） | 方形印刷 |
+| Scenario | Dimensions | Requirements |
+|----------|------------|--------------|
+| NetEase Cloud album cover | 3000×3000 px | Square, main visual centered |
+| QQ Music album cover | 3000×3000 px | Square |
+| Social media share image | 1200×630 px | Landscape, with album name |
+| MV cover | 1920×1080 px | Landscape |
+| Physical CD cover | 140×140 mm (with 3mm bleed) | Square, print-ready |

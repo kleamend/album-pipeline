@@ -1,114 +1,114 @@
-# 《{中文名}》专辑统筹文档
+# {Chinese Name} — Album Overview Document
 
-> 状态：概念设计中
-> 更新日期：YYYY-MM-DD
-> 优化轮次：Round{N}
-
----
-
-## 专辑概述
-
-**专辑名称**：《{中文名}》 / **{English Name}**
-**核心概念**：{1-2 句话}
-**核心悖论**：{一句话}
-**目标听众**：{描述}
-**参考风格**：{参考艺人/专辑}
-**语言**：{中文 / 中文+英文 / 英文 / 纯音乐}
-
-**叙事轴线**：
-- **{轴名1}**：{轴含义}，{曲目列表}
-- **{轴名2}**：{轴含义}，{曲目列表}
-- ...（至少 2 条，最多 5 条）
+> Status: In Concept Design
+> Updated: YYYY-MM-DD
+> Optimization Round: Round{N}
 
 ---
 
-## 市场分析
+## Album Overview
 
-**市场定位**：{一句话定位}
-**目标受众**：{精准画像，2-3 层}
-**竞品差异化**：{与同类作品的差异点}
-**核心传播概念**：{一句话，可独立传播}
-**潜在风险**：{≥1 个风险 + 应对策略}
+**Album Name**: {Chinese Name} / **{English Name}**
+**Core Concept**: {1-2 sentences}
+**Core Paradox**: {One sentence}
+**Target Audience**: {Description}
+**Reference Style**: {Reference artist/album}
+**Language**: {Chinese / Chinese+English / English / Instrumental}
 
-### 英文专辑信息（网易云 / 发行用）
+**Narrative Axes**:
+- **{Axis Name 1}**: {Axis meaning}, {track list}
+- **{Axis Name 2}**: {Axis meaning}, {track list}
+- ... (minimum 2, maximum 5)
+
+---
+
+## Market Analysis
+
+**Market Positioning**: {One-sentence positioning}
+**Target Audience**: {Precise profile, 2-3 layers}
+**Competitive Differentiation**: {Differentiation from similar works}
+**Core Dissemination Concept**: {One sentence, independently shareable}
+**Potential Risks**: {≥1 risk + response strategy}
+
+### English Album Info (NetEase Cloud / Release)
 
 ### Album Name
 **{English Name}**
 
 ### Album Description
-{2-4 句英文，适合流媒体平台展示}
+{2-4 English sentences, suitable for streaming platform display}
 
 ### Creator's Note
-{第一人称英文，3-6 段，讲述创作动机和专辑含义}
+{First-person English, 3-6 paragraphs, describing creative motivation and album meaning}
 
 ### Track One-Liners
 
-| # | Track | English Title | One-Liner |
+| # | Track | Chinese Title | One-Liner |
 |---|-------|--------------|-----------|
-| 01 | T1 {曲名} | {英文} | {一句话介绍} |
-| 02 | T2 {曲名} | {英文} | {一句话介绍} |
+| 01 | T1 {Track} | {Chinese} | {One-sentence intro} |
+| 02 | T2 {Track} | {Chinese} | {One-sentence intro} |
 | ... | | | |
 
 ---
 
-## 曲目单
+## Track List
 
-| # | 曲目 | 英文名 | 方向 | 核心Hook | 核心悖论 | 核心意象 | 身体感 | 情绪弧线 | 编曲风格 | 时长(估) | 状态 |
-|---|------|--------|------|----------|----------|----------|--------|----------|----------|----------|------|
-| 01 | T1《{曲名}》 | {English} | {轴名} | {Hook} | {悖论} | {意象1}/{意象2}/{意象3} | {身体感1}/{身体感2} | {起点}→{终点} | {风格}，{调性}，{BPM}BPM | ~{M}:{SS} | ⏳ 待生成 |
-| 02 | T2《{曲名}》 | {English} | {轴名} | {Hook} | {悖论} | {意象} | {身体感} | {弧线} | {风格} | ~{M}:{SS} | ⏳ 待生成 |
+| # | Track | Chinese | Axis | Core Hook | Core Paradox | Core Imagery | Physical Sensation | Emotional Arc | Arrangement Style | Est. Duration | Status |
+|---|-------|---------|------|-----------|--------------|--------------|-------------------|---------------|-------------------|---------------|--------|
+| 01 | T1"{Track}" | {English} | {Axis} | {Hook} | {Paradox} | {Imagery1}/{Imagery2}/{Imagery3} | {Sensation1}/{Sensation2} | {Start}→{End} | {Style}, {Key}, {BPM}BPM | ~{M}:{SS} | ⏳ Pending Generation |
+| 02 | T2"{Track}" | {English} | {Axis} | {Hook} | {Paradox} | {Imagery} | {Sensation} | {Arc} | {Style} | ~{M}:{SS} | ⏳ Pending Generation |
 | ... | | | | | | | | | | | |
 
-**✅ 时长状态**：{汇总描述}
+**✅ Duration Status**: {Summary description}
 
 ---
 
-## 调性主线
+## Tonality Main Line
 
-{主调性}
-调性分布：T1 {调性} | T2 {调性} | ...
-调性逻辑：{设计说明}
+{Main tonality}
+Tonality Distribution: T1 {tonality} | T2 {tonality} | ...
+Tonality Logic: {Design explanation}
 
-> ⚠️ **两个评分总览区块的关系说明：**
-> - **上方「Phase 1 评分总览」**：4 维度 × 25 分（概念原创性/叙事连贯性/市场潜力/音乐一致性），评估专辑整体概念质量，Phase 1 填写。
-> - **下方「Phase 2 评分总览」**：5 维度 × 20 分（韵律/市场/结构/哲学/编排），逐首评估歌曲质量，Phase 2 逐曲填写，Phase 6 汇总。
-> - Phase 6 时将上方 4 维度评分移至「## Phase 1 概念评分（历史参考）」子区块，下方 5 维度评分升级为「## 评分总览（Phase 2 终稿）」。详见 FILE_CONTRACTS.md Phase 6 契约。
-
----
-
-## 评分总览（Phase 1 · Round{N}）
-
-| 维度 | 分数 | 评语 |
-|------|------|------|
-| 概念原创性 | {0-25} | {评语} |
-| 叙事连贯性 | {0-25} | {评语} |
-| 市场潜力 | {0-25} | {评语} |
-| 音乐一致性 | {0-25} | {评语} |
-
-总分：{XX}/100
-
-低分维度（< 20）：{列出}
-优化建议：{针对每个低分维度}
+> ⚠️ **Relationship Between the Two Scoring Overview Sections:**
+> - **Upper "Phase 1 Scoring Overview"**: 4 dimensions × 25 points (Concept Originality/Narrative Coherence/Market Potential/Musical Consistency), evaluates overall album concept quality, filled in Phase 1.
+> - **Lower "Phase 2 Scoring Overview"**: 5 dimensions × 20 points (Rhythm/Market/Structure/Philosophy/Arrangement), evaluates each song's quality, filled in Phase 2 per track, consolidated in Phase 6.
+> - In Phase 6, move the upper 4-dimension scoring to the "## Phase 1 Concept Scoring (Historical Reference)" sub-section; upgrade the lower 5-dimension scoring to "## Scoring Overview (Phase 2 Final)". See FILE_CONTRACTS.md Phase 6 contract for details.
 
 ---
 
-## 评分总览（Phase 2 · 歌曲评分）
+## Scoring Overview (Phase 1 · Round{N})
 
-> Phase 6 时填写，Phase 1 阶段留空。
+| Dimension | Score | Comment |
+|-----------|-------|---------|
+| Concept Originality | {0-25} | {Comment} |
+| Narrative Coherence | {0-25} | {Comment} |
+| Market Potential | {0-25} | {Comment} |
+| Musical Consistency | {0-25} | {Comment} |
 
-| # | 曲目 | 韵律 | 市场 | 结构 | 哲学 | 编排 | 总分 | 状态 |
-|---|------|------|------|------|------|------|------|------|
-| 01 | T1《{曲名}》 | {0-20} | {0-20} | {0-20} | {0-20} | {0-20} | {XX}/100 | ⏳ |
-| 02 | T2《{曲名}》 | | | | | | | |
+Total: {XX}/100
+
+Low-Scoring Dimensions (< 20): {List}
+Optimization Suggestions: {For each low-scoring dimension}
+
+---
+
+## Scoring Overview (Phase 2 · Song Scoring)
+
+> Filled in Phase 6, left blank in Phase 1.
+
+| # | Track | Rhythm | Market | Structure | Philosophy | Arrangement | Total | Status |
+|---|-------|--------|--------|-----------|------------|-------------|-------|--------|
+| 01 | T1"{Track}" | {0-20} | {0-20} | {0-20} | {0-20} | {0-20} | {XX}/100 | ⏳ |
+| 02 | T2"{Track}" | | | | | | | |
 | ... | | | | | | | | |
 
 ---
 
-## 待办事项
+## Todo Items
 
-- [x] Phase 1 概念确认（Round{N}）
-- [ ] Phase 2 歌曲生成
-- [ ] Phase 3 歌词标准化
-- [ ] Phase 4 音乐生成
-- [ ] Phase 5 选定与转码
-- [ ] Phase 6 发布物料
+- [x] Phase 1 Concept Confirmed (Round{N})
+- [ ] Phase 2 Song Generation
+- [ ] Phase 3 Lyrics Standardization
+- [ ] Phase 4 Music Generation
+- [ ] Phase 5 Selection & Transcoding
+- [ ] Phase 6 Publishing Materials

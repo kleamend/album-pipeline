@@ -1,89 +1,89 @@
 # Phase 6 — Album Overview Updater Skill
 
-> 更新专辑统筹文档，汇总 Phase 1-5 所有产出为最终版。
+> Update the album overview document, consolidating all Phase 1-5 outputs into the final version.
 
 ---
 
-## 触发
+## Trigger
 
-Phase 5 全部验证通过后自动启动。
-
----
-
-## 输入
-
-| 来源 | 文件 | 内容 |
-|------|------|------|
-| Phase 1 | `docs/album-overview.md` | 专辑统筹文档骨架（需补充完整） |
-| Phase 2 | `songs/T{N}-曲名.md` | 每首歌的封面高光文案、市场评估、评分 |
-| Phase 5 | `generate/cn_320k/*.mp3` | 中文最终音频 |
-| Phase 5 | `generate/en_320k/*.mp3` | 英文最终音频 |
-| Phase 5 | `generate/loudness-report.txt` | 响度/时长报告 |
+Automatically initiated after all Phase 5 verifications pass.
 
 ---
 
-## 执行
+## Input
 
-### ⚠️ 修改范围
-- **读取**：Phase 1-5 所有产出文件
-- **写入**：`docs/album-overview.md`（覆盖更新）
-- **禁止**：修改 `songs/` 或 `generate/` 中的任何文件
+| Source | File | Content |
+|--------|------|---------|
+| Phase 1 | `docs/album-overview.md` | Album overview document skeleton (needs completion) |
+| Phase 2 | `songs/T{N}-track.md` | Cover highlight copy, market assessment, scoring for each track |
+| Phase 5 | `generate/cn_320k/*.mp3` | Chinese final audio |
+| Phase 5 | `generate/en_320k/*.mp3` | English final audio |
+| Phase 5 | `generate/loudness-report.txt` | Loudness/duration report |
 
-### 更新内容
+---
 
-1. **专辑概述**：Phase 1 已有，确认无误
-2. **曲目单**：补充最终时长（从 ffprobe 获取）+ 选定 Take 编号 + 状态改为"✅ 已定稿"
-3. **英文专辑信息**：Phase 1 已有，确认无误
-4. **Track One-Liners**：Phase 1 已有，如有优化可微调
-5. **评分总览**：
-   - 将 Phase 1 的 4 维度评分（概念原创性/叙事连贯性/市场潜力/音乐一致性，各 25 分）
-   - 替换为 Phase 2 的 5 维度评分（韵律/市场/结构/哲学/编排，各 20 分）
-   - **纯音乐曲目**：5 维度中「韵律」替换为「器乐表现力」，其余维度不变
-   - Phase 1 原始评分保留为「## Phase 1 概念评分」历史参考子区块
-6. **待办事项**：Phase 1-5 标记 [x]，Phase 6 进行中
+## Execution
 
-### 评分总览转换规则
+### ⚠️ Modification Scope
+- **Read**: All Phase 1-5 output files
+- **Write**: `docs/album-overview.md` (overwrite update)
+- **Forbidden**: Modify any files in `songs/` or `generate/` directories
 
-**Phase 1 格式（旧）：**
+### Update Content
+
+1. **Album Overview**: From Phase 1, confirm correctness
+2. **Track List**: Add final duration (from ffprobe) + selected Take number + status changed to "✅ Finalized"
+3. **English Album Info**: From Phase 1, confirm correctness
+4. **Track One-Liners**: From Phase 1, minor optimization acceptable
+5. **Scoring Overview**:
+   - Replace Phase 1 4-dimension scoring (Concept Originality/Narrative Coherence/Market Potential/Musical Consistency, 25 points each)
+   - With Phase 2 5-dimension scoring (Rhythm/Market/Structure/Philosophy/Arrangement, 20 points each)
+   - **Instrumental tracks**: Replace "Rhythm" with "Instrumental Performance" in the 5 dimensions, other dimensions unchanged
+   - Retain Phase 1 original scoring as "## Phase 1 Concept Scoring (Historical Reference)" sub-section
+6. **Todo Items**: Mark Phase 1-5 as [x], Phase 6 in progress
+
+### Scoring Overview Conversion Rules
+
+**Phase 1 Format (Old):**
 ```
-| 维度 | 分数 | 评语 |
-| 概念原创性 | 23/25 | ... |
-| 叙事连贯性 | 22/25 | ... |
-| 市场潜力 | 21/25 | ... |
-| 音乐一致性 | 20/25 | ... |
-总分：86/100
+| Dimension | Score | Comment |
+| Concept Originality | 23/25 | ... |
+| Narrative Coherence | 22/25 | ... |
+| Market Potential | 21/25 | ... |
+| Musical Consistency | 20/25 | ... |
+Total: 86/100
 ```
 
-**Phase 2 格式（新）：**
+**Phase 2 Format (New):**
 ```
-| 维度 | 分数 | 评语 |
-| 韵律 | 18/20 | ... |
-| 市场 | 17/20 | ... |
-| 结构 | 19/20 | ... |
-| 哲学 | 18/20 | ... |
-| 编排 | 19/20 | ... |
-总分：91/100
+| Dimension | Score | Comment |
+| Rhythm | 18/20 | ... |
+| Market | 17/20 | ... |
+| Structure | 19/20 | ... |
+| Philosophy | 18/20 | ... |
+| Arrangement | 19/20 | ... |
+Total: 91/100
 ```
 
-**转换后保留历史：**
+**Post-Conversion Historical Retention:**
 ```
-## 评分总览（Phase 2 终稿）
-[Phase 2 5 维度评分表]
+## Scoring Overview (Phase 2 Final)
+[Phase 2 5-Dimension Scoring Table]
 
-## Phase 1 概念评分（历史参考）
-[Phase 1 4 维度评分表]
+## Phase 1 Concept Scoring (Historical Reference)
+[Phase 1 4-Dimension Scoring Table]
 ```
 
 ---
 
 ## Checklist
 
-| # | 检查项 | 打勾标准 |
-|---|--------|---------|
-| 1 | 曲目单完整 | N 首，每首含最终时长/选定 Take/状态=✅ |
-| 2 | 评分总览已转换 | Phase 2 5 维度评分 + Phase 1 历史参考 |
-| 3 | 英文信息完整 | Album Name/Description/Creator's Note/Track One-Liners |
-| 4 | 待办事项更新 | Phase 1-5 [x]，Phase 6 [ ] |
-| 5 | 专辑概述无变更 | 核心概念/叙事轴/曲目定位保持 Phase 1 原版 |
+| # | Check Item | Completion Criteria |
+|---|------------|---------------------|
+| 1 | Track list complete | N tracks, each with final duration/selected Take/status=✅ |
+| 2 | Scoring overview converted | Phase 2 5-dimension scoring + Phase 1 historical reference |
+| 3 | English info complete | Album Name/Description/Creator's Note/Track One-Liners |
+| 4 | Todo items updated | Phase 1-5 [x], Phase 6 [ ] |
+| 5 | Album overview unchanged | Core concept/narrative axis/track positioning remains Phase 1 original |
 
-全部 ✅ → 进入下一步（phase6-promotional-writer）
+All ✅ → Proceed to next step (phase6-promotional-writer)

@@ -1,234 +1,234 @@
-# Album Concept — 专辑概念设计 Skill
+# Album Concept — Album Concept Design Skill
 
-> Phase 1 入口。主 agent 与用户对话探索概念，然后启动多专家流水线产出专辑叙事框架。
-
----
-
-## 核心原则
-
-1. **绝对文件契约**：所有输入/输出严格遵循 `FILE_CONTRACTS.md`，不得偏离
-2. **子 agent 强制分离**：创意总监 ≠ 市场专家 ≠ 音乐总监 ≠ 总评专家，4 个独立的 `sessions_spawn` 调用
-3. **主 agent 只负责 Step 0**：Phase 1 Step 0（用户概念沟通）是唯一由主 agent 直接执行的环节。Step 1 之后全部由子 agent 承担。
+> Phase 1 entry point. The main agent converses with the user to explore the concept, then launches a multi-expert pipeline to produce the album's narrative framework.
 
 ---
 
-## 触发
+## Core Principles
 
-用户表达想做一张概念专辑，例如：
-- "我想做一张关于 XX 的专辑"
-- "帮我设计一张概念专辑"
+1. **Absolute File Contract**: All input/output strictly follows `FILE_CONTRACTS.md` — no deviations allowed.
+2. **Mandatory Subagent Separation**: Creative Director ≠ Market Expert ≠ Music Director ≠ Scoring Expert — 4 independent `sessions_spawn` calls.
+3. **Main Agent Handles Only Step 0**: Phase 1 Step 0 (user concept communication) is the only step executed directly by the main agent. All steps after Step 1 are handled by subagents.
+
+---
+
+## Trigger
+
+The user expresses intent to create a concept album, e.g.:
+- "I want to make an album about XX"
+- "Help me design a concept album"
 - "album concept"
 
 ---
 
-## Step 0：主 agent 与用户对话（不 spawn 子 agent）
+## Step 0: Main Agent Conducts User Conversation (No Subagent Spawning)
 
-**主 agent 直接与用户对话**，收集概念意图。
+**The main agent converses directly with the user** to gather concept intent.
 
-如果用户只给了主题，问以下问题（2-4 个，自然对话，不一次性全抛）：
-1. 这张专辑想回答什么问题？（哲学锚点）
-2. 你想象中的音乐风格是什么？
-3. 目标听众是谁？在什么场景听？
-4. 有没有参考艺人/专辑？
+If the user only provides a theme, ask the following questions (2-4, natural conversation — don't throw them all at once):
+1. What question does this album aim to answer? (Philosophical anchor)
+2. What musical style do you imagine?
+3. Who is the target audience? In what context will they listen?
+4. Any reference artists/albums?
 
-对话结束后，产出**概念简报**：
+After the conversation, produce a **Concept Brief**:
 ```
-专辑主题：{一句话}
-曲目数：{N}
-核心概念：{1-2 句}
-核心悖论：{1 句}
-参考风格：{描述}
-目标听众：{描述}
-语言：{中文 / 中文+英文 / 英文 / 纯音乐}
-```
-
-### Step 0.1：确认开始（用户心理预期管理）
-
-**主 agent 向用户确认正式开始前，必须输出以下提示：**
-
-> 🪚 概念简报已整理完毕。确认后我将启动流水线，整个过程约需 **30 分钟**（目录初始化 + 4 位专家并行设计 + 总评打分）。
-> 期间你无需等待，完成后我会主动通知你。
-> 确认开始？
-
-**用户确认后才进入 Step 0.5 目录初始化。用户说「等一下」或「再改改」则回到 Step 0 继续对话。**
-
-### Step 0.5：项目目录初始化
-
-主 agent 读取 `templates/` 目录下的模板文件，初始化新项目：
-
-1. 创建项目目录 `workspace/projects/album-{专辑名}/`
-2. 复制 `templates/album-overview.md` → `docs/album-overview.md`
-3. 根据曲目数 N，复制 `templates/song-template.md` → `songs/T1-曲名.md`，`songs/T2-曲名.md`，...，`songs/TN-曲名.md`（每首替换 `{N}`，`{曲名}` 暂保留为占位符，由 Phase 1 创意总监填写）
-4. 创建空目录：`generate/lyrics/cn/`、`generate/lyrics/en/`、`generate/cn/`、`generate/en/`、`generate/cn_320k/`、`generate/en_320k/`、`generate/prompts/`、`assets/`
-5. 在 `docs/album-overview.md` 中填入概念简报信息（专辑名、曲目数、语言）
-
-**此后所有专家直接在已有文件上填写/修改，不创建新文件。**
-
-### Step 0.6：流水线启动提示 + spawn 子 agent
-
-**⚠️ 飞书推送机制关键：消息在 turn 结束后才推送。必须先输出提示文本，然后 spawn 子 agent，最后 `sessions_yield` 结束当前 turn，提示才会被用户看到。**
-
-**正确流程（严格按顺序）：**
-
-1. 主 agent 输出提示文本：
-   > 🪚 Phase 1 概念设计流水线已启动。4 位专家正在并行工作（创意总监/市场专家/音乐总监 → 总评专家），预计约 **15 分钟** 完成。完成后我会主动通知你，无需等待。
-
-2. **立即 spawn 4 个子 agent**（创意总监 + 市场专家 + 音乐总监 并行，总评专家等前 3 个完成后串行）
-
-3. **`sessions_yield` 结束当前 turn** → 提示推送给用户 → 子 agent 后台工作
-
-4. 子 agent 完成后 → 主 agent 收到通知 → 汇总结果 → Step 3 用户确认
-
-**禁止**：spawn 子 agent 后不 yield 就挂着等（主 agent 不会动，用户看不到任何提示）。
-
----
-
-## Step 1：多专家流水线（spawn 子 agent）
-
-### ⚠️ 硬规则：文件修改范围限制
-
-**所有 Phase 1 子 agent 必须严格遵守：**
-- **只修改自己负责的区块**，不得修改其他区块
-- **不得新增/删减区块**（除合约明确允许的可选区块外）
-- **不得修改文件结构顺序**
-- **可读不可写**：可以读取前序专家已写入的内容，但不得修改
-
-**各专家修改范围：**
-
-| 专家 | 可写区块 | 只读区块 |
-|------|---------|---------|
-| 创意总监 | 专辑概述、叙事轴线、曲目单、待办事项（初始化） | 市场分析/调性主线/英文信息/评分总览 |
-| 市场专家 | 市场分析、核心传播概念（位于市场分析区块内）、英文专辑信息 | 专辑概述/曲目单/调性/评分 |
-| 音乐总监 | 调性主线 | 专辑概述/曲目单/市场分析/英文信息/评分 |
-| 总评专家 | 评分总览 | 所有已有区块 |
-
----
-
-**3 个专家并行**，全部读取概念简报，输出到 `docs/album-overview.md`：
-
-### 创意总监 agent
-
-**职责**：叙事轴设计 + 曲目定位表 + 核心悖论贯穿度
-
-**输出**（写入 `docs/album-overview.md`）：
-- 专辑名称（中/英）
-- 叙事轴（≥2 条，每条有轴名/含义/曲目分配/情绪走向）
-- 曲目定位表（N 行 × 11 字段）
-- 核心概念 + 核心悖论
-
-### 市场专家 agent
-
-**职责**：市场分析 + 英文专辑信息
-
-**输出**（追加到 `docs/album-overview.md`）：
-- 市场定位（一句话）
-- 目标受众画像（2-3 层）
-- 竞品差异化分析
-- 核心传播概念（一句话，位于市场分析区块内）
-- 潜在风险 + 应对策略
-- 英文专辑信息（Album Name / Description / Creator's Note / Track One-Liners）
-
-### 音乐总监 agent
-
-**职责**：调性主线 + 风格统一性 + 曲目间关系
-
-**输出**（追加到 `docs/album-overview.md`）：
-- 主调性 + 各曲调性分布
-- 调性转换逻辑
-- 相邻曲目防疲劳检测
-- 首尾闭环感设计
-
----
-
-## Step 2：总评专家（读前三者输出，打分）
-
-**总评专家 agent** 读取 `docs/album-overview.md` 的完整内容，输出评分。
-
-### 评分标准
-
-| 维度 | 权重 | 高分标准 |
-|------|------|---------|
-| 概念原创性 | 25 分 | 核心悖论有辨识度，不落入常见套路 |
-| 叙事连贯性 | 25 分 | 叙事轴逻辑自洽，曲目间有递进/呼应 |
-| 市场潜力 | 25 分 | 有一句话传播概念，受众清晰，有差异化 |
-| 音乐一致性 | 25 分 | 调性主线合理，风格统一但曲目间有对比 |
-
-### 输出格式
-
-在 `docs/album-overview.md` 的「评分总览」区块写入：
-
-```
-## 评分总览（Round{N}）
-
-| 维度 | 分数 | 评语 |
-|------|------|------|
-| 概念原创性 | XX/25 | [一句话] |
-| 叙事连贯性 | XX/25 | [一句话] |
-| 市场潜力 | XX/25 | [一句话] |
-| 音乐一致性 | XX/25 | [一句话] |
-
-总分：XX/100
-
-低分维度（< 20）：[列出]
-优化建议：[针对每个低分维度]
+Album Theme: {one-liner}
+Track Count: {N}
+Core Concept: {1-2 sentences}
+Core Paradox: {1 sentence}
+Reference Style: {description}
+Target Audience: {description}
+Language: {Chinese / Chinese+English / English / Instrumental}
 ```
 
+### Step 0.1: Confirm Start (User Expectation Management)
+
+**Before officially starting, the main agent must output the following notice:**
+
+> 🪚 The concept brief has been compiled. Once confirmed, I will launch the pipeline. The entire process takes approximately **30 minutes** (directory initialization + 4 experts working in parallel + final scoring).
+> You don't need to wait during this time — I will notify you when it's done.
+> Confirm start?
+
+**Proceed to Step 0.5 directory initialization only after user confirmation. If the user says "wait" or "let me tweak it," return to Step 0 to continue the conversation.**
+
+### Step 0.5: Project Directory Initialization
+
+The main agent reads template files from the `templates/` directory and initializes the new project:
+
+1. Create project directory `workspace/projects/album-{album-name}/`
+2. Copy `templates/album-overview.md` → `docs/album-overview.md`
+3. Based on track count N, copy `templates/song-template.md` → `songs/T1-track-name.md`, `songs/T2-track-name.md`, ..., `songs/TN-track-name.md` (replace `{N}` and `{track-name}` placeholders for each; track names remain as placeholders to be filled by the Phase 1 Creative Director)
+4. Create empty directories: `generate/lyrics/cn/`, `generate/lyrics/en/`, `generate/cn/`, `generate/en/`, `generate/cn_320k/`, `generate/en_320k/`, `generate/prompts/`, `assets/`
+5. Fill in the concept brief information (album name, track count, language) in `docs/album-overview.md`
+
+**From this point on, all experts fill in or modify existing files directly — no new files are created.**
+
+### Step 0.6: Pipeline Launch Notice + Spawn Subagents
+
+**⚠️ Feishu push mechanism key: Messages are only pushed after a turn ends. You must output the notice text first, then spawn subagents, then `sessions_yield` to end the current turn — only then will the notice reach the user.**
+
+**Correct flow (strict order):**
+
+1. The main agent outputs the notice text:
+   > 🪚 Phase 1 Concept Design pipeline launched. 4 experts are working in parallel (Creative Director / Market Expert / Music Director → Scoring Expert), expected completion in approximately **15 minutes**. I will notify you when done — no need to wait.
+
+2. **Immediately spawn 4 subagents** (Creative Director + Market Expert + Music Director in parallel; Scoring Expert runs serially after the first 3 complete)
+
+3. **`sessions_yield` to end the current turn** → notice is pushed to user → subagents work in background
+
+4. When subagents complete → main agent receives notification → summarize results → Step 3 user confirmation
+
+**Forbidden**: Spawning subagents and then not yielding (the main agent won't move, and the user won't see any notice).
+
 ---
 
-## Step 3：用户确认
+## Step 1: Multi-Expert Pipeline (Spawn Subagents)
 
-主 agent 将总评结果 + `docs/album-overview.md` 核心内容提交用户：
-- 专辑名 + 核心概念 + 核心悖论
-- 叙事轴概要
-- 曲目单（曲名 + Hook + 调性）
-- 评分 + 低分维度
+### ⚠️ Hard Rule: File Modification Scope Limits
 
-用户选择：
-| 用户回复 | 行动 |
-|---------|------|
-| "没问题"/"进入 Phase 2" | ✅ 通过，更新状态为"概念确认" |
-| "第X首歌改一下..." | Round++ → 回到 Step 1（增量修改用户指出的部分） |
-| "方向不对重想" | Round++ → 回到 Step 0（重新对话探索） |
+**All Phase 1 subagents must strictly observe:**
+- **Only modify the sections they are responsible for** — no modifications to other sections
+- **No adding/removing sections** (except optional sections explicitly allowed by the contract)
+- **No modifying file structure or order**
+- **Read-only access**: May read content written by prior experts but cannot modify it
+
+**Each expert's modification scope:**
+
+| Expert | Writable Sections | Read-Only Sections |
+|--------|-----------------|-------------------|
+| Creative Director | Album Overview, Narrative Axes, Tracklist, To-Do (initialization) | Market Analysis / Tone Mainline / English Info / Scoring Overview |
+| Market Expert | Market Analysis, Core Communication Concept (within Market Analysis section), English Album Info | Album Overview / Tracklist / Tone / Scoring |
+| Music Director | Tone Mainline | Album Overview / Tracklist / Market Analysis / English Info / Scoring |
+| Scoring Expert | Scoring Overview | All existing sections |
 
 ---
 
-## 迭代规则
+**3 experts run in parallel**, all reading the concept brief, outputting to `docs/album-overview.md`:
 
-| 规则 | 值 |
-|------|-----|
-| 最少轮次 | 1 轮 |
-| 最多轮次 | 3 轮 |
-| 通过条件 | ≥ 80 分 + 用户确认 |
-| 增量修改 | 只改用户指出的部分 |
-| 概念推翻 | 回 Step 0 重新对话 |
+### Creative Director Agent
+
+**Responsibilities**: Narrative axis design + Track positioning table + Core paradox penetration
+
+**Output** (write to `docs/album-overview.md`):
+- Album name (Chinese / English)
+- Narrative axes (≥2, each with axis name / meaning / track assignment / emotional arc)
+- Track positioning table (N rows × 11 fields)
+- Core concept + Core paradox
+
+### Market Expert Agent
+
+**Responsibilities**: Market analysis + English album information
+
+**Output** (append to `docs/album-overview.md`):
+- Market positioning (one sentence)
+- Target audience persona (2-3 layers)
+- Competitive differentiation analysis
+- Core communication concept (one sentence, within Market Analysis section)
+- Potential risks + response strategies
+- English album information (Album Name / Description / Creator's Note / Track One-Liners)
+
+### Music Director Agent
+
+**Responsibilities**: Tone mainline + Style consistency + Inter-track relationships
+
+**Output** (append to `docs/album-overview.md`):
+- Main tone + per-track tone distribution
+- Tone transition logic
+- Adjacent track fatigue detection
+- Opening/closing loop design
+
+---
+
+## Step 2: Scoring Expert (Reads Outputs from the First Three, Scores)
+
+The **Scoring Expert agent** reads the complete content of `docs/album-overview.md` and outputs scoring.
+
+### Scoring Criteria
+
+| Dimension | Weight | High-Score Standard |
+|-----------|--------|---------------------|
+| Concept Originality | 25 pts | Core paradox is distinctive, avoids common tropes |
+| Narrative Coherence | 25 pts | Narrative axes are logically consistent, tracks have progression/echo between them |
+| Market Potential | 25 pts | Has a one-sentence communication concept, clear audience, differentiated positioning |
+| Musical Consistency | 25 pts | Tone mainline is reasonable, style is unified but tracks contrast each other |
+
+### Output Format
+
+Write to the "Scoring Overview" section in `docs/album-overview.md`:
+
+```
+## Scoring Overview (Round{N})
+
+| Dimension | Score | Comment |
+|-----------|-------|---------|
+| Concept Originality | XX/25 | [one sentence] |
+| Narrative Coherence | XX/25 | [one sentence] |
+| Market Potential | XX/25 | [one sentence] |
+| Musical Consistency | XX/25 | [one sentence] |
+
+Total Score: XX/100
+
+Low-Score Dimensions (< 20): [list]
+Optimization Suggestions: [for each low-score dimension]
+```
+
+---
+
+## Step 3: User Confirmation
+
+The main agent submits the scoring results + core content of `docs/album-overview.md` to the user:
+- Album name + Core concept + Core paradox
+- Narrative axis summary
+- Tracklist (track names + Hook + Tone)
+- Scores + Low-score dimensions
+
+User choices:
+| User Response | Action |
+|--------------|--------|
+| "Looks good" / "Proceed to Phase 2" | ✅ Pass, update status to "Concept Confirmed" |
+| "Change track X..." | Round++ → return to Step 1 (incremental modification of specified parts) |
+| "The direction is wrong, rethink" | Round++ → return to Step 0 (re-explore through conversation) |
+
+---
+
+## Iteration Rules
+
+| Rule | Value |
+|------|-------|
+| Minimum rounds | 1 round |
+| Maximum rounds | 3 rounds |
+| Pass condition | ≥ 80 points + user confirmation |
+| Incremental modification | Only change the parts the user specifies |
+| Concept overturned | Return to Step 0 for re-exploration |
 
 ---
 
 ## Phase 1 Checklist
 
-| # | 检查项 | 打勾标准 |
-|---|--------|---------|
-| 1 | 核心概念明确 | 专辑名中 2-6 字/英 1-5 词 + 核心概念 50-200 字 + 核心悖论 ≤ 50 字 |
-| 2 | 叙事轴完整 | 所有曲目归属到某个轴，无遗漏 |
-| 3 | 曲目定位表完整 | 行数 = 用户指定曲目数，每首 11 字段都有值，无空字段 |
-| 4 | 市场分析完整 | 市场定位 ≤ 50 字 + 传播概念 ≤ 30 字 + 竞品差异/受众/风险/应对有值 |
-| 5 | 英文专辑信息完整 | Album Description 50-300 字 + Creator's Note 100-800 字 |
-| 6 | Track One-Liners 完整 | N 首，每首一句话介绍，与曲目数一致 |
-| 7 | 调性主线完整 | 主调性 + 各曲调性 + 转换逻辑 |
-| 8 | 评分总览通过 | 4 维度评分完整 + 总分 ≥ 80 |
-| 9 | 待办事项初始化 | 6 个 Phase 的 checkbox 完整，Phase 1 标记 [x] |
-| 10 | `docs/album-overview.md` 已写入 | 文件存在，含概述/曲目单/市场分析/调性/英文信息/评分总览 |
+| # | Checklist Item | Completion Criteria |
+|---|---------------|---------------------|
+| 1 | Core concept clear | Album name 2-6 Chinese characters / 1-5 English words + core concept 50-200 chars + core paradox ≤ 50 chars |
+| 2 | Narrative axes complete | All tracks assigned to some axis, no omissions |
+| 3 | Track positioning table complete | Row count = user-specified track count, each track has all 11 fields with values, no empty fields |
+| 4 | Market analysis complete | Market positioning ≤ 50 chars + communication concept ≤ 30 chars + competitive differentiation / audience / risks / responses all have values |
+| 5 | English album info complete | Album Description 50-300 chars + Creator's Note 100-800 chars |
+| 6 | Track One-Liners complete | N tracks, one sentence per track, matches track count |
+| 7 | Tone mainline complete | Main tone + per-track tones + transition logic |
+| 8 | Scoring overview passes | 4-dimension scores complete + total ≥ 80 |
+| 9 | To-do list initialized | All 6 Phases' checkboxes complete, Phase 1 marked [x] |
+| 10 | `docs/album-overview.md` written | File exists, contains Overview / Tracklist / Market Analysis / Tone / English Info / Scoring Overview |
 
-全部 ✅ + 用户确认 → 进入 Phase 2
-
----
-
-## 输出文件契约
-
-严格遵循 `FILE_CONTRACTS.md` 中 Phase 1 契约。
+All ✅ + user confirmation → proceed to Phase 2
 
 ---
 
-## 参考
+## Output File Contract
 
-`examples/album-overview.md` 是完整范例。
+Strictly follows the Phase 1 contract in `FILE_CONTRACTS.md`.
+
+---
+
+## Reference
+
+`examples/album-overview.md` is a complete example.

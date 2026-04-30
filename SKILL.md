@@ -1,264 +1,265 @@
-# Album Pipeline — AI 音乐专辑流水线 Skill
+# Album Pipeline — AI Music Album Production Pipeline Skill
 
-> 专辑制作流水线总入口。从概念设计到发布物料打包，6 个 Phase 完整流程。
-
----
-
-## 核心原则（所有 Phase 严格遵守）
-
-### 1. 绝对文件契约
-
-所有 Phase 的输入/输出文件路径、格式、必填字段定义在 `FILE_CONTRACTS.md` 中。
-
-**这是流水线的宪法。任何专家/子 agent 不得偏离。**
-
-- 写入路由严格按契约（读什么、写什么、禁止写什么）
-- 文件格式严格按契约（区块顺序、字段校验、必填项）
-- 任何偏离 = bug，必须修复
-
-### 2. 子 agent 强制分离
-
-**主 agent 唯一职责：Phase 1 Step 0（与用户对话探索概念意图）。**
-
-除此之外的**所有工作**必须由独立的子 agent 承担：
-
-| Phase | 子 agent 数量 | 说明 |
-|-------|-------------|------|
-| Phase 1 Step 1 | 4 个 | 创意总监/市场专家/音乐总监/总评专家（并行 3 + 串行 1） |
-| Phase 2 每轮 | 5 个 | 作词/编曲/韵脚/市场/评分专家（串行） |
-| Phase 3 | 1 个 | 歌词标准化提取 |
-| Phase 4.1 | 1 个 | 3 版本 Prompt 生成 |
-| Phase 4.2 | 1 个 | Prompt 审查优化 |
-| Phase 4.3 | N 个 | MiniMax CLI 并行生成（每首歌/每语言独立 agent） |
-| Phase 5.1 | 1 个 | 听评选定（主 agent 配合用户） |
-| Phase 5.2 | 1 个 | 质量验证 |
-| Phase 6.1-6.6 | 各 1 个 | 6 个独立打包专家 |
-
-**每个专家必须是独立的 `sessions_spawn` 调用，不得合并。**
-
-作词专家 ≠ 编曲专家 ≠ 市场专家 ≠ 评分专家。每个都是独立的子 agent，有独立的 SKILL.md、独立的修改范围、独立的 Checklist。
-
-### 3. 飞书推送机制 + 提示节奏
-
-**关键机制：飞书在 turn 结束后才一次性推送消息。**
-
-**正确模式（所有 Phase 通用）：**
-
-```
-1. 主 agent 输出提示文本（预计时长、下一步说明）
-2. 立即 spawn 子 agent
-3. sessions_yield 结束当前 turn → 提示推送给用户
-4. 子 agent 后台工作
-5. 子 agent 完成后 → 主 agent 收到通知 → 主动通知用户
-```
-
-**禁止：spawn 子 agent 后不 yield 就挂着等（主 agent 不动，用户看不到任何提示）。**
-
-**提示节奏原则：**
-- ✅ 只在**阶段边界**提示用户（Phase 启动时、Phase 完成时、需要用户决策时）
-- ❌ Round 之间不停顿确认（Phase 2 内部多轮滚动自动完成，不中断）
-- ✅ 只有 Phase 1 Step 0.1（概念确认开始）和 Phase 1 Step 3（方案确认）需要用户明确确认
-- ✅ 其他所有 Phase 启动时提示预计时长即可，无需确认
+> The master entry point for album production. From concept design to release packaging — 6 Phases, fully automated.
 
 ---
 
-## 触发
+## Core Principles (Strictly Enforced Across All Phases)
 
-- 「做一张专辑」
-- 「album pipeline」
-- 「AI 音乐专辑」
-- 用户表达想做概念专辑
+### 1. Absolute File Contracts
+
+All Phase input/output file paths, formats, and required fields are defined in `FILE_CONTRACTS.md`.
+
+**This is the pipeline's constitution. No expert or sub-agent may deviate.**
+
+- Read/write routes are strictly per contract (what to read, what to write, and what is forbidden)
+- File formats are strictly per contract (block order, field validation, required fields)
+- Any deviation = bug, must be fixed
+
+### 2. Mandatory Sub-agent Isolation
+
+**The main agent's sole responsibility: Phase 1 Step 0 (concept exploration dialogue with the user).**
+
+All other work must be handled by independent sub-agents:
+
+| Phase | # of Sub-agents | Notes |
+|-------|----------------|-------|
+| Phase 1 Step 1 | 4 | Creative Director / Market Expert / Music Director / Chief Reviewer (parallel 3 + serial 1) |
+| Phase 2 per round | 5 | Lyrics / Arrangement / Rhyme / Market / Scoring Experts (serial) |
+| Phase 3 | 1 | Lyrics standardization extractor |
+| Phase 4.1 | 1 | 3-version Prompt generation |
+| Phase 4.2 | 1 | Prompt review and optimization |
+| Phase 4.3 | N | MiniMax CLI parallel generation (one agent per song per language) |
+| Phase 5.1 | 1 | Listener selection (main agent coordinates with user) |
+| Phase 5.2 | 1 | Quality verification |
+| Phase 6.1–6.6 | 1 each | 6 independent packaging experts |
+
+**Each expert must be an independent `sessions_spawn` call — never merge them.**
+
+Lyrics Expert ≠ Arrangement Expert ≠ Market Expert ≠ Scoring Expert. Each is an independent sub-agent with its own SKILL.md, its own modification scope, and its own checklist.
+
+### 3. Feishu Push Mechanism + Message Timing
+
+**Key mechanism: Feishu delivers messages in a batch after each turn ends.**
+
+**Correct pattern (all Phases):**
+
+```
+1. Main agent outputs prompt text (expected duration, next-step explanation)
+2. Immediately spawn sub-agent
+3. sessions_yield to end current turn → prompt is pushed to user
+4. Sub-agent works in background
+5. Sub-agent completes → main agent receives notification → proactively notifies user
+```
+
+**Forbidden: spawning a sub-agent and then waiting without yielding (main agent stalls, user sees nothing).**
+
+**Prompt timing principles:**
+- ✅ Only prompt at **phase boundaries** (Phase starts, Phase completes, user decision required)
+- ❌ Do not pause for confirmation between rounds (Phase 2 internal multi-round rolling is automatic, no interruption)
+- ✅ Only Phase 1 Step 0.1 (concept confirmation to start) and Phase 1 Step 3 (plan confirmation) require explicit user confirmation
+- ✅ All other Phase starts only need a prompt with expected duration — no confirmation needed
 
 ---
 
-## 流水线架构
+## Triggers
+
+- "Make an album"
+- "album pipeline"
+- "AI music album"
+- User expresses intent to create a concept album
+
+---
+
+## Pipeline Architecture
 
 ```
-Phase 1: Album Concept     → 专辑概念设计（叙事轴 + 曲目定位 + 调性）
-Phase 2: Song Writing      → 歌曲生成（5 专家串行 × 3-6 轮迭代，N 首歌并行）
-Phase 3: Lyrics Formatter  → 歌词标准化提取（结构标签 + 字符限制）
-Phase 4: Music Generator   → 音乐生成（MiniMax CLI 多 Take 并行）
-Phase 5: Audio Transcoder  → 选定 + 转码（320kbps/44.1kHz）
-Phase 6: Album Packager    → 发布物料打包（统筹文档 + 封面 + 宣传 + 艺人说）
+Phase 1: Album Concept     → Album concept design (narrative arc + track positioning + tonal definition)
+Phase 2: Song Writing      → Song generation (5 experts serial × 3–6 rounds, N songs parallel)
+Phase 3: Lyrics Formatter  → Lyrics standardization (structure tags + character limits)
+Phase 4: Music Generator   → Music generation (MiniMax CLI multi-Take parallel)
+Phase 5: Audio Transcoder  → Selection + transcoding (320kbps/44.1kHz)
+Phase 6: Album Packager    → Release materials packaging (overview doc + cover + promo + artist story)
 ```
 
 ---
 
-## 目录结构
+## Directory Structure
 
 ```
 skills/album-pipeline/
-├── SKILL.md                     ← 本文件（总入口）
-├── FILE_CONTRACTS.md            ← 绝对文件契约
+├── SKILL.md                     ← This file (master entry point)
+├── FILE_CONTRACTS.md            ← Absolute file contracts
 ├── album-concept/               ← Phase 1
-├── song-writer/                 ← Phase 2 编排器
-├── song-expert-lyrics/          ← Phase 2 作词专家
-├── song-expert-arrangement/     ← Phase 2 编曲专家
-├── song-expert-rhyme/           ← Phase 2 韵脚专家
-├── song-expert-market/          ← Phase 2 市场专家
-├── song-expert-scoring/         ← Phase 2 评分专家
-├── lyrics-formatter/            ← Phase 3 歌词标准化
-├── music-generator/             ← Phase 4 总入口（编排）
-├── audio-transcoder/            ← Phase 5 总入口（编排）
-├── album-packager/              ← Phase 6 总入口（编排）
+├── song-writer/                 ← Phase 2 orchestrator
+├── song-expert-lyrics/          ← Phase 2 lyrics expert
+├── song-expert-arrangement/     ← Phase 2 arrangement expert
+├── song-expert-rhyme/           ← Phase 2 rhyme expert
+├── song-expert-market/          ← Phase 2 market expert
+├── song-expert-scoring/         ← Phase 2 scoring expert
+├── lyrics-formatter/            ← Phase 3 lyrics standardization
+├── music-generator/             ← Phase 4 master entry (orchestrator)
+├── audio-transcoder/            ← Phase 5 master entry (orchestrator)
+├── album-packager/             ← Phase 6 master entry (orchestrator)
 │
-│   ── Phase 4 子模块 ──
-├── phase4-prompt-generator/     ← Phase 4.1 3 版本 Prompt 生成
-├── phase4-prompt-reviewer/      ← Phase 4.2 Prompt 审查优化
-├── phase4-music-executor/       ← Phase 4.3 MiniMax CLI 并行生成
+│   ── Phase 4 Sub-modules ──
+├── phase4-prompt-generator/     ← Phase 4.1 3-version Prompt generation
+├── phase4-prompt-reviewer/      ← Phase 4.2 Prompt review and optimization
+├── phase4-music-executor/       ← Phase 4.3 MiniMax CLI parallel generation
 │
-│   ── Phase 5 子模块 ──
-├── phase5-listener-selector/    ← Phase 5.1 听评选定
-├── phase5-quality-verifier/     ← Phase 5.2 转码后质量验证
+│   ── Phase 5 Sub-modules ──
+├── phase5-listener-selector/    ← Phase 5.1 listener selection
+├── phase5-quality-verifier/     ← Phase 5.2 post-transcode quality verification
 │
-│   ── Phase 6 子模块 ──
-├── phase6-album-overview-updater/  ← Phase 6.1 专辑统筹更新
-├── phase6-promotional-writer/      ← Phase 6.2 宣传文档
-├── phase6-artist-story-writer/     ← Phase 6.3 艺人说文案
-├── phase6-cover-designer/          ← Phase 6.4 封面概念
-├── phase6-platform-checker/        ← Phase 6.5 平台适配检查
-└── phase6-packager/                ← Phase 6.6 最终打包
+│   ── Phase 6 Sub-modules ──
+├── phase6-album-overview-updater/  ← Phase 6.1 album overview update
+├── phase6-promotional-writer/      ← Phase 6.2 promotional document
+├── phase6-artist-story-writer/     ← Phase 6.3 artist story copy
+├── phase6-cover-designer/          ← Phase 6.4 cover concept
+├── phase6-platform-checker/        ← Phase 6.5 platform compliance check
+└── phase6-packager/               ← Phase 6.6 final packaging
 ```
 
 ---
 
-## Phase 2 详细流程
+## Phase 2 Detailed Flow
 
-```对每首歌（T1-TN，N = Phase 1 曲目数）：
-  打开已初始化的 songs/TN-曲名.md（模板已由 Phase 0.5 初始化）
-  
-  Round = 1 → 最多 6 轮：
-    spawn 作词专家 agent → 读/写 songs/TN-曲名.md
-    spawn 编曲专家 agent → 读/写 songs/TN-曲名.md
-    spawn 韵脚专家 agent → 读/写 songs/TN-曲名.md
-    spawn 市场专家 agent → 读/写 songs/TN-曲名.md
-    spawn 评分专家 agent → 读 songs/TN-曲名.md，输出评分
+```
+For each song (T1–TN, N = Phase 1 track count):
+  Open songs/TN-track-name.md (template initialized by Phase 0.5)
+
+  Round = 1 → up to 6 rounds:
+    spawn Lyrics Expert agent → read/write songs/TN-track-name.md
+    spawn Arrangement Expert agent → read/write songs/TN-track-name.md
+    spawn Rhyme Expert agent → read/write songs/TN-track-name.md
+    spawn Market Expert agent → read/write songs/TN-track-name.md
+    spawn Scoring Expert agent → read songs/TN-track-name.md, output score
                                       ↓
-                                  评分 ≥ 80?
-                                  ├─ 是 + Round ≥ 3 → ✅ 通过
-                                  └─ 否 → 标记低分 → Round++
+                                  Score ≥ 80?
+                                  ├─ Yes + Round ≥ 3 → ✅ Pass
+                                  └─ No → Flag low score → Round++
 ```
 
-**关键规则**：
-- 歌曲间**并行**（N 个 agent 群同时跑）
-- 歌曲内专家**串行**（5 个独立子 agent 依次操作同一文件）
-- **每个专家必须是独立的 sessions_spawn 调用，不得合并**
-- **增量修改**（Round 2+ 基于上一轮评分针对性优化）
-- **最少 3 轮**（即使第 1 轮就 95 分也要跑满 3 轮）
-- **最多 6 轮**
+**Key rules:**
+- Songs are **parallel** (N agent groups run simultaneously)
+- Within a song, experts are **serial** (5 independent sub-agents operate on the same file in sequence)
+- **Each expert must be an independent `sessions_spawn` call — never merge**
+- **Incremental modification** (Round 2+ targets specific improvements based on previous round scores)
+- **Minimum 3 rounds** (even if Round 1 scores 95, all 3 rounds must complete)
+- **Maximum 6 rounds**
 
 ---
 
-## 每个 Phase 的质量门禁
+## Quality Gates Per Phase
 
-| Phase | 入口条件 | 出口条件 | 详见 |
-|-------|---------|---------|------|
-| Phase 1 | 用户提供核心主题 | 曲目定位表完整 | `album-concept/SKILL.md` |
-| Phase 2 | Phase 1 完成 | 所有歌曲 ≥ 80 分 + 跑满 3 轮（或达最大轮次 6 轮时取最高分版本） | `song-writer/SKILL.md` |
-| Phase 3 | Phase 2 完成 | 所有歌词文件通过验证 | `lyrics-formatter/SKILL.md` |
-| Phase 4 | Phase 3 完成 | 所有 Take 生成完毕 | `music-generator/SKILL.md` |
-| Phase 5 | Phase 4 完成 | 选定转码验证通过 | `audio-transcoder/SKILL.md` |
-| Phase 6 | Phase 5 完成 | 发布物料齐全 | `album-packager/SKILL.md` |
-
----
-
-## 绝对文件契约
-
-所有 Phase 的输入/输出文件路径、格式、必填字段定义在 `FILE_CONTRACTS.md` 中。
-
-每个 Skill 在执行时必须遵守对应 Phase 的文件契约，不得偏离。
+| Phase | Entry Condition | Exit Condition | Details |
+|-------|----------------|----------------|---------|
+| Phase 1 | User provides core theme | Track positioning table complete | `album-concept/SKILL.md` |
+| Phase 2 | Phase 1 complete | All songs ≥ 80 score + completed 3 rounds (or max 6 rounds, take highest-scoring version) | `song-writer/SKILL.md` |
+| Phase 3 | Phase 2 complete | All lyrics files pass validation | `lyrics-formatter/SKILL.md` |
+| Phase 4 | Phase 3 complete | All Takes generated | `music-generator/SKILL.md` |
+| Phase 5 | Phase 4 complete | Selected Take passes transcoding validation | `audio-transcoder/SKILL.md` |
+| Phase 6 | Phase 5 complete | All release materials present | `album-packager/SKILL.md` |
 
 ---
 
-## 快速参考
+## Absolute File Contracts
 
-| 参考项 | 路径 |
-|--------|------|
-| 完整流程回顾 | `docs/production-pipeline-review.md` |
-| 范例歌曲 | `examples/songs/T1-出发.md`（98 分终稿） |
-| 歌词范例 | `examples/lyrics/cn/T1-出发.txt` |
+All Phase input/output file paths, formats, and required fields are defined in `FILE_CONTRACTS.md`.
+
+Each Skill must strictly follow the file contracts for its Phase and may not deviate.
+
+---
+
+## Quick Reference
+
+| Reference | Path |
+|-----------|------|
+| Full pipeline retrospective | `docs/production-pipeline-review.md` |
+| Example song | `examples/songs/T1-出发.md` (98-point final draft) |
+| Lyrics example | `examples/lyrics/cn/T1-出发.txt` |
 | MiniMax CLI | `minimax music generate --help` |
-| 模型时长 | music-2.6 可生成 3-5 分钟优质内容，质量通常随时长正比例提升（详见调优实验数据，待补充） |
-| 歌词长度 | ≤ 3500 字符（不含结构标签文字） |
+| Model duration | music-2.6 can generate 3–5 minutes of high-quality content; quality typically scales positively with duration (see tuning experiment data, TBD) |
+| Lyrics length | ≤ 3,500 characters (excluding structure tag text) |
 
 ---
 
-## 纯音乐 / 器乐曲特殊处理
+## Instrumental / Pure Music Special Handling
 
-**核心原则：即使是单曲纯音乐，6 Phase 的骨架不走样。**
+**Core principle: even for a single instrumental track, the 6-Phase skeleton remains intact.**
 
-纯音乐只是**跳过歌词相关的专家环节**，文档一个不少，文件契约一个不缺。
+Instrumental only means **skipping the lyrics-related expert steps** — documentation is not skipped, file contracts are not skipped.
 
-### 各 Phase 纯音乐处理规则
+### Instrumental Handling Per Phase
 
-| Phase | 常规操作 | 纯音乐调整 |
-|-------|---------|----------|
-| Phase 1 | 概念设计 + 曲目定位 | 无变化。曲目单中「语言」字段标注「纯音乐」 |
-| Phase 2 | 5 专家串行迭代 | 作词专家**跳过歌词区块**，写「器乐描述」区块（情绪弧线/音色/段落）；韵脚专家**跳过韵脚分析**，改为「节奏/音色×编曲配合分析」；编曲/市场/评分专家**无变化** |
-| Phase 3 | 歌词标准化提取 | 输出空文件 + `metadata.json` 中 `has_lyrics: false`，`validation.txt` 标注「纯音乐，跳过」 |
-| Phase 4 | 3 版本 Prompt + CLI 生成 | 无 `--lyrics-file` 参数，Prompt 侧重编曲/音色/情绪描述 |
-| Phase 5 | 听评选定 + 转码 + 验证 | 无变化 |
-| Phase 6 | 发布物料打包 | 无变化。艺人说中说明「本曲为纯音乐」 |
+| Phase | Standard Operation | Instrumental Adjustment |
+|-------|-------------------|------------------------|
+| Phase 1 | Concept design + track positioning | No change. Mark "Instrumental" in the track list's Language field |
+| Phase 2 | 5 experts serial iteration | Lyrics Expert **skips lyrics block**, writes "Instrumental Description" block (emotional arc / timbre / arrangement); Rhyme Expert **skips rhyme analysis**, replaced with "Rhythm/Timbre × Arrangement Analysis"; Arrangement/Market/Scoring Experts **unchanged** |
+| Phase 3 | Lyrics standardization | Output empty file + `metadata.json` with `has_lyrics: false`, `validation.txt` marked "Instrumental, skipped" |
+| Phase 4 | 3-version Prompt + CLI generation | No `--lyrics-file` parameter; Prompt focuses on arrangement/timbre/emotional description |
+| Phase 5 | Listener selection + transcoding + verification | No change |
+| Phase 6 | Release materials packaging | No change. Artist story notes "this track is instrumental" |
 
-### 纯音乐曲目单标识
+### Instrumental Track List Identification
 
-曲目单中纯音乐曲目的「语言」字段填「纯音乐」，状态列标注「🎵 纯音乐」：
+For instrumental tracks, mark the Language field as "Instrumental" and add "🎵 Instrumental" in the status column:
 
-| # | 曲目 | 语言 | 状态 |
-|---|------|------|------|
-| 03 | T3《间奏》 | 纯音乐 | 🎵 纯音乐 |
+| # | Track | Language | Status |
+|---|-------|---------|--------|
+| 03 | T3《Interlude》 | Instrumental | 🎵 Instrumental |
 
-### 纯音乐歌曲文件契约
+### Instrumental Song File Contract
 
-纯音乐歌曲文件（`songs/TN-曲名.md`）结构：
-- **基本信息表**：「语言」= 纯音乐
-- **歌词区块**：替换为「器乐描述」区块（段落情绪/主旋律音色/编曲意图）
-- **英文歌词区块**：删除或标注「纯音乐，无」
-- **完整编曲设计**：正常填写
-- **关键 Sound Design**：正常填写
-- **韵脚分析**：替换为「节奏/音色分析」区块
-- **封面高光文案**：正常填写
-- **市场评估报告**：正常填写
-- **数据**：正常填写（韵律维度改为「器乐表现力」维度）
-- **评分进化史**：正常填写
+Instrumental song file (`songs/TN-track-name.md`) structure:
+- **Basic info table**: Language = Instrumental
+- **Lyrics block**: Replaced with "Instrumental Description" block (section emotions / lead melody timbre / arrangement intent)
+- **English lyrics block**: Removed or marked "Instrumental, none"
+- **Full arrangement design**: Filled normally
+- **Key Sound Design**: Filled normally
+- **Rhyme analysis**: Replaced with "Rhythm/Timbre Analysis" block
+- **Cover highlight copy**: Filled normally
+- **Market evaluation report**: Filled normally
+- **Data**: Filled normally (rhythm dimension replaced with "instrumental expressiveness" dimension)
+- **Score evolution history**: Filled normally
 
-### 全纯音乐专辑（整张专辑无歌词）
+### Fully Instrumental Album (entire album has no lyrics)
 
-当专辑「语言」字段 =「纯音乐」时（即所有曲目均为纯音乐）：
+When the album's Language field = "Instrumental" (all tracks are instrumental):
 
-| Phase | 影响 |
-|-------|------|
-| Phase 3 | `generate/lyrics/cn/` 和 `generate/lyrics/en/` 目录下**不生成任何 .txt 歌词文件**，仅生成 `metadata.json`（每首标记 `has_lyrics: false`）和 `validation.txt`（全曲标注「纯音乐，跳过」） |
-| Phase 4 | Prompt 不含 `--lyrics-file` 参数，侧重编曲/音色/情绪描述；产物目录 `generate/cn/` 和 `generate/en/` 仍正常生成 .mp3 |
-| Phase 5-6 | 无变化，正常转码、听评、打包 |
+| Phase | Impact |
+|-------|--------|
+| Phase 3 | No `.txt` lyrics files generated in `generate/lyrics/cn/` or `generate/lyrics/en/`; only `metadata.json` (each track marked `has_lyrics: false`) and `validation.txt` (all tracks marked "Instrumental, skipped") |
+| Phase 4 | Prompts have no `--lyrics-file` parameter, focus on arrangement/timbre/emotional description; output directories `generate/cn/` and `generate/en/` still normally contain `.mp3` files |
+| Phase 5–6 | No change; normal transcoding, listening, packaging |
 
-**目录分配总结**：即使整张专辑无歌词，`generate/lyrics/` 目录仍需创建（内含 metadata.json + validation.txt），`generate/cn/` + `generate/en/` 目录仍正常存放 .mp3 产物。
+**Directory allocation summary**: Even if the entire album has no lyrics, the `generate/lyrics/` directory must still be created (containing `metadata.json` + `validation.txt`), and `generate/cn/` + `generate/en/` directories still normally hold `.mp3` outputs.
 
-### 识别触发
+### Recognition Trigger
 
-Phase 1 概念设计时，如果用户指定某首为纯音乐，从 Phase 1 开始标注。
-Phase 2 编排器读取曲目定位表时，自动识别「纯音乐」语言字段并调整专家流程。
+During Phase 1 concept design, if the user specifies a track as instrumental, mark it from Phase 1 onward.
+The Phase 2 orchestrator reads the track positioning table and automatically recognizes the "Instrumental" language field to adjust the expert workflow.
 
-## Phase 子模块索引
+## Phase Sub-module Index
 
-| Phase | 子模块 | 说明 |
-|-------|--------|------|
-| Phase 1 | `album-concept/SKILL.md` | 概念设计（4 专家 + 总评） |
-| Phase 2 | `song-writer/SKILL.md` | 编排器 |
-| Phase 2 | `song-expert-lyrics/SKILL.md` | 作词专家 |
-| Phase 2 | `song-expert-arrangement/SKILL.md` | 编曲专家 |
-| Phase 2 | `song-expert-rhyme/SKILL.md` | 韵脚专家 |
-| Phase 2 | `song-expert-market/SKILL.md` | 市场专家 |
-| Phase 2 | `song-expert-scoring/SKILL.md` | 评分专家 |
-| Phase 3 | `lyrics-formatter/SKILL.md` | 歌词标准化 + metadata + validation |
-| Phase 4 | `phase4-prompt-generator/SKILL.md` | 3 版本 Prompt 生成 |
-| Phase 4 | `phase4-prompt-reviewer/SKILL.md` | Prompt 审查优化 |
-| Phase 4 | `phase4-music-executor/SKILL.md` | MiniMax CLI 并行生成 |
-| Phase 5 | `phase5-listener-selector/SKILL.md` | 听评选定 |
-| Phase 5 | `phase5-quality-verifier/SKILL.md` | 转码后质量验证 |
-| Phase 6 | `phase6-album-overview-updater/SKILL.md` | 专辑统筹更新 |
-| Phase 6 | `phase6-promotional-writer/SKILL.md` | 宣传文档 |
-| Phase 6 | `phase6-artist-story-writer/SKILL.md` | 艺人说文案 |
-| Phase 6 | `phase6-cover-designer/SKILL.md` | 封面概念 |
-| Phase 6 | `phase6-platform-checker/SKILL.md` | 平台适配检查 |
-| Phase 6 | `phase6-packager/SKILL.md` | 最终打包 |
+| Phase | Sub-module | Description |
+|-------|-----------|-------------|
+| Phase 1 | `album-concept/SKILL.md` | Concept design (4 experts + chief review) |
+| Phase 2 | `song-writer/SKILL.md` | Orchestrator |
+| Phase 2 | `song-expert-lyrics/SKILL.md` | Lyrics expert |
+| Phase 2 | `song-expert-arrangement/SKILL.md` | Arrangement expert |
+| Phase 2 | `song-expert-rhyme/SKILL.md` | Rhyme expert |
+| Phase 2 | `song-expert-market/SKILL.md` | Market expert |
+| Phase 2 | `song-expert-scoring/SKILL.md` | Scoring expert |
+| Phase 3 | `lyrics-formatter/SKILL.md` | Lyrics standardization + metadata + validation |
+| Phase 4 | `phase4-prompt-generator/SKILL.md` | 3-version Prompt generation |
+| Phase 4 | `phase4-prompt-reviewer/SKILL.md` | Prompt review and optimization |
+| Phase 4 | `phase4-music-executor/SKILL.md` | MiniMax CLI parallel generation |
+| Phase 5 | `phase5-listener-selector/SKILL.md` | Listener selection |
+| Phase 5 | `phase5-quality-verifier/SKILL.md` | Post-transcode quality verification |
+| Phase 6 | `phase6-album-overview-updater/SKILL.md` | Album overview update |
+| Phase 6 | `phase6-promotional-writer/SKILL.md` | Promotional document |
+| Phase 6 | `phase6-artist-story-writer/SKILL.md` | Artist story copy |
+| Phase 6 | `phase6-cover-designer/SKILL.md` | Cover concept |
+| Phase 6 | `phase6-platform-checker/SKILL.md` | Platform compliance check |
+| Phase 6 | `phase6-packager/SKILL.md` | Final packaging |

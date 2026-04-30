@@ -1,177 +1,177 @@
-# Song Writer Orchestrator - 歌曲生成编排 Skill
+# Song Writer Orchestrator — Song Generation Orchestration Skill
 
-> Phase 2 核心编排器。管理每首歌的 5 专家串行迭代循环(3-6 轮),每轮 5 个**独立子 agent**依次操作同一首歌曲文件。
-
----
-
-## 核心原则
-
-1. **绝对文件契约**:所有输入/输出严格遵循 `FILE_CONTRACTS.md`,不得偏离
-2. **子 agent 强制分离**:作词 ≠ 编曲 ≠ 韵脚 ≠ 市场 ≠ 评分,5 个独立的 `sessions_spawn` 调用
-3. **主 agent 只编排**:主 agent 负责启动/等待/判断评分结果,不直接修改任何歌曲文件
+> Phase 2 core orchestrator. Manages a 5-expert serial iteration loop per song (3-6 rounds), with 5 independent **subagents** operating on the same song file sequentially each round.
 
 ---
 
-## 触发
+## Core Principles
 
-- Phase 1 完成后，`docs/album-overview.md` 状态为“概念确认”
-- 用户指令：「开始生成歌曲」「Phase 2」「song writing round」
-
----
-
-## 启动前提示（用户心理预期管理）
-
-**⚠️ 飞书推送机制关键：消息在 turn 结束后才推送。必须先输出提示文本，然后 spawn 子 agent，最后 `sessions_yield` 结束当前 turn。**
-
-**正确流程（严格按顺序）：**
-
-1. 主 agent 输出提示文本：
-   > 🪚 Phase 2 歌曲生成流水线已启动。
-   > 每首歌将由 5 位专家串行迭代（作词 → 编曲 → 韵脚 → 市场 → 评分），最少 3 轮、最多 6 轮，N 首歌并行。
-   > 预计约 **{估算时间}** 完成。
-   > 期间无需等待，完成后我会主动通知你。
-
-2. **立即 spawn 第一批子 agent**（每首歌的作词专家先启动，Round 1 开始）
-
-3. **`sessions_yield` 结束当前 turn** → 提示推送给用户 → 子 agent 后台工作
-
-4. 子 agent 完成后 → 主 agent 收到通知 → 自动 spawn 下一位专家（编曲 → 韵脚 → 市场 → 评分）→ 循环直到该轮完成
-
-5. **Round 2+ 中间不停顿**：评分专家完成后如果未达标，主 agent 直接 spawn 下一轮作词专家，不询问用户
-
-6. 全部歌曲通过后 → 主 agent 汇总结果 → 通知用户 Phase 2 完成
-
-**禁止**：
-- Round 之间停下来等用户确认（只有 Round 全部完成后才汇报）
-- spawn 子 agent 后不 yield 就挂着等
-
-**估算时间参考**：
-- 3 首歌：约 45-60 分钟
-- 6 首歌：约 90-120 分钟
-- 9 首歌：约 2-3 小时
+1. **Absolute File Contract**: All input/output strictly follows `FILE_CONTRACTS.md` — no deviations allowed.
+2. **Mandatory Subagent Separation**: Lyricist ≠ Arranger ≠ Rhyme Expert ≠ Market Expert ≠ Scoring Expert — 5 independent `sessions_spawn` calls.
+3. **Main Agent Only Orchestrates**: The main agent is responsible for launching/waiting/judging scoring results — it does not directly modify any song files.
 
 ---
 
-## 输入
+## Trigger
 
-从 `docs/album-overview.md` 读取:
-- 曲目定位表(# / 曲名 / 英文名 / 叙事轴 / Hook / 悖论 / 意象 / 身体感 / 情绪弧线 / 编曲风格 / 时长)
-- 调性主线
-- 专辑核心概念
-- **语言**(中文 / 中文+英文 / 英文 / **纯音乐**)
-
-⚠️ **纯音乐识别**:如果曲目单中某首「语言」=「纯音乐」,该曲跳过作词专家歌词创作环节,进入「器乐描述」模式(详见下方纯音乐处理)。
+- Phase 1 complete, `docs/album-overview.md` status is "Concept Confirmed"
+- User command: "Start generating songs" / "Phase 2" / "song writing round"
 
 ---
 
-## 执行架构
+## Pre-Launch Notice (User Expectation Management)
+
+**⚠️ Feishu push mechanism key: Messages are only pushed after a turn ends. You must output the notice text first, then spawn subagents, then `sessions_yield` to end the current turn.**
+
+**Correct flow (strict order):**
+
+1. The main agent outputs the notice text:
+   > 🪚 Phase 2 Song Generation pipeline launched.
+   > Each song will go through 5 experts in serial iteration (Lyricist → Arranger → Rhyme Expert → Market Expert → Scoring Expert), minimum 3 rounds, maximum 6 rounds, with N songs in parallel.
+   > Estimated completion: **{estimated time}**.
+   > No need to wait — I will notify you when done.
+
+2. **Immediately spawn the first batch of subagents** (Lyricist expert for each song starts first, Round 1 begins)
+
+3. **`sessions_yield` to end the current turn** → notice is pushed to user → subagents work in background
+
+4. When subagent completes → main agent receives notification → automatically spawns the next expert (Arranger → Rhyme → Market → Scoring) → loop until round completes
+
+5. **No pauses between Round 2+**: If the Scoring expert completes but the threshold isn't met, the main agent directly spawns the next round's Lyricist expert without asking the user
+
+6. When all songs pass → main agent summarizes results → notifies user Phase 2 is complete
+
+**Forbidden**:
+- Stopping between rounds to wait for user confirmation (report only after all rounds for a song complete)
+- Spawning subagents and then not yielding
+
+**Estimated time reference**:
+- 3 songs: ~45-60 minutes
+- 6 songs: ~90-120 minutes
+- 9 songs: ~2-3 hours
+
+---
+
+## Input
+
+From `docs/album-overview.md`, read:
+- Track positioning table (# / Track Name / English Name / Narrative Axis / Hook / Paradox / Imagery / Physical Sensibility / Emotional Arc / Arrangement Style / Duration)
+- Tone mainline
+- Album core concept
+- **Language** (Chinese / Chinese+English / English / **Instrumental**)
+
+⚠️ **Instrumental detection**: If any track in the tracklist has Language = "Instrumental", skip the Lyricist expert's lyric writing for that track and enter "Instrumental Description" mode (see Instrumental handling below).
+
+---
+
+## Execution Architecture
 
 ```
-对曲目定位表中的每首曲目(T1-TN):
-  打开 songs/TN-曲名.md(模板已由 Phase 0.5 初始化,填写基本信息表)
-  并行启动 N 个 Agent 群
+For each track in the track positioning table (T1-TN):
+  Open songs/TN-track-name.md (template initialized by Phase 0.5, basic info table filled in)
+  Launch N Agent groups in parallel
 ```
 
-### 单首歌曲的 Agent 群内串行流程
+### Within a Single Song's Agent Group — Serial Flow
 
 ```Round = 1
 while Round <= 6:
-  1. 作词专家 agent → 常规歌曲:读/写歌词区块;纯音乐:写「器乐描述」区块
-  2. 编曲专家 agent → 读/写 songs/TN-曲名.md
-  3. 韵脚专家 agent → 常规歌曲:韵脚分析;纯音乐:节奏/音色分析
-  4. 市场专家 agent → 读/写 songs/TN-曲名.md
-  5. 评分专家 agent → 读 songs/TN-曲名.md,输出评分
+  1. Lyricist Expert Agent → Regular song: read/write lyrics section; Instrumental: write "Instrumental Description" section
+  2. Arrangement Expert Agent → read/write songs/TN-track-name.md
+  3. Rhyme Expert Agent → Regular song: rhyme analysis; Instrumental: rhythm/timbre analysis
+  4. Market Expert Agent → read/write songs/TN-track-name.md
+  5. Scoring Expert Agent → read songs/TN-track-name.md, output scoring
 
-  读评分结果:
-  if Round >= 3 and 评分 >= 80:
-    ✅ 通过,标记状态为"✅ 定稿"
-    更新 docs/album-overview.md 评分总览
+  Read scoring results:
+  if Round >= 3 and score >= 80:
+    ✅ Pass, mark status as "✅ Finalized"
+    Update docs/album-overview.md scoring overview
     break
   elif Round == 6:
-    ⚠️ 达最大轮次,取最高分版本
-    更新 docs/album-overview.md 评分总览
+    ⚠️ Max rounds reached, take highest-scoring version
+    Update docs/album-overview.md scoring overview
     break
   else:
-    标记低分维度 + 优化建议 → Round += 1
-    下一轮专家读取上一轮评分结果
+    Mark low-score dimensions + optimization suggestions → Round += 1
+    Next round's experts read previous round's scoring results
 ```
 
-### 纯音乐处理
+### Instrumental Handling
 
-当曲目定位表中某首「语言」=「纯音乐」时:
+When a track in the positioning table has Language = "Instrumental":
 
-- **作词专家**:跳过歌词创作,写「器乐描述」区块(主旋律情绪弧线/音色/段落意图)
-- **韵脚专家**:跳过韵脚分析,写「节奏/音色分析」区块(节奏型/音色层次/动态变化)
-- **编曲专家**:无变化,正常填写编曲设计
-- **市场专家**:无变化,正常评估市场潜力
-- **评分专家**:「韵律」维度替换为「器乐表现力」维度(0-20 分)
+- **Lyricist Expert**: Skip lyric writing, write "Instrumental Description" section (main melody emotional arc / timbre / section intent)
+- **Rhyme Expert**: Skip rhyme analysis, write "Rhythm/Timbre Analysis" section (rhythm pattern / timbre layers / dynamic changes)
+- **Arrangement Expert**: No change, normally fill in arrangement design
+- **Market Expert**: No change, normally evaluate market potential
+- **Scoring Expert**: "Rhyme" dimension replaced with "Instrumental Expressiveness" dimension (0-20 pts)
 
-### 并行策略
+### Parallelization Strategy
 
-- **N 首歌 = N 个并行 Agent 群**(N = Phase 1 曲目定位表的曲目数)
-- 每群内部 5 专家串行操作同一文件
-- 群与群之间互不干扰
-- 全部群完成后 → 进入 Phase 3
+- **N songs = N parallel Agent groups** (N = number of tracks from Phase 1 positioning table)
+- Within each group, 5 experts operate on the same file serially
+- Groups do not interfere with each other
+- All groups complete → proceed to Phase 3
 
-### 子 Agent 调用格式
+### Subagent Call Format
 
-每个专家必须是独立的 `sessions_spawn` 调用:
+Each expert must be an independent `sessions_spawn` call:
 
 ```python
-# 作词专家
+# Lyricist Expert
 sessions_spawn(
     runtime="subagent",
     mode="run",
     task="""
-你是作词专家。正在处理歌曲:songs/T{N}-{曲名}.md
+You are the Lyricist Expert. Working on song: songs/T{N}-{track-name}.md
 
-当前轮次:Round {X} / 最多 6 轮
-上一轮评分:总分 {XX}(各维度分)
-低分维度:[如有]
-优化建议:[如有]
+Current round: Round {X} / maximum 6 rounds
+Previous round score: Total {XX} (per-dimension breakdown)
+Low-score dimensions: [if any]
+Optimization suggestions: [if any]
 
-⚠️ 硬规则:你只能修改你负责的区块,不得修改/新增/删减其他任何区块。
-详见 FILE_CONTRACTS.md 中「Phase 2 契约 → 硬规则:文件修改范围限制」。
+⚠️ Hard rule: You may only modify the section you are responsible for. Do not modify/add/remove any other sections.
+See "Hard Rule: File Modification Scope Limits" in FILE_CONTRACTS.md Phase 2 contract.
 
-请按照你的 SKILL.md 中的 checklist 执行。
-读取 songs/T{N}-{曲名}.md 的当前内容,做你的工作,写回文件。
-严格遵守 FILE_CONTRACTS.md 中 Phase 2 的文件格式契约。
+Please execute the checklist from your SKILL.md.
+Read the current content of songs/T{N}-{track-name}.md, do your work, and write back to the file.
+Strictly follow the Phase 2 file format contract in FILE_CONTRACTS.md.
 
-最后,在你的工作区末尾输出:
-✅ 作词专家 Round {X} Checklist:
-- [ ] 检查项1
-- [ ] 检查项2
+Finally, output at the end of your work area:
+✅ Lyricist Expert Round {X} Checklist:
+- [ ] Checklist item 1
+- [ ] Checklist item 2
 ...
 """
 )
 
-# 编曲专家 → sessions_spawn(独立调用)
-# 韵脚专家 → sessions_spawn(独立调用)
-# 市场专家 → sessions_spawn(独立调用)
-# 评分专家 → sessions_spawn(独立调用)
+# Arrangement Expert → sessions_spawn (independent call)
+# Rhyme Expert → sessions_spawn (independent call)
+# Market Expert → sessions_spawn (independent call)
+# Scoring Expert → sessions_spawn (independent call)
 ```
 
 ---
 
-## Phase 2 Checklist(全局)
+## Phase 2 Global Checklist
 
-完成时确认:
-- [ ] 所有 `songs/T{N}-*.md` 存在且非空
-- [ ] 每首评分 ≥ 80 分 + 跑满 3 轮(或达最大轮次 6 轮)
-- [ ] `docs/album-overview.md` 评分总览已更新
-- [ ] 每首歌曲文件格式通过 FILE_CONTRACTS.md 校验
+Upon completion, confirm:
+- [ ] All `songs/T{N}-*.md` files exist and are non-empty
+- [ ] Each track scored ≥ 80 points and completed at least 3 rounds (or reached max 6 rounds)
+- [ ] `docs/album-overview.md` scoring overview has been updated
+- [ ] Each song file format passes FILE_CONTRACTS.md validation
 
-全部 ✅ → 进入 Phase 3(歌词标准化提取)
-
----
-
-## 输出文件契约
-
-严格遵循 `FILE_CONTRACTS.md` 中 Phase 2 契约。
+All ✅ → proceed to Phase 3 (Lyrics Standardization Extraction)
 
 ---
 
-## 参考
+## Output File Contract
 
-- `examples/songs/T1-出发.md` - 98 分终稿范例
-- `FILE_CONTRACTS.md` - Phase 2 文件格式契约
+Strictly follows the Phase 2 contract in `FILE_CONTRACTS.md`.
+
+---
+
+## References
+
+- `examples/songs/T1-出发.md` — 98-point final version example
+- `FILE_CONTRACTS.md` — Phase 2 file format contract

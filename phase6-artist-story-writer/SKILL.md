@@ -1,94 +1,94 @@
 # Phase 6 — Artist Story Writer Skill
 
-> 生成艺人说文案（4 文件）：中文长版 + 英文长版 + 中英文短版 + 金句提取。
+> Generate artist story copy (4 files): Chinese long version + English long version + Chinese/English short version + quote extraction.
 
 ---
 
-## 触发
+## Trigger
 
-phase6-promotional-writer 完成后自动启动。
-
----
-
-## 输入
-
-| 来源 | 文件 | 内容 |
-|------|------|------|
-| Phase 1 | `docs/album-overview.md` | 专辑概述/叙事轴/曲目定位/英文专辑信息 |
-| Phase 2 | `songs/T{N}-曲名.md` | 每首歌的核心悖论/Hook/情绪弧线 |
-| Phase 6 | `templates/artist-story.md` | 艺人说模板（4 种格式） |
-| Phase 5 | `generate/loudness-report.txt` | 制作规模数据 |
+Automatically initiated after phase6-promotional-writer completes.
 
 ---
 
-## 执行
+## Input
 
-### ⚠️ 修改范围
-- **读取**：Phase 1-5 产出文件、模板文件
-- **写入**：`docs/artist-story-cn.md`、`docs/artist-story-en.md`、`docs/artist-story-short.md`、`docs/artist-story-quotes.md`
-- **禁止**：修改模板文件或 `songs/`/`generate/` 中的任何文件
+| Source | File | Content |
+|--------|------|---------|
+| Phase 1 | `docs/album-overview.md` | Album overview/narrative axis/track positioning/English album info |
+| Phase 2 | `songs/T{N}-track.md` | Core paradox/Hook/emotional arc for each track |
+| Phase 6 | `templates/artist-story.md` | Artist story template (4 formats) |
+| Phase 5 | `generate/loudness-report.txt` | Production scale data |
 
-### 叙事策略（核心原则）
+---
 
-**不隐藏 AI 生成事实，将其转化为专辑最诚实的隐喻。**
+## Execution
 
-核心叙事：「借来的声音唱真实的疼」——协作非替代。AI 是工具，疼是真的。
+### ⚠️ Modification Scope
+- **Read**: Phase 1-5 output files, template files
+- **Write**: `docs/artist-story-cn.md`, `docs/artist-story-en.md`, `docs/artist-story-short.md`, `docs/artist-story-quotes.md`
+- **Forbidden**: Modify template files or any files in `songs/`/`generate/` directories
 
-### 输出文件 1：中文长版（~1800 字）
+### Narrative Strategy (Core Principle)
+
+**Do not hide AI generation fact; transform it into the album's most honest metaphor.**
+
+Core narrative: "Borrowed voices singing real pain" — collaboration, not replacement. AI is a tool; the pain is real.
+
+### Output File 1: Chinese Long Version (~1800 words)
 
 `docs/artist-story-cn.md`
 
-**五段结构：**
-1. **起点问题**：为什么做这张专辑？核心悖论是什么？
-2. **九首歌九个阶段**：叙事轴概览 + 每首歌一句话
-3. **制作说明**：MiniMax music-2.6 生成过程（规模/轮次/选定标准）
-4. **给谁听**：目标听众 + 期待什么
-5. **一句话总结**：最有力的一句话
+**Five-Paragraph Structure:**
+1. **Starting Question**: Why make this album? What is the core paradox?
+2. **Nine Songs, Nine Stages**: Narrative axis overview + one line per song
+3. **Production Notes**: MiniMax music-2.6 generation process (scale/rounds/selection criteria)
+4. **Who Is This For**: Target audience + what to expect
+5. **One-Line Summary**: The most powerful single sentence
 
-**要求：**
-- 第一人称
-- 真诚，不营销腔
-- 明确标注 AI 生成事实
-- ~1800 字
-- 如果专辑中有纯音乐曲目，在「九首歌九个阶段」部分标注「纯音乐，无歌词」
-- 叙事策略同样适用于纯音乐：「借来的声音唱真实的疼」——器乐同样可以是协作非替代
+**Requirements:**
+- First person
+- Sincere, no marketing tone
+- Explicitly note AI generation fact
+- ~1800 words
+- If album contains instrumental tracks, mark "纯音乐，无歌词" in "nine songs nine stages" section
+- Narrative strategy equally applies to instrumentals: "borrowed voices singing real pain" — instrumental can also be collaboration, not replacement
 
-### 输出文件 2：英文长版（~1400 词）
+### Output File 2: English Long Version (~1400 words)
 
 `docs/artist-story-en.md`
 
-- 对应中文版结构
-- 独立英语语感，不是直译
-- ~1400 词
+- Corresponds to Chinese version structure
+- Independent English voice, not a translation
+- ~1400 words
 
-### 输出文件 3：中英文短版
+### Output File 3: Chinese/English Short Version
 
 `docs/artist-story-short.md`
 
-- 中文 ~400 字 + 英文 ~400 词
-- 适合网易云短评/微博/小红书直接使用
-- 保留核心叙事 + 制作信息
+- Chinese ~400 words + English ~400 words
+- Suitable for direct use on NetEase Cloud comments/Weibo/Xiaohongshu
+- Retains core narrative + production info
 
-### 输出文件 4：金句提取
+### Output File 4: Quote Extraction
 
 `docs/artist-story-quotes.md`
 
-- 5 条金句，中英对照
-- 每条独立可传播
-- 适合海报/卡片/转发引用
+- 5 quotes, Chinese-English pairs
+- Each independently shareable
+- Suitable for posters/cards/repost quotes
 
 ---
 
 ## Checklist
 
-| # | 检查项 | 打勾标准 |
-|---|--------|---------|
-| 1 | 中文长版完整 | ~1800 字，五段结构齐全 |
-| 2 | 英文长版完整 | ~1400 词，独立语感非直译 |
-| 3 | 短版完整 | 中英各 ~400 字/词 |
-| 4 | 金句 5 条 | 中英对照，每条可独立传播 |
-| 5 | AI 事实不隐藏 | 明确标注 music-2.6 生成 |
-| 6 | 叙事策略一致 | "协作非替代"贯穿所有文案 |
-| 7 | 4 个文件均已生成 | artist-story-cn/en/short/quotes 都存在 |
+| # | Check Item | Completion Criteria |
+|---|------------|---------------------|
+| 1 | Chinese long version complete | ~1800 words, five-paragraph structure complete |
+| 2 | English long version complete | ~1400 words, independent English voice, not translation |
+| 3 | Short version complete | Chinese/English each ~400 words/words |
+| 4 | 5 quotes | Chinese-English pairs, each independently shareable |
+| 5 | AI fact not hidden | Explicitly note music-2.6 generation |
+| 6 | Narrative strategy consistent | "Collaboration, not replacement" runs through all copy |
+| 7 | All 4 files generated | artist-story-cn/en/short/quotes all exist |
 
-全部 ✅ → 进入下一步（phase6-cover-designer）
+All ✅ → Proceed to next step (phase6-cover-designer)

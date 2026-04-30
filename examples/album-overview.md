@@ -1,41 +1,41 @@
-# 《赝品候鸟》专辑统筹文档
+# Counterfeit Migrants — Album Overview Document
 
-> 状态：✅ 已发布（网易云音乐）
-> 更新日期：2026-04-14
-> 发布日：2026-04-14
-> 中文版专辑 ID：370761076 | 英文版专辑 ID：370788757
-> 优化轮次：Round5（达标）→ Round6（韵律专项）→ Round7（新Round1全面优化）
-
----
-
-## 专辑概述
-
-**专辑名称**：《赝品候鸟》 / **Counterfeit Migrants**
-**核心概念**：数字时代的身份焦虑与身体重建——当数据比身体更永久，当标签长进骨头，当地图成为赝品
-**核心传播概念**：借来的翅膀，也会疼
-**语言**：中文+英文（双专辑）
-**音乐生成**：MiniMax music-2.6（全专辑 9 首歌，36 个版本，18 首最终选定）
-
-**叙事轴线**：
-- **方向轴**（出发/方向）：T1笼→天空 / T7撕标签 / T9纯走
-- **数据轴**（身体/异化）：T2云端删不掉 / T3标本比真更疼
-- **自我轴**（透明/真空/镜像）：T4透明撞墙 / T5真空窒息 / T6镜里非我
-- **告别轴**：T8请忘了我
-
-**目标听众**：25-35岁，城市青年，曾经/正在经历身份迷茫期
-**参考风格**：华晨宇《卡西莫多的礼物》《异类》时期的哲学性+身体感
-
-**潜在风险**：AI 生成音乐的市场接受度存在不确定性，部分听众可能对「AI 创作」标签有抵触情绪。应对策略：以「协作」而非「替代」为叙事核心，强调人类创意与 AI 工具的共生关系。
-
-**调性主线**：
-- **主调性**：B 小调（T1/T2/T3/T4/T5/T7/T9）
-- **C 大调**：T6 双生（镜像感）
-- **D 小调**：T8 告别（暗调留白）
-- **调性转换**：T5 从 B 小调 → E 大调（Hook2 爆发段）
+> Status: ✅ Released (NetEase Cloud Music)
+> Updated: 2026-04-14
+> Release Date: 2026-04-14
+> Chinese Album ID: 370761076 | English Album ID: 370788757
+> Optimization Rounds: Round5 (passed) → Round6 (rhythm专项) → Round7 (new Round1 full optimization)
 
 ---
 
-## 英文专辑信息（网易云 / 发行用）
+## Album Overview
+
+**Album Name**: Counterfeit Migrants / **《赝品候鸟》**
+**Core Concept**: Identity anxiety and physical reconstruction in the digital age — when data is more permanent than the body, when labels grow into bone, when the map becomes a counterfeit
+**Core Dissemination Concept**: Borrowed wings hurt too
+**Language**: Chinese + English (dual album)
+**Music Generation**: MiniMax music-2.6 (full album 9 tracks, 36 versions, 18 final selections)
+
+**Narrative Axes**:
+- **Direction Axis** (departure/direction): T1 cage→sky / T7 tear off labels / T9 pure walking
+- **Data Axis** (body/alienation): T2 cloud can't be deleted / T3 specimen hurts more than real
+- **Self Axis** (transparent/vacuum/mirror): T4 transparent wall collision / T5 vacuum suffocation / T6 mirror is not me
+- **Farewell Axis**: T8 please forget me
+
+**Target Audience**: 25-35 years old, urban youth, who have experienced or are experiencing identity confusion
+**Reference Style**: Hua Chenyu's "Gift of卡西莫多" "异类" period philosophical + physical sensation
+
+**Potential Risks**: Market acceptance of AI-generated music has uncertainty; some listeners may have resistance to "AI creation" labels. Response strategy: Use "collaboration" rather than "replacement" as the narrative core; emphasize the symbiotic relationship between human creativity and AI tools.
+
+**Tonality Main Line**:
+- **Main Tonality**: B minor (T1/T2/T3/T4/T5/T7/T9)
+- **C Major**: T6 Twin (mirror sensation)
+- **D Minor**: T8 Goodbye (dark space for silence)
+- **Tonality Shift**: T5 from B minor → E major (Hook2 explosion section)
+
+---
+
+## English Album Info (NetEase Cloud / Release)
 
 ### Album Name
 **Counterfeit Migrants**
@@ -54,8 +54,8 @@ This one is for everyone who's ever felt like a counterfeit version of themselve
 
 ### Track One-Liners
 
-| # | Track | English Title | One-Liner |
-|---|-------|--------------|----------|
+| # | Track | Chinese Title | One-Liner |
+|---|-------|--------------|-----------|
 | 01 | T1 出发 | Departure | Leaving isn't running away — it's admitting the cage was yours to walk out of. |
 | 02 | T2 数据 | Bones Don't Delete | The cloud can be wiped clean, but bones keep a backup you can't erase. |
 | 03 | T3 赝品标本 | Fake Wings | Borrowed wings grew into the bone — they aren't fake, they just hurt more than real ones. |
@@ -68,60 +68,60 @@ This one is for everyone who's ever felt like a counterfeit version of themselve
 
 ---
 
-## 曲目单
+## Track List
 
-> ⚠️ 以下为已发布版本的简化视图。实际 FILE_CONTRACTS.md 契约要求 11 列（# / 曲目 / 英文名 / 方向 / 核心Hook / 核心悖论 / 核心意象 / 身体感 / 情绪弧线 / 编曲风格 / 时长(估) / 状态）。新项目请严格按契约格式填写。
+> ⚠️ The following is a simplified view of the released version. The actual FILE_CONTRACTS.md contract requires 11 columns (# / Track / English Name / Axis / Core Hook / Core Paradox / Core Imagery / Physical Sensation / Emotional Arc / Arrangement Style / Est. Duration / Status). Please strictly follow the contract format for new projects.
 
-| # | 曲目 | 英文名 | 方向 | 语言 | 核心Hook | 时长(估) | 状态 |
-|---|------|--------|------|------|----------|----------|------|
-| 01 | T1《出发》 | Departure | 方向轴 | 中文 | 走成天空 | ~3:00 | ✅定稿 |
-| 02 | T2《数据》 | Bones Don't Delete | 数据轴 | 中文 | 骨记得 删不掉 | ~1:50 | ✅Round1合并 |
-| 03 | T3《赝品标本》 | Fake Wings | 数据轴 | 中文 | 比真更疼 | ~2:30 | ✅Round1合并 |
-| 04 | T4《笼》 | Cage | 自我轴 | 中文 | 越撞越清醒 | ~1:55 | ✅Round1合并 |
-| 05 | T5《真空》 | Vacuum | 自我轴 | 中文 | 疼到能呼吸 | ~2:30 | ✅Round1合并 |
-| 06 | T6《双生》 | Twin | 自我轴 | 中文 | 镜里非我 | ~2:00 | ✅Round1合并（98分） |
-| 07 | T7《决定》 | No Map | 方向轴 | 中文 | 候鸟没有地图 | ~2:30 | ✅Round1（94分） |
-| 08 | T8《告别》 | Please Forget Me | 告别轴 | 中文 | 请忘了我 | ~2:30 | ✅Round1合并 |
-| 09 | T9《候鸟》 | Migrant Bird | 方向轴 | 中文 | 候鸟的方向 | ~2:00 | ✅Round1优化 |
+| # | Track | Chinese | Axis | Language | Core Hook | Est. Duration | Status |
+|---|-------|---------|------|----------|-----------|---------------|--------|
+| 01 | T1"Departure" | 出发 | Direction Axis | Chinese | Walking into sky | ~3:00 | ✅ Finalized |
+| 02 | T2"Data" | 数据 | Data Axis | Chinese | Bones remember, can't delete | ~1:50 | ✅ Round1 merged |
+| 03 | T3"Counterfeit Specimen" | 赝品标本 | Data Axis | Chinese | Hurts more than real | ~2:30 | ✅ Round1 merged |
+| 04 | T4"Cage" | 笼 | Self Axis | Chinese | More awake with each crash | ~1:55 | ✅ Round1 merged |
+| 05 | T5"Vacuum" | 真空 | Self Axis | Chinese | Pain lets you breathe | ~2:30 | ✅ Round1 merged |
+| 06 | T6"Twin" | 双生 | Self Axis | Chinese | Mirror is not me | ~2:00 | ✅ Round1 merged (98pts) |
+| 07 | T7"Decision" | 决定 | Direction Axis | Chinese | Migratory bird has no map | ~2:30 | ✅ Round1 (94pts) |
+| 08 | T8"Goodbye" | 告别 | Farewell Axis | Chinese | Please forget me | ~2:30 | ✅ Round1 merged |
+| 09 | T9"Migrant Bird" | 候鸟 | Direction Axis | Chinese | Direction of the migratory bird | ~2:00 | ✅ Round1 optimized |
 
-**✅ 时长状态**：全部达标（最短T2~1:50，T4~1:55，T6~2:00）
-
----
-
-## 评分总览
-
-### Phase 1 概念评分（4 维度 × 25 分）
-
-| 维度 | 分数 | 说明 |
-|------|------|------|
-| 概念原创性 | 22/25 | 数字时代身份焦虑切入角度独特，但「候鸟」意象不算全新 |
-| 叙事连贯性 | 24/25 | 四条叙事轴（方向/数据/自我/告别）形成完整闭环 |
-| 市场潜力 | 20/25 | 25-35岁城市青年精准定位，但AI音乐市场接受度存疑 |
-| 音乐一致性 | 22/25 | B小调主线统一，9首歌调性/风格关联度高 |
-| **总分** | **88/100** | Round5 达标 |
-
-### Phase 2 歌曲评分（5 维度 × 20 分）
-
-| 曲目 | 韵律 | 市场 | 结构 | 哲学 | 编排 | 总分 | 合格 |
-|------|------|------|------|------|------|------|------|
-| T1《出发》 | 19 | 20 | 20 | 20 | 19 | 98 | ✅ |
-| T2《数据》 | 16 | 19 | 19 | 20 | 19 | 93 | ✅ |
-| T3《赝品标本》 | 17 | 18 | 17 | 18 | 18 | 88 | ✅ |
-| T4《笼》 | 17 | 18 | 19 | 19 | 18 | 91 | ✅ |
-| T5《真空》 | 17 | 18 | 18 | 19 | 17 | 89 | ✅ |
-| T6《双生》 | 19 | 19 | 20 | 20 | 20 | 98 | ✅ |
-| T7《决定》 | 16 | 18 | 20 | 20 | 20 | 94 | 🔄 |
-| T8《告别》 | 17 | 19 | 20 | 20 | 18 | 94 | ✅ |
-| T9《候鸟》 | 13 | 19 | 19 | 20 | 18 | 88 | ✅ |
-
-**达标率：9/9（100%）**
-**专辑均分：89.6/100**
+**✅ Duration Status**: All passed (shortest T2 ~1:50, T4 ~1:55, T6 ~2:00)
 
 ---
 
-## 文件索引
+## Scoring Overview
 
-### 歌词（songs/）
+### Phase 1 Concept Scoring (4 dimensions × 25 points)
+
+| Dimension | Score | Description |
+|-----------|-------|-------------|
+| Concept Originality | 22/25 | Digital-era identity anxiety angle is unique, but "migratory bird" imagery is not entirely new |
+| Narrative Coherence | 24/25 | Four narrative axes (direction/data/self/farewell) form a complete closed loop |
+| Market Potential | 20/25 | Precise positioning for 25-35 urban youth, but AI music market acceptance is uncertain |
+| Musical Consistency | 22/25 | B minor main line unifies, 9 tracks have high tonal/style correlation |
+| **Total** | **88/100** | Round5 passed |
+
+### Phase 2 Song Scoring (5 dimensions × 20 points)
+
+| Track | Rhythm | Market | Structure | Philosophy | Arrangement | Total | Passed |
+|-------|--------|--------|-----------|------------|-------------|-------|--------|
+| T1"Departure" | 19 | 20 | 20 | 20 | 19 | 98 | ✅ |
+| T2"Data" | 16 | 19 | 19 | 20 | 19 | 93 | ✅ |
+| T3"Counterfeit Specimen" | 17 | 18 | 17 | 18 | 18 | 88 | ✅ |
+| T4"Cage" | 17 | 18 | 19 | 19 | 18 | 91 | ✅ |
+| T5"Vacuum" | 17 | 18 | 18 | 19 | 17 | 89 | ✅ |
+| T6"Twin" | 19 | 19 | 20 | 20 | 20 | 98 | ✅ |
+| T7"Decision" | 16 | 18 | 20 | 20 | 20 | 94 | 🔄 |
+| T8"Goodbye" | 17 | 19 | 20 | 20 | 18 | 94 | ✅ |
+| T9"Migrant Bird" | 13 | 19 | 19 | 20 | 18 | 88 | ✅ |
+
+**Pass Rate: 9/9 (100%)**
+**Album Average: 89.6/100**
+
+---
+
+## File Index
+
+### Lyrics (songs/)
 - `T1-出发-lyrics.md`
 - `T2-数据-lyrics.md`
 - `T3-赝品标本-lyrics.md`
@@ -132,22 +132,22 @@ This one is for everyone who's ever felt like a counterfeit version of themselve
 - `T8-告别-lyrics.md`
 - `T9-候鸟-lyrics.md`
 
-### 文档（docs/）
-- `album-overview.md`（本文件）
-- `promotional-materials.md`（宣传文档）
-- `cover-concept.md`（封面概念）
-- `artist-story-cn.md`（艺人说中文长版）
-- `artist-story-en.md`（艺人说英文长版）
-- `artist-story-short.md`（艺人说中英文短版）
-- `artist-story-quotes.md`（金句提取）
-- `platform-check.txt`（平台适配检查）
+### Documents (docs/)
+- `album-overview.md` (this file)
+- `promotional-materials.md` (promotional document)
+- `cover-concept.md` (cover concept)
+- `artist-story-cn.md` (artist story Chinese long version)
+- `artist-story-en.md` (artist story English long version)
+- `artist-story-short.md` (artist story Chinese/English short version)
+- `artist-story-quotes.md` (quote extraction)
+- `platform-check.txt` (platform adaptation check)
 
 ---
 
-## 待办事项
+## Todo Items
 
-- [x] 扩充T2/T4/T6至1:30以上（Round7完成）
-- [ ] 确认每首歌的编曲方向
-- [ ] 封面视觉概念
-- [ ] 每首歌的封面高光文案
-- [ ] 宣传文档完整版
+- [x] Expand T2/T4/T6 to over 1:30 (Round7 completed)
+- [ ] Confirm arrangement direction for each track
+- [ ] Cover visual concept
+- [ ] Cover highlight copy for each track
+- [ ] Complete promotional document

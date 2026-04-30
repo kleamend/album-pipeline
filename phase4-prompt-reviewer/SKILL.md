@@ -1,72 +1,72 @@
 # Phase 4 — Prompt Reviewer Skill
 
-> 独立审查 Agent。对所有 Prompt 进行 6 项检查并优化，确保压满上限且三版本差异化。
+> Independent review Agent. Performs 6-item checks on all Prompts and optimizes them to ensure the character limit is filled and 3-version differentiation is clear.
 
 ---
 
-## 触发
+## Trigger
 
-phase4-prompt-generator 完成所有 Prompt 生成后自动启动。
-
----
-
-## 输入
-
-| 来源 | 文件 | 内容 |
-|------|------|------|
-| Phase 4 | `generate/prompts/*.txt` | 所有 Prompt 版本文件 |
-| Phase 4 | `generate/prompts/index.json` | Prompt 索引（含 char_count） |
-| Phase 2 | `songs/T{N}-曲名.md` | 完整编曲设计（用于对照检查信息覆盖率） |
+Automatically starts after phase4-prompt-generator completes all Prompt generation.
 
 ---
 
-## 执行
+## Input
 
-### ⚠️ 修改范围
-- **读取**：`generate/prompts/*.txt`、`generate/prompts/index.json`、`songs/T{N}-曲名.md`
-- **写入**：覆盖优化后的 `generate/prompts/*.txt`，更新 `generate/prompts/index.json`
-- **禁止**：修改 `songs/`、`generate/lyrics/`、`generate/cn/`、`generate/en/` 中的任何文件
+| Source | File | Content |
+|--------|------|---------|
+| Phase 4 | `generate/prompts/*.txt` | All Prompt version files |
+| Phase 4 | `generate/prompts/index.json` | Prompt index (includes char_count) |
+| Phase 2 | `songs/T{N}-title.md` | Complete arrangement design (used for coverage verification) |
 
-### 审查流程
+---
 
-对每个 Prompt 版本逐项检查：
+## Execution
 
-| # | 检查项 | 标准 | 优化动作 |
-|---|--------|------|---------|
-| 1 | 字符数 | ≤ 2000 且 ≥ 1500 | < 1500 → 从编曲设计补充细节直到接近 2000 |
-| 2 | 核心参数完整 | 流派/风格/BPM/调性/Mood/Vocals/Instruments | 遗漏 → 从 `songs/TN-曲名.md` 基本信息表补充 |
-| 3 | 无无效信息 | 不含精确毫秒级时间戳、dB 值、Sound Design 表格 | 包含 → 改写为模型可理解的感性描述 |
-| 4 | 编曲信息传递 ≥ 60% | 覆盖编曲设计核心信息 | < 60% → 补充关键段落/音效/情绪转折 |
-| 5 | MiniMax 模型可读性 | 结构化文本，模型能理解 | 不清晰 → 重写为音乐模型友好格式 |
-| 6 | 三版本差异化 | 3 个版本有明显差异 | 差异不足 → 强化各自凝练策略的独特性 |
+### ⚠️ Scope of Modification
+- **Read**: `generate/prompts/*.txt`, `generate/prompts/index.json`, `songs/T{N}-title.md`
+- **Write**: Overwrite optimized `generate/prompts/*.txt`, update `generate/prompts/index.json`
+- **Forbidden**: Modify any files in `songs/`, `generate/lyrics/`, `generate/cn/`, or `generate/en/`
 
-### 优化规则
+### Review Process
 
-**字符数不足时：**
-- 补充编曲段落中未凝练的细节（如 Bridge 段落的留白设计）
-- 补充 Sound Design 中服务情绪的音效描述（去掉 dB 值，保留质感描述）
-- 补充人声处理手法的细节（如"近场气声"→"仿佛贴在耳边的轻声细语"）
+For each Prompt version, check each item:
 
-**包含无效信息时：**
-- 时间戳：`0:15.342` → `约 15 秒处`
-- dB 值：`-35dB` → `极轻地垫底`
-- 表格：改为自然语言描述
+| # | Checkpoint | Standard | Optimization Action |
+|---|-----------|---------|-------------------|
+| 1 | Character count | ≤ 2000 and ≥ 1500 | < 1500 → supplement arrangement details until close to 2000 |
+| 2 | Core parameters complete | Genre/Style/BPM/Key/Mood/Vocals/Instruments | Missing → supplement from basic info table in `songs/TN-title.md` |
+| 3 | No invalid information | No millisecond-precision timestamps, no dB values, no Sound Design tables | Present → rewrite as model-understandable sensory descriptions |
+| 4 | Arrangement information coverage ≥ 60% | Covers core arrangement design information | < 60% → supplement key sections/sound effects/emotional transitions |
+| 5 | MiniMax model readability | Structured text the model can understand | Unclear → rewrite in music-model-friendly format |
+| 6 | 3-version differentiation | 3 versions are distinctly different | Insufficient → strengthen the uniqueness of each version's condensation strategy |
 
-**三版本差异化不足时：**
-- 版本 1 强化时间线精确度（保留段落名称和大致时间范围）
-- 版本 2 强化叙事线索（突出悖论→情绪转化的故事线）
-- 版本 3 强化质感关键词（用"温暖/冰冷/颗粒感/呼吸感"等词汇）
+### Optimization Rules
+
+**When character count is insufficient:**
+- Supplement details from unconcensed sections in the arrangement design (e.g., Bridge section's space design)
+- Supplement sound effect descriptions that serve emotion from Sound Design (remove dB values, keep texture descriptions)
+- Add vocal processing details (e.g., "close-mic breathy" → "quiet whisper seemingly right by the ear")
+
+**When invalid information is present:**
+- Timestamps: `0:15.342` → `around 15 seconds`
+- dB values: `-35dB` → `extremely light underlying pad`
+- Tables: Convert to natural language descriptions
+
+**When 3-version differentiation is insufficient:**
+- Version 1: Strengthen timeline precision (preserve section names and approximate time ranges)
+- Version 2: Strengthen narrative thread (highlight the paradox → emotional transformation story)
+- Version 3: Strengthen texture keywords (use "warm/cold/granular/breathing" vocabulary)
 
 ---
 
 ## Checklist
 
-| # | 检查项 | 打勾标准 |
-|---|--------|---------|
-| 1 | 所有 Prompt 通过 6 项审查 | 逐项检查，6 项全 ✅ |
-| 2 | 字符数达标 | 每个 Prompt 1500-2000 字符 |
-| 3 | 三版本差异化确认 | 读完 3 个版本，能明确说出各自的凝练策略 |
-| 4 | index.json 已更新 | char_count 与实际字符数一致 |
-| 5 | 无格式错误 | 纯文本，无 Markdown 格式符号干扰 |
+| # | Checkpoint | Completion Criteria |
+|---|-----------|-------------------|
+| 1 | All Prompts pass 6-item review | Checked item by item; all 6 ✅ |
+| 2 | Character count meets standard | Each Prompt 1500-2000 characters |
+| 3 | 3-version differentiation confirmed | After reading all 3 versions, each version's condensation strategy is clearly distinguishable |
+| 4 | index.json updated | char_count matches actual character count |
+| 5 | No formatting errors | Plain text; no Markdown formatting symbols interfering |
 
-全部 ✅ → 进入音乐生成阶段（phase4-music-executor）
+All ✅ → Enter Music Generation phase (phase4-music-executor)

@@ -1,400 +1,400 @@
-# 《赝品候鸟》制作全流程回顾
+# Counterfeit Migrants — Full Production Pipeline Review
 
-> 本文档作为 AI 音乐专辑制作 Skill 的设计基础。
-> 记录从 0 到发布的完整流程、每个环节的具体操作、技术细节、决策和教训。
+> This document serves as the design foundation for AI music album production Skills.
+> Records the complete process from 0 to release, specific operations at each stage, technical details, decisions, and lessons.
 
-> ⚠️ **Phase 编号说明**：本文档使用旧版 Phase 编号（0-6），当前流水线使用 1-6 编号。对应关系：旧 Phase 0 = 新 Phase 0.5（初始化），旧 Phase 1 = 新 Phase 2（歌曲生成），旧 Phase 2 = 新 Phase 3（歌词标准化），旧 Phase 3 = 新 Phase 4（音乐生成），旧 Phase 4 = 新 Phase 5（选定转码），旧 Phase 5 = 新 Phase 6（发布物料），旧 Phase 6 = 新 Phase 7（Skill 设计要点）。
-
----
-
-## 总览
-
-| 项目 | 值 |
-|------|-----|
-| 专辑名 | 《赝品候鸟》/ Counterfeit Migrants |
-| 曲目数 | 9 首 × 2 语言版本 = 18 首 |
-| 音乐生成 | MiniMax music-2.6(CLI) |
-| 生成规模 | 54 首生成物(3 Prompt 版本),选定 18 首 |
-| 制作周期 | ~10 天(2026-04-04 → 2026-04-14) |
-| 发布平台 | 网易云音乐(中/英双专辑) |
-| 发布日期 | 2026-04-14 |
+> ⚠️ **Phase Numbering Note**: This document uses the old Phase numbering (0-6), the current pipeline uses 1-6 numbering. Correspondence: Old Phase 0 = New Phase 0.5 (initialization), Old Phase 1 = New Phase 2 (song generation), Old Phase 2 = New Phase 3 (lyrics standardization), Old Phase 3 = New Phase 4 (music generation), Old Phase 4 = New Phase 5 (selection/transcoding), Old Phase 5 = New Phase 6 (publishing materials), Old Phase 6 = New Phase 7 (Skill design points).
 
 ---
 
-## Phase 0:项目初始化
+## Overview
 
-### 0.1 目录结构建立
+| Item | Value |
+|------|-------|
+| Album Name | Counterfeit Migrants / 《赝品候鸟》 |
+| Number of Tracks | 9 tracks × 2 language versions = 18 tracks |
+| Music Generation | MiniMax music-2.6 (CLI) |
+| Generation Scale | 54 outputs (3 Prompt versions), 18 final selections |
+| Production Period | ~10 days (2026-04-04 → 2026-04-14) |
+| Release Platform | NetEase Cloud Music (Chinese/English dual album) |
+| Release Date | 2026-04-14 |
+
+---
+
+## Phase 0: Project Initialization
+
+### 0.1 Directory Structure
 
 ```
-album-赝品候鸟/
-├── songs/              ← 单曲编曲设计(权威来源)
-│   ├── T1-出发.md
-│   ├── T2-数据.md
+album-counterfeit-migrants/
+├── songs/              ← Single track arrangement design (authoritative source)
+│   ├── T1-Departure.md
+│   ├── T2-Data.md
 │   ├── ...
-│   └── T9-候鸟.md
-├── generate/           ← 音乐生成产物
-│   ├── lyrics/cn/      ← 中文标准歌词(9 文件)
-│   ├── lyrics/en/      ← 英文标准歌词(9 文件)
-│   ├── cn/             ← 中文原始生成(每首 3 个 Prompt 版本)
-│   ├── en/             ← 英文原始生成(每首 3 个 Prompt 版本)
-│   ├── cn_320k/        ← 中文网易云标准版(9 首)
-│   └── en_320k/        ← 英文网易云标准版(9 首)
-├── docs/               ← 专辑统筹文档
-│   ├── album-overview.md       ← 专辑统筹(评分/曲目/待办)
-│   ├── cover-concept.md        ← 封面概念设计
-│   ├── promotional-materials.md ← 宣传物料
-│   ├── artist-story-cn.md      ← 艺人说(中文长版)
-│   ├── artist-story-en.md      ← 艺人说(英文长版)
-│   ├── artist-story-short.md   ← 艺人说(中英文短版)
-│   └── artist-story-quotes.md  ← 金句提取
-├── assets/             ← 封面概念图(8 张)
-├── output/             ← 早期 T1 分段生成测试(v1-v7)
-└── prompts/            ← 早期 prompt 模板
+│   └── T9-MigrantBird.md
+├── generate/           ← Music generation outputs
+│   ├── lyrics/cn/      ← Chinese standard lyrics (9 files)
+│   ├── lyrics/en/      ← English standard lyrics (9 files)
+│   ├── cn/             ← Chinese raw generation (3 Prompt versions per track)
+│   ├── en/             ← English raw generation (3 Prompt versions per track)
+│   ├── cn_320k/        ← Chinese NetEase Cloud standard (9 tracks)
+│   └── en_320k/        ← English NetEase Cloud standard (9 tracks)
+├── docs/               ← Album overview documents
+│   ├── album-overview.md       ← Album overview (scoring/track list/todos)
+│   ├── cover-concept.md        ← Cover concept design
+│   ├── promotional-materials.md ← Promotional materials
+│   ├── artist-story-cn.md      ← Artist story (Chinese long version)
+│   ├── artist-story-en.md      ← Artist story (English long version)
+│   ├── artist-story-short.md   ← Artist story (Chinese/English short version)
+│   └── artist-story-quotes.md  ← Quote extraction
+├── assets/             ← Cover concept images (8 images)
+├── output/             ← Early T1 segment generation tests (v1-v7)
+└── prompts/            ← Early prompt templates
 ```
 
-**关键设计决策:**
-- `songs/*.md` 是**唯一权威来源**,每首歌的歌词、编曲、评分、市场分析都在这里
-- `generate/` 下的产物是**过程产物**,`cn_320k/` / `en_320k/` 是最终交付物
-- `docs/` 是跨曲目的统筹文档,不在 `songs/` 里
+**Key Design Decisions:**
+- `songs/*.md` is the **sole authoritative source** — lyrics, arrangement, scoring, and market analysis for each track are all here
+- `generate/` outputs are **process outputs**, `cn_320k/` / `en_320k/` are the final deliverables
+- `docs/` are cross-track overview documents, not in `songs/`
 
-### 0.2 概念设计
+### 0.2 Concept Design
 
-**核心概念**:数字时代身份焦虑与身体重建
+**Core Concept**: Identity anxiety and physical reconstruction in the digital age
 
-**四条叙事轴**:
-- **方向轴**:T1 出发 → T7 决定 → T9 候鸟(笼→天空,方向感)
-- **数据轴**:T2 数据 → T3 赝品标本(云端 vs 身体,记忆)
-- **自我轴**:T4 笼 → T5 真空 → T6 双生(透明墙/窒息/镜像)
-- **告别轴**:T8 告别(遗忘)
+**Four Narrative Axes**:
+- **Direction Axis**: T1 Departure → T7 Decision → T9 Migrant Bird (cage→sky, sense of direction)
+- **Data Axis**: T2 Data → T3 Counterfeit Specimen (cloud vs body, memory)
+- **Self Axis**: T4 Cage → T5 Vacuum → T6 Twin (transparent wall/suffocation/mirror)
+- **Farewell Axis**: T8 Goodbye (forgetting)
 
-**调性主线**:B 小调主导(T1/T2/T3/T4/T5/T7/T9),C 大调(T6),D 小调(T8)
+**Tonality Main Line**: B minor dominant (T1/T2/T3/T4/T5/T7/T9), C major (T6), D minor (T8)
 
 ---
 
-## Phase 1:单曲深度创作
+## Phase 1: Single Track Deep Creation
 
-### 1.1 每首歌的标准文件结构
+### 1.1 Standard File Structure for Each Track
 
-每首 `songs/TN-*.md` 文件包含以下标准区块:
+Each `songs/TN-*.md` file contains the following standard sections:
 
-| 区块 | 内容 | 示例(T1) |
-|------|------|-----------|
-| 基本信息表 | 方向轴、Hook、悖论、意象、身体感、估计时长、编曲风格 | B小调/85BPM/氛围电子 |
-| 歌词 | 带结构标签的完整歌词 | [Intro][Verse][Pre-Hook][Hook][Bridge][Outro] |
-| 完整编曲设计 | 精确到秒的段落拆解 | Intro 0:00-0:30, Verse1 0:30-1:20... |
-| Sound Design 表 | 关键音效、描述、出现位置、音量 | 心跳采样 60BPM -35dB |
-| 情绪弧线 | 全曲情绪变化时间线 | 困→渴望出发→蓄力→爆发→行走→最高点→降落 |
-| 韵脚分析 | 韵部分布、Hook 韵脚设计逻辑、与编曲对齐 | 空韵(ong)→ang→a→帆舵韵 |
-| 市场评估 | 核心卖点、受众画像、平台适配、竞争分析、Sync 潜力、营销建议、风险评估 | 网易云主战场,毕业季窗口 |
-| 评分 | 韵律/市场/结构/哲学/编排,5维度 × 20分 | 98/100 |
-| 封面高光文案 | 一句话传播文案 | "我把笼子,走成天空。" |
+| Section | Content | Example (T1) |
+|---------|---------|--------------|
+| Basic Info Table | Axis, Hook, Paradox, Imagery, Physical Sensation, Est. Duration, Arrangement Style | B minor/85BPM/Ambient electronic |
+| Lyrics | Complete lyrics with structure tags | [Intro][Verse][Pre-Hook][Hook][Bridge][Outro] |
+| Complete Arrangement Design | Paragraph breakdown precise to seconds | Intro 0:00-0:30, Verse1 0:30-1:20... |
+| Sound Design Table | Key sound effects, description, position, volume | Heartbeat sample 60BPM -35dB |
+| Emotional Arc | Full song emotion change timeline | Trapped→longing→building→explosion→walking→peak→landing |
+| Rhyme Analysis | Rhyme distribution, Hook rhyme design logic, alignment with arrangement | -kong (ong)→-ang→-a→sail/rudder |
+| Market Assessment | Core selling points, audience profile, platform fit, competitive analysis, Sync potential, marketing suggestions, risk assessment | NetEase Cloud main battlefield, graduation season window |
+| Scoring | Rhythm/market/structure/philosophy/arrangement, 5 dimensions × 20 points | 98/100 |
+| Cover Highlight Copy | One-sentence dissemination copy | "I walked my cage into the sky." |
 
-### 1.2 编曲设计规范
+### 1.2 Arrangement Design Standards
 
-**每个段落必须包含:**
-- 时间范围(精确到秒)
-- 人声处理方式(清唱/混响/气声/干声等)
-- 乐器进入/退出时间
-- 音效设计(心跳/脚步/环境音等,含音量 dB)
-- 情绪标签(困/渴望/爆发/内省等)
-- 关键留白设计(全乐器暂停/屏息)
+**Each paragraph must include:**
+- Time range (precise to seconds)
+- Vocal processing method (a cappella/reverb/breathy/dry vocal/etc.)
+- Instrument entry/exit times
+- Sound effect design (heartbeat/footsteps/ambient/etc., with dB volume)
+- Emotion labels (trapped/long for/explosion/introspection/etc.)
+- Key silence design (all-instrument pause/hold breath)
 
-**特殊设计要点:**
-- **曲目衔接**:T1 Outro 的 T1-T2 衔接设计(反向脚步+心跳+极低频脉冲)
-- **动态 BPM**:T6 使用动态 BPM 曲线(68-80),全专辑变化幅度最大
-- **调性转换**:T5 从 B 小调 → E 大调(Hook2 爆发段)
-- **音色关联**:T4 玻璃/T5 真空/T6 水面 形成意象三角
+**Special Design Points:**
+- **Track connection**: T1 Outro T1-T2 connection design (reverse footsteps + heartbeat + ultra-low frequency pulse)
+- **Dynamic BPM**: T6 uses dynamic BPM curve (68-80), largest variation in full album
+- **Tonality shift**: T5 from B minor → E major (Hook2 explosion section)
+- **Timbre correlation**: T4 glass/T5 vacuum/T6 water surface form imagery triangle
 
-### 1.3 评分体系
+### 1.3 Scoring System
 
-| 维度 | 权重 | 说明 |
-|------|------|------|
-| 韵律 | 20 分 | Hook 韵脚统一性、Verse/Hook 对比、来/去对仗、韵脚×编曲对齐 |
-| 市场 | 20 分 | 概念独特性、Hook 传播力、情绪共鸣、跨媒介延展、算法友好度 |
-| 结构 | 20 分 | 情绪弧线完整性、Hook 变体动态、段落过渡自然度 |
-| 哲学 | 20 分 | 核心悖论贯穿度、反转有力程度、尾声呼吸感 |
-| 编排 | 20 分 | Sound Design 质量、曲目衔接、身体感、音色一致性 |
+| Dimension | Weight | Description |
+|-----------|--------|-------------|
+| Rhythm | 20 pts | Hook rhyme unity, Verse/Hook contrast, come/go contrast, rhyme × arrangement alignment |
+| Market | 20 pts | Concept uniqueness, Hook dissemination power, emotional resonance, cross-media extension, algorithm friendliness |
+| Structure | 20 pts | Emotional arc completeness, Hook variant dynamics, section transition naturalness |
+| Philosophy | 20 pts | Core paradox penetration, reversal strength, outro breathing sense |
+| Arrangement | 20 pts | Sound Design quality, track connection, physical sensation, timbre consistency |
 
-**质量门禁**:≥ 80 分进入音乐生成阶段
+**Quality Gate**: ≥ 80 points to enter music generation stage
 
-**专辑最终评分**:
-| T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | 均分 |
-|----|----|----|----|----|----|----|----|----|------|
+**Album Final Scoring**:
+| T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | Average |
+|----|----|----|----|----|----|----|----|----|---------|
 | 98 | 93 | 88 | 91 | 89 | 98 | 94 | 94 | 88 | 89.6 |
 
 ---
 
-## Phase 2:歌词标准化
+## Phase 2: Lyrics Standardization
 
-### 2.1 提取流程
+### 2.1 Extraction Process
 
-1. 从 `songs/TN-*.md` 中提取纯歌词(去掉注释、编曲设计、市场分析等)
-2. 创建标准歌词文件:`generate/lyrics/cn/TN-*.txt` + `generate/lyrics/en/TN-*.txt`
-3. 歌词格式必须包含结构标签:
+1. Extract pure lyrics from `songs/TN-*.md` (remove comments, arrangement design, market analysis, etc.)
+2. Create standard lyrics files: `generate/lyrics/cn/TN-*.txt` + `generate/lyrics/en/TN-*.txt`
+3. Lyrics format must include structure tags:
 
 ```
 [Intro]
-歌词行...
+Lyrics line...
 
 [Verse]
-歌词行...
+Lyrics line...
 
 [Pre Chorus]
-歌词行...
+Lyrics line...
 
 [Chorus]
-歌词行...
+Lyrics line...
 
 [Interlude]
-歌词行...
+Lyrics line...
 
 [Bridge]
-歌词行...
+Lyrics line...
 
 [Outro]
-歌词行...
+Lyrics line...
 ```
 
-### 2.2 结构标签说明
+### 2.2 Structure Tag Descriptions
 
-| 标签 | 用途 | 必选 |
-|------|------|------|
-| [Intro] | 纯音乐/环境音引入 | 可选 |
-| [Verse] | 主歌叙事 | ✅ 必选 |
-| [Pre Chorus] | 副歌前蓄力 | 可选 |
-| [Chorus] | 副歌 | ✅ 必选 |
-| [Interlude] | 间奏纯音乐 | 可选 |
-| [Bridge] | 桥段情绪转折 | 推荐 |
-| [Outro] | 尾声渐隐 | 推荐 |
-| [Hook] | 核心记忆点 | 可选(替代 Chorus) |
-| [Build Up] | 情绪 buildup | 可选 |
-| [Break] | 留白/暂停 | 可选 |
+| Tag | Purpose | Required |
+|-----|---------|----------|
+| [Intro] | Instrumental/ambient sound intro | Optional |
+| [Verse] | Main verse narrative | ✅ Required |
+| [Pre Chorus] | Pre-chorus buildup | Optional |
+| [Chorus] | Chorus | ✅ Required |
+| [Interlude] | Instrumental interlude | Optional |
+| [Bridge] | Bridge emotional turn | Recommended |
+| [Outro] | Outro fade | Recommended |
+| [Hook] | Core memory point | Optional (replacement for Chorus) |
+| [Build Up] | Emotional buildup | Optional |
+| [Break] | Silence/pause | Optional |
 
-### 2.3 歌词约束
+### 2.3 Lyrics Constraints
 
-| 参数 | 限制 |
-|------|------|
-| 歌词总长度 | ≤ 3,500 字符 |
-| 结构标签内 | 不得有任何描述文字(否则会被唱出来) |
-| 伴唱 | 使用圆括号 `(Ooh)` `(Harmonize)` |
+| Parameter | Limit |
+|-----------|-------|
+| Total lyrics length | ≤ 3,500 characters |
+| Within structure tags | No descriptive text allowed (otherwise will be sung) |
+| Backing vocals | Use parentheses `(Ooh)` `(Harmonize)` |
 
 ---
 
-## Phase 3:音乐生成(核心生产)
+## Phase 3: Music Generation (Core Production)
 
-### 3.1 工具链
+### 3.1 Tool Chain
 
-| 工具 | 用途 | 命令 |
-|------|------|------|
-| MiniMax CLI | 音乐生成 | `minimax music generate ...` |
-| ffmpeg | 转码/验证 | `ffmpeg -i input.mp3 -b:a 320k -ar 44100 output.mp3` |
+| Tool | Purpose | Command |
+|------|---------|---------|
+| MiniMax CLI | Music generation | `minimax music generate ...` |
+| ffmpeg | Transcoding/verification | `ffmpeg -i input.mp3 -b:a 320k -ar 44100 output.mp3` |
 
-### 3.2 CLI 参数标准
+### 3.2 CLI Parameter Standards
 
 ```bash
 minimax music generate \
   --model music-2.6 \
-  --prompt "情绪描述,风格,场景" \
+  --prompt "emotion description, style, scene" \
   --lyrics-file /path/to/lyrics.txt \
-  --vocals "人声类型" \
-  --genre "流派" \
-  --mood "情绪" \
-  --instruments "乐器" \
-  --bpm <数字> \
-  --key "调性" \
-  --structure "曲式结构" \
-  --extra "额外参数"
+  --vocals "vocal type" \
+  --genre "genre" \
+  --mood "emotion" \
+  --instruments "instruments" \
+  --bpm <number> \
+  --key "key" \
+  --structure "song structure" \
+  --extra "extra parameters"
 ```
 
-### 3.3 模型能力与限制
+### 3.3 Model Capabilities and Limitations
 
-| 参数 | 值 |
-|------|-----|
-| 可用模型 | music-2.6(推荐,需额度)、music-2.6-free(按量付费) |
-| 单次生成时长 | 可生成 3-5 分钟优质内容,质量通常随时长正比例提升(详见调优实验数据,待补充) |
-| 歌词长度 | ≤ 3,500 字符 |
-| Prompt 长度 | ≤ 2,000 字符(压满上限) |
-| 输出格式 | mp3 / wav / pcm |
-| 采样率 | 16000 / 24000 / 32000 / 44100 |
-| 比特率 | 32000 / 64000 / 128000 / 256000 |
-| 水印 | 可关闭(aigc_watermark: false) |
+| Parameter | Value |
+|-----------|-------|
+| Available Models | music-2.6 (recommended, requires quota), music-2.6-free (pay-per-use) |
+| Single Generation Duration | Can generate 3-5 minutes of quality content, quality typically improves with duration (see tuning experiment data, to be added) |
+| Lyrics Length | ≤ 3,500 characters |
+| Prompt Length | ≤ 2,000 characters (filled to limit) |
+| Output Format | mp3 / wav / pcm |
+| Sample Rate | 16000 / 24000 / 32000 / 44100 |
+| Bitrate | 32000 / 64000 / 128000 / 256000 |
+| Watermark | Can be disabled (aigc_watermark: false) |
 
-### 3.4 Prompt 生成策略
+### 3.4 Prompt Generation Strategy
 
-**每首歌从完整编曲设计生成 3 个不同凝练方式的 Prompt 版本**:
+**Generate 3 Prompt versions with different condensation methods from the complete arrangement design for each track:**
 
-| 版本 | 凝练策略 | 组织方式 |
-|------|---------|----------|
-| 1 | 编曲忠实还原型 | 按编曲段落时间线顺序 |
-| 2 | 情绪叙事驱动型 | 按情绪弧线和叙事线索 |
-| 3 | 听感质感优先型 | 从最终听感出发,质感关键词驱动 |
+| Version | Condensation Strategy | Organization Method |
+|---------|----------------------|-------------------|
+| 1 | Arrangement-Faithful Type | Sequential by arrangement paragraph timeline |
+| 2 | Emotional-Narrative Driven Type | By emotional arc and narrative thread |
+| 3 | Sensory-Quality Priority Type | Starting from final sensory experience, driven by texture keywords |
 
-每个 Prompt 压满 2000 字符上限,然后由独立 Prompt 审查 Agent 进行 6 项检查优化,最后再生成音乐。
+Each Prompt is filled to the 2,000 character limit, then an independent Prompt Review Agent performs 6-item check optimization, then music is generated.
 
-### 3.5 并行生成架构
+### 3.5 Parallel Generation Architecture
 
-**3 个 agent 并行**:
+**3 agents in parallel**:
 
-| Agent | 负责曲目 | 说明 |
-|-------|---------|------|
-| 专家 A | T1 出发、T2 数据、T3 赝品标本 | 方向轴 + 数据轴 |
-| 专家 B | T4 笼、T5 真空、T6 双生 | 自我轴 |
-| 专家 C | T7 决定、T8 告别、T9 候鸟 | 方向轴 + 告别轴 |
+| Agent | Responsible Tracks | Description |
+|-------|-------------------|-------------|
+| Expert A | T1 Departure, T2 Data, T3 Counterfeit Specimen | Direction axis + Data axis |
+| Expert B | T4 Cage, T5 Vacuum, T6 Twin | Self axis |
+| Expert C | T7 Decision, T8 Goodbye, T9 Migrant Bird | Direction axis + Farewell axis |
 
-**生成规模**:
-- 3 个 Prompt 版本:9 首 × 2 语言 × 3 Prompt = **54 首**
-- 总计:**54 首生成物**
+**Generation Scale**:
+- 3 Prompt versions: 9 tracks × 2 languages × 3 Prompts = **54 tracks**
+- Total: **54 outputs**
 
-### 3.6 生成产物目录
+### 3.6 Generated Output Directory
 
 ```
 generate/
-├── cn/              ← 中文原始生成(每首 3 个 Prompt 版本)
-│   ├── T1-出发-p1.mp3
-│   ├── T1-出发-p2.mp3
-│   ├── T1-出发-p3.mp3
+├── cn/              ← Chinese raw generation (3 Prompt versions per track)
+│   ├── T1-Departure-p1.mp3
+│   ├── T1-Departure-p2.mp3
+│   ├── T1-Departure-p3.mp3
 │   └── ...
-└── en/              ← 英文原始生成
+└── en/              ← English raw generation
     └── ...
 ```
 
-### 3.7 关键教训
+### 3.7 Key Lessons
 
-1. **时长不可控**:AI 生成时长 3-5 分钟,质量通常随时长正比例提升
-2. **Prompt 长度陷阱**:完整编曲设计不能直接当 Prompt 用,需要精简为 3 个不同凝练方式的版本,每个压满 2000 字符
-3. **原始生成物管理**:54 首原始文件不进入 git(体积太大),只保留最终筛选版
-4. **文件清理**:筛选后删除多余版本时,注意 git 状态(未 tracked 文件删除无法恢复)
-5. **补生机制**:如果某个 Prompt 版本丢失,可以从同版本其他曲目参数推断重新生成
+1. **Uncontrollable duration**: AI generation duration 3-5 minutes, quality typically improves proportionally with duration
+2. **Prompt length trap**: Complete arrangement design cannot be used directly as Prompt, needs to be condensed into 3 different condensation method versions, each filled to 2,000 characters
+3. **Raw output management**: 54 raw files not tracked in git (too large), only final selected versions kept
+4. **File cleanup**: After selection, when deleting extra versions, pay attention to git status (untracked files cannot be recovered when deleted)
+5. **Regeneration mechanism**: If a Prompt version is lost, can infer from same version other track parameters to regenerate
 
 ---
 
-## Phase 4:选定与转码
+## Phase 4: Selection & Transcoding
 
-### 4.1 选定流程
+### 4.1 Selection Process
 
-1. Raylan 听完所有 54 首生成物
-2. 每首选定最佳 Prompt 版本(不同歌曲可能选不同版本)
-3. 选定标准:Hook 清晰度、情绪表达、编曲还原度、听感舒适度
+1. Raylan listens to all 54 outputs
+2. Each track selects the best Prompt version (different tracks may select different versions)
+3. Selection criteria: Hook clarity, emotional expression, arrangement fidelity, listening comfort
 
-### 4.2 转码流程
+### 4.2 Transcoding Process
 
 ```bash
-# 批量转码:所有选定版本 → 320kbps / 44.1kHz(网易云标准)
+# Batch transcoding: all selected versions → 320kbps / 44.1kHz (NetEase Cloud standard)
 ffmpeg -i input.mp3 -b:a 320000 -ar 44100 -y output.mp3
 ```
 
-**输出目录**:
-- `generate/cn_320k/` - 中文 9 首
-- `generate/en_320k/` - 英文 9 首
+**Output directories**:
+- `generate/cn_320k/` - Chinese 9 tracks
+- `generate/en_320k/` - English 9 tracks
 
-**验证命令**:
+**Verification command**:
 ```bash
-# 验证 bitrate 和 sample_rate
+# Verify bitrate and sample_rate
 ffprobe -v error -show_entries format=bit_rate -show_entries stream=sample_rate -of json output.mp3
 ```
 
-**验证标准**:
+**Verification standards**:
 - bit_rate = 320000 ✅
 - sample_rate = 44100 ✅
 
-### 4.3 最终曲目选定表
+### 4.3 Final Track Selection Table
 
-**中文版(cn_320k/)**:
+**Chinese version (cn_320k/)**:
 
-| # | 曲目 | 选定 Prompt | 时长 | 大小 |
-|---|------|----------|------|------|
-| T1 | 出发 | p1 | 3:24 | 7.8M |
-| T2 | 数据 | p1 | 2:14 | 5.2M |
-| T3 | 赝品标本 | p1 | 2:41 | 6.2M |
-| T4 | 笼 | p3 | 2:15 | 5.2M |
-| T5 | 真空 | p3 | 3:22 | 7.8M |
-| T6 | 双生 | p3 | 2:25 | 5.6M |
-| T7 | 决定 | p2 | 1:59 | 4.6M |
-| T8 | 告别 | p2 | 3:12 | 7.4M |
-| T9 | 候鸟 | p1 | 2:40 | 6.2M |
+| # | Track | Selected Prompt | Duration | Size |
+|---|-------|----------------|----------|------|
+| T1 | Departure | p1 | 3:24 | 7.8M |
+| T2 | Data | p1 | 2:14 | 5.2M |
+| T3 | Counterfeit Specimen | p1 | 2:41 | 6.2M |
+| T4 | Cage | p3 | 2:15 | 5.2M |
+| T5 | Vacuum | p3 | 3:22 | 7.8M |
+| T6 | Twin | p3 | 2:25 | 5.6M |
+| T7 | Decision | p2 | 1:59 | 4.6M |
+| T8 | Goodbye | p2 | 3:12 | 7.4M |
+| T9 | Migrant Bird | p1 | 2:40 | 6.2M |
 
-**英文版(en_320k/)**:
+**English version (en_320k/)**:
 
-| # | 曲目 | 英文名 | 选定 Prompt | 时长 | 大小 |
-|---|------|--------|----------|------|------|
-| T1 | 出发 | Departure | p1 | 3:55 | 9.0M |
-| T2 | 数据 | Bones Don't Delete | p2 | 2:22 | 5.5M |
-| T3 | 赝品标本 | Fake Wings | p1 | 3:12 | 7.4M |
-| T4 | 笼 | Cage | p3 | 2:33 | 5.9M |
-| T5 | 真空 | Vacuum | p3 | 3:09 | 7.3M |
-| T6 | 双生 | Twin | p3 | 2:26 | 5.7M |
-| T7 | 决定 | No Map | p2 | 2:04 | 4.8M |
-| T8 | 告别 | Please Forget Me | p2 | 2:42 | 6.2M |
-| T9 | 候鸟 | Migrant Bird | p1 | 2:39 | 6.1M |
+| # | Track | English Name | Selected Prompt | Duration | Size |
+|---|-------|-------------|----------------|----------|------|
+| T1 | Departure | Departure | p1 | 3:55 | 9.0M |
+| T2 | Data | Bones Don't Delete | p2 | 2:22 | 5.5M |
+| T3 | Counterfeit Specimen | Fake Wings | p1 | 3:12 | 7.4M |
+| T4 | Cage | Cage | p3 | 2:33 | 5.9M |
+| T5 | Vacuum | Vacuum | p3 | 3:09 | 7.3M |
+| T6 | Twin | Twin | p3 | 2:26 | 5.7M |
+| T7 | Decision | No Map | p2 | 2:04 | 4.8M |
+| T8 | Goodbye | Please Forget Me | p2 | 2:42 | 6.2M |
+| T9 | Migrant Bird | Migrant Bird | p1 | 2:39 | 6.1M |
 
-### 4.4 教训
+### 4.4 Lessons
 
-1. **T6 中文版丢失事件**:筛选时误删了原始源文件(cn/),而 git 未 tracked 这些 MP3,导致无法恢复。补救方案:从同 Prompt 参数重新生成
-2. **版本筛选前先确认映射**:Raylan 给的是时长,需要先找到时长对应的 Prompt 版本再操作
-3. **保留原始生成物 vs 清理空间**:54 首原始文件占约 200MB,清理前确认是否需要回退
+1. **T6 Chinese version lost incident**: During selection, raw source files (cn/) were accidentally deleted, and git didn't track these MP3s, making recovery impossible. Workaround: regenerate from same Prompt parameters
+2. **Confirm mapping before selection**: Raylan provided duration, need to find corresponding Prompt version from duration first before operating
+3. **Preserve raw outputs vs. cleanup space**: 54 raw files occupy ~200MB, confirm if rollback is needed before cleanup
 
 ---
 
-## Phase 5:发布物料制作
+## Phase 5: Publishing Materials Production
 
-### 5.1 专辑统筹文档
+### 5.1 Album Overview Document
 
-`docs/album-overview.md` 包含:
-- 专辑概述(核心概念、叙事轴线、目标听众、参考风格)
-- 英文专辑信息(Album Name / Description / Creator's Note)
-- Track One-Liners(每首歌一句话介绍)
-- 曲目单(# / 曲目 / 英文名 / 方向 / 核心Hook / 时长 / 状态)
-- 评分总览(9 首歌 5 维度评分)
-- 文件索引
-- 待办事项
+`docs/album-overview.md` contains:
+- Album overview (core concept, narrative axis, target audience, reference style)
+- English album info (Album Name / Description / Creator's Note)
+- Track One-Liners (one-line intro for each song)
+- Track list (# / Track / English Name / Axis / Core Hook / Duration / Status)
+- Scoring Overview (9 tracks 5-dimension scoring)
+- File index
+- Todo items
 
-### 5.2 封面概念
+### 5.2 Cover Concept
 
-`docs/cover-concept.md` 包含:
-- 3 个视觉方向(候鸟剪影 / 骨骼候鸟 / 镜子碎片)
-- 配色方案(深空黑 + 霓虹蓝/紫/粉红 + 骨骼白)
-- 每首歌的封面概念
-- 应用场景(流媒体 3000×3000 / 实体 300×300mm / 社交 800×800 / MV 1920×1080)
+`docs/cover-concept.md` contains:
+- 3 visual directions (migratory bird silhouette / bone migratory bird / mirror fragments)
+- Color scheme (deep space black + neon blue/purple/pink + bone white)
+- Per-track cover concept
+- Application scenarios (streaming 3000×3000 / physical 300×300mm / social 800×800 / MV 1920×1080)
 
-`assets/` 下有 8 张概念图:
-- cover-01-候鸟剪影.png
-- cover-02-骨骼候鸟.png
-- cover-03-v1-赛博朋克.png
-- cover-03-v2-镜子反光.png
-- cover-03-v3-星云鸟骨.png
-- cover-03-v4-迷雾幽灵.png
-- cover-03-v5-纸骨地图.png
-- cover-03-镜子碎片.png
+`assets/` has 8 concept images:
+- cover-01-migratory-bird-silhouette.png
+- cover-02-bone-migratory-bird.png
+- cover-03-v1-cyberpunk.png
+- cover-03-v2-mirror-reflection.png
+- cover-03-v3-nebula-bird-bone.png
+- cover-03-v4-mist-ghost.png
+- cover-03-v5-paper-bone-map.png
+- cover-03-mirror-fragments.png
 
-### 5.3 宣传文档
+### 5.3 Promotional Document
 
-`docs/promotional-materials.md` 包含:
-- 一句话专辑概念
-- 专辑简介(300 字)
-- 核心宣传语
-- 各曲高光文案(每首歌一句话)
-- Social Media 文案(微博/小红书/微信推文标题)
-- 制作信息
-- 潜在争议点与回应预案
+`docs/promotional-materials.md` contains:
+- One-liner album concept
+- Album introduction (300 words)
+- Core promotional lines
+- Per-track highlight copy (one sentence per song)
+- Social Media copy (Weibo/Xiaohongshu/WeChat article titles)
+- Production info
+- Potential controversy points and response plans
 
-### 5.4 艺人说文案
+### 5.4 Artist Story Copy
 
-4 个文件:
-- `artist-story-cn.md` - 中文长版(~1800 字,五段结构)
-- `artist-story-en.md` - 英文长版(~1400 词)
-- `artist-story-short.md` - 中英文短版(各 ~400 字/词)
-- `artist-story-quotes.md` - 金句提取(5 条中英对照)
+4 files:
+- `artist-story-cn.md` - Chinese long version (~1800 words, five-paragraph structure)
+- `artist-story-en.md` - English long version (~1400 words)
+- `artist-story-short.md` - Chinese/English short version (~400 words/words each)
+- `artist-story-quotes.md` - Quote extraction (5 Chinese-English pairs)
 
-**艺人说核心叙事策略**:
-- 不隐藏 AI 生成事实,将其转化为专辑最诚实的隐喻
-- "借来的声音唱真实的疼"--协作非替代
-- 明确标注全专辑 9 首歌 36 个版本均由 music-2.6 生成
+**Artist story core narrative strategy**:
+- Do not hide AI generation fact, transform it into the album's most honest metaphor
+- "Borrowed voices singing real pain" — collaboration, not replacement
+- Clearly note all 9 tracks 36 versions throughout the album were generated by music-2.6
 
-### 5.5 打包
+### 5.5 Packaging
 
 ```bash
-# 打包宣传物料
-zip -r 赝品候鸟-艺人说-MiniMax宣传版.zip \
+# Package promotional materials
+zip -r counterfeit-migrants-artist-story-minimax.zip \
   artist-story-cn.md \
   artist-story-en.md \
   artist-story-short.md \
@@ -406,133 +406,137 @@ zip -r 赝品候鸟-艺人说-MiniMax宣传版.zip \
 
 ---
 
-## Phase 6:上架发布
+## Phase 6: Release
 
-### 6.1 网易云音乐
+### 6.1 NetEase Cloud Music
 
-- 中文版专辑 ID:370761076
-- 英文版专辑 ID:370788757
-- 发布账号:Raylan LIN(用户 ID:5112703101)
+- Chinese album ID: 370761076
+- English album ID: 370788757
+- Release account: Raylan LIN (User ID: 5112703101)
 
-### 6.2 上传要求
+### 6.2 Upload Requirements
 
-| 项目 | 标准 |
-|------|------|
-| 音频格式 | MP3,320kbps,44.1kHz |
-| 封面尺寸 | 3000×3000px 正方形 |
-| 专辑名 | 中文/英文各一个 |
-| 曲目信息 | 歌名、作词、作曲、编曲、歌词 |
-| 专辑描述 | ~200 字 |
+| Item | Standard |
+|------|----------|
+| Audio format | MP3, 320kbps, 44.1kHz |
+| Cover dimensions | 3000×3000px square |
+| Album name | One each for Chinese/English |
+| Track info | Song name, lyricist, composer, arranger, lyrics |
+| Album description | ~200 words |
 
 ---
 
-## Phase 7:Skill 设计要点
+## Phase 7: Skill Design Points
 
-### 7.1 流水线模块划分
+### 7.1 Pipeline Module Division
 
 ```
 ┌─────────────────────────────────────────────────┐
 │  Phase 0: Album Concept                         │
-│  ─ 概念设计 + 叙事轴 + 调性主线 + 曲目定位       │
+│  ─ Concept design + narrative axis + tonality   │
+│    main line + track positioning                │
 ├─────────────────────────────────────────────────┤
 │  Phase 1: Song Writing                          │
-│  ─ 歌词 + 编曲 + Sound Design + 评分            │
+│  ─ Lyrics + arrangement + Sound Design + scoring│
 ├─────────────────────────────────────────────────┤
-│  Phase 2: Lyrics Standardization                │
-│  ─ 歌词标准化提取(结构标签)                    │
+│  Phase 2: Lyrics Standardization               │
+│  ─ Lyrics standardization extraction (structure) │
 ├─────────────────────────────────────────────────┤
-│  Phase 3: Music Generation                      │
-│  ─ MiniMax CLI 批量生成(3 Prompt 版本并行)          │
+│  Phase 3: Music Generation                     │
+│  ─ MiniMax CLI batch generation                 │
+│    (3 Prompt versions in parallel)               │
 ├─────────────────────────────────────────────────┤
-│  Phase 4: Selection & Transcoding               │
-│  ─ 听评选定 + ffmpeg 转码 + 验证               │
+│  Phase 4: Selection & Transcoding              │
+│  ─ Listening selection + ffmpeg transcoding      │
+│    + verification                              │
 ├─────────────────────────────────────────────────┤
-│  Phase 5: Publishing Materials                  │
-│  ─ 统筹文档 + 封面 + 宣传 + 艺人说              │
+│  Phase 5: Publishing Materials                 │
+│  ─ Overview docs + cover + promotional +       │
+│    artist story                                │
 ├─────────────────────────────────────────────────┤
-│  Phase 6: Release                               │
-│  ─ 平台上传(网易云等)                          │
+│  Phase 6: Release                             │
+│  ─ Platform upload (NetEase Cloud, etc.)       │
 └─────────────────────────────────────────────────┘
 ```
 
-### 7.2 每个 Skill 的职责边界
+### 7.2 Each Skill's Responsibility Boundary
 
-| Skill 名 | 输入 | 输出 | 触发条件 |
-|----------|------|------|---------|
-| `album-concept` | 核心概念/主题 | album-overview.md 骨架 + 曲目定位表 | "我想做一张关于 XX 的专辑" |
-| `song-writer` | 曲目定位 + 编曲方向 | songs/TN-*.md(歌词+编曲+评分+市场) | "写第 N 首歌" |
-| `lyrics-formatter` | songs/TN-*.md | generate/lyrics/cn/TN.txt + en/TN.txt | "提取歌词" |
-| `music-generator` | 歌词文件 + 编曲参数 | generate/cn/ + en/ 下的 MP3 文件 | "生成音乐" |
-| `audio-transcoder` | 选定 MP3 列表 | cn_320k/ + en_320k/ 下的转码文件 | "转码为网易云标准" |
-| `album-packager` | 选定曲目 + 封面 | docs/ 下全套宣传物料 + zip 包 | "打包发布物料" |
+| Skill Name | Input | Output | Trigger Condition |
+|------------|-------|--------|------------------|
+| `album-concept` | Core concept/theme | album-overview.md skeleton + track positioning table | "I want to make an album about XX" |
+| `song-writer` | Track positioning + arrangement direction | songs/TN-*.md (lyrics+arrangement+scoring+market) | "Write track N" |
+| `lyrics-formatter` | songs/TN-*.md | generate/lyrics/cn/TN.txt + en/TN.txt | "Extract lyrics" |
+| `music-generator` | Lyrics file + arrangement parameters | MP3 files under generate/cn/ + en/ | "Generate music" |
+| `audio-transcoder` | Selected MP3 list | Transcoded files under cn_320k/ + en_320k/ | "Transcode to NetEase Cloud standard" |
+| `album-packager` | Selected tracks + cover | Full promotional materials under docs/ + zip package | "Package publishing materials" |
 
-### 7.3 关键工程化要点
+### 7.3 Key Engineering Points
 
-1. **权威来源单一**:`songs/*.md` 是唯一的歌词/编曲权威来源,其他都是派生产物
-2. **目录隔离**:原始生成(cn/ en/)vs 最终交付(cn_320k/ en_320k/)分开
-3. **质量门禁**:评分 ≥ 80 分才进入生成,转码验证通过才进入发布
-4. **并行化**:3 个 agent 同时处理不同曲目,每个 agent 处理 3 首歌
-5. **版本命名**:`TN-曲名-p{1,2,3}.mp3` 统一格式
-6. **git 管理**:文档进 git,音频不进(体积太大)
-7. **CLI 参数固化**:prompt/vocals/genre/mood/instruments/bpm/key/structure/extra 形成标准模板
+1. **Single authoritative source**: `songs/*.md` is the sole authoritative source for lyrics/arrangement; all others are derived outputs
+2. **Directory isolation**: Raw generation (cn/ en/) vs. final delivery (cn_320k/ en_320k/) separated
+3. **Quality gate**: Scoring ≥ 80 to enter generation; transcoding verification passed to enter publishing
+4. **Parallelization**: 3 agents simultaneously process different tracks, each agent handles 3 songs
+5. **Version naming**: `TN-track-p{1,2,3}.mp3` unified format
+6. **git management**: Documents tracked in git, audio not (too large)
+7. **CLI parameter solidification**: prompt/vocals/genre/mood/instruments/bpm/key/structure/extra form standard template
 
-### 7.4 待优化点
+### 7.4 Optimization Points
 
-| 问题 | 本次教训 | Skill 改进方向 |
-|------|---------|---------------|
-| 时长不可控 | AI 生成时长 3-5 分钟,质量随时长正比例提升 | Skill 应接受"实际时长"作为约束,不追求编曲时长 |
-| Prompt 长度 | 完整编曲设计不能直接当 Prompt,需生成 3 个不同凝练方式版本 | 需要 Prompt 生成模块 + 审查 Agent 优化 |
-| 文件管理 | 误删无法恢复 | Skill 应在删除前确认 git 状态,提供回退机制 |
-| 版本筛选 | 通过时长匹配 Prompt 版本容易出错 | Skill 应维护"选定表",按 Prompt 版本名操作而非时长 |
-| 封面 | 8 张概念图,未最终选定 | 可增加"封面选择器"子模块 |
-| 发布 | 手动上传网易云 | 暂无 API,Skill 输出上传清单和元数据 |
-
----
-
-## 附录:编曲设计 Prompt → 生成 Prompt 转换示例
-
-### 编曲设计(songs/T1-出发.md 节选)
-
-```
-Intro「清晨房间」设计(0:00-0:30)
-- 钢琴单音极轻进入,B小调主和弦分解
-- 环境音(清晨房间底噪,窗外风声),-40dB垫底
-- 钢琴左手八度低音进入,像脚步声缓步走来
-- 情绪:困→渴望出发
-```
-
-### 生成 Prompt(实际传给 CLI)
-
-```
-氛围电子+叙事感,B小调,85BPM
-从困到走的转变。钢琴单音开场,极简和弦铺底。
-人声清唱进入,混响深。
-情绪从压抑到释放,Hook处全乐队爆发。
-参考:华晨宇式哲学歌词+身体感意象
-```
-
-**转换规则**:
-- 去掉精确时间戳、dB 值、具体音效参数
-- 保留:风格、调性、BPM、情绪弧线、关键音色特征
-- 加入:人声类型、乐器、流派、场景
+| Issue | This Round's Lesson | Skill Improvement Direction |
+|-------|-------------------|---------------------------|
+| Uncontrollable duration | AI generation duration 3-5 minutes, quality improves with duration | Skill should accept "actual duration" as constraint, not pursue arrangement duration |
+| Prompt length | Complete arrangement design cannot be directly used as Prompt, needs 3 different condensation versions | Needs Prompt generation module + Review Agent optimization |
+| File management | Accidental deletion unrecoverable | Skill should confirm git status before deletion, provide rollback mechanism |
+| Version selection | Matching Prompt version by duration is error-prone | Skill should maintain "selection table", operate by Prompt version name not duration |
+| Cover | 8 concept images, not finally selected | Can add "cover selector" sub-module |
+| Release | Manual upload to NetEase Cloud | No API yet, Skill outputs upload checklist and metadata |
 
 ---
 
-## 附录:T1-T9 编曲参数速查表
+## Appendix: Arrangement Design Prompt → Generation Prompt Conversion Example
 
-| # | 曲目 | 调性 | BPM | 风格 | Hook | Prompt 选定 |
-|---|------|------|-----|------|------|----------|
-| T1 | 出发 | B小调 | 85 | 氛围电子+叙事感 | 走成天空 | p1 |
-| T2 | 数据 | B小调 | 112 | 电子暗潮 | 骨记得 删不掉 | p1 |
-| T3 | 赝品标本 | B小调 | 112 | 工业电子/后朋克 | 比真更疼 | p1 |
-| T4 | 笼 | B小调 | 138→130 | 电子+爆发感 | 越撞越清醒 | p3 |
-| T5 | 真空 | B小调→E大调 | 60→72 | 实验电子+窒息感 | 疼到能呼吸 | p3 |
-| T6 | 双生 | C大调 | 68-80动态 | 钢琴+水面倒影 | 镜里非我 | p3 |
-| T7 | 决定 | B小调 | 80+ | 身体感摇滚 | 候鸟没有地图 | p2 |
-| T8 | 告别 | 暗调 | 90-95 | 留白+门意象 | 请忘了我 | p2 |
-| T9 | 候鸟 | B小调 | 85 | 氛围电子+叙事感 | 走是最真实的方向 | p1 |
+### Arrangement Design (songs/T1-Departure.md excerpt)
 
-**Prompt 分布规律**：
-- Prompt 1（编曲忠实还原型）：T1/T2/T3/T9 — 方向轴两端和数据轴，编曲设计本身已经很好
-- Prompt 2（情绪叙事驱动型）：T7/T8 — 告别轴，情绪叙事是核心
-- Prompt 3（听感质感优先型）：T4/T5/T6 — 自我轴，需要更强的身体感和质感
+```
+Intro "Morning Room" Design (0:00-0:30)
+- Piano single note very softly enters, B minor tonic chord arpeggiation
+- Ambient sound (morning room background noise, window wind), -40dB padding
+- Piano left hand octave bass enters, like footsteps slowly approaching
+- Emotion: trapped → longing to depart
+```
+
+### Generation Prompt (actually passed to CLI)
+
+```
+Ambient electronic + narrative, B minor, 85BPM
+Transition from trapped to walking. Piano single note opens, minimal chord bed.
+Vocal enters a cappella, deep reverb.
+Emotion from suppression to release, full band explosion at Hook.
+Reference: Hua Chenyu-style philosophical lyrics + physical sensation imagery
+```
+
+**Conversion rules**:
+- Remove precise timestamps, dB values, specific sound effect parameters
+- Keep: style, key, BPM, emotional arc, key timbre features
+- Add: vocal type, instruments, genre, scene
+
+---
+
+## Appendix: T1-T9 Arrangement Parameters Quick Reference
+
+| # | Track | Key | BPM | Style | Hook | Prompt Selected |
+|---|-------|-----|-----|-------|------|----------------|
+| T1 | Departure | B minor | 85 | Ambient electronic + narrative | Walk into sky | p1 |
+| T2 | Data | B minor | 112 | Electronic dark tide | Bones remember, can't delete | p1 |
+| T3 | Counterfeit Specimen | B minor | 112 | Industrial electronic/post-punk | Hurts more than real | p1 |
+| T4 | Cage | B minor | 138→130 | Electronic + explosive | More awake with each crash | p3 |
+| T5 | Vacuum | B minor→E major | 60→72 | Experimental electronic + suffocation | Pain lets you breathe | p3 |
+| T6 | Twin | C major | 68-80 dynamic | Piano + water reflection | Mirror is not me | p3 |
+| T7 | Decision | B minor | 80+ | Physical rock | Migratory bird has no map | p2 |
+| T8 | Goodbye | Dark tone | 90-95 | Silence + door imagery | Please forget me | p2 |
+| T9 | Migrant Bird | B minor | 85 | Ambient electronic + narrative | Walking is the truest direction | p1 |
+
+**Prompt distribution pattern**:
+- Prompt 1 (Arrangement-Faithful Type): T1/T2/T3/T9 — direction axis endpoints and data axis, arrangement design itself already excellent
+- Prompt 2 (Emotional-Narrative Driven Type): T7/T8 — farewell axis, emotional narrative is core
+- Prompt 3 (Sensory-Quality Priority Type): T4/T5/T6 — self axis, needs stronger physical sensation and texture
