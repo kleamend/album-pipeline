@@ -261,7 +261,6 @@ MIT License — See [LICENSE](LICENSE)
 
 - 🎵 **MiniMax Music** — high-quality music generation engine
 - 🛠️ **OpenClaw** — agent orchestration framework and sub-agent infrastructure
-- 🎨 **sw-copilot** — README visual style reference
 
 ---
 
@@ -531,4 +530,3 @@ Copyright © Raylan LIN。保留所有权利。
 
 - 🎵 **MiniMax Music** — 高质量音乐生成引擎
 - 🛠️ **OpenClaw** — Agent 编排框架与子 agent 基础设施
-- 🎨 **sw-copilot** — README 视觉风格参考
