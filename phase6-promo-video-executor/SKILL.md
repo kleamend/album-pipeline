@@ -26,17 +26,16 @@ phase6-cover-executor 完成后自动启动。
 
 ### ⚠️ 修改范围
 - **读取**：Phase 6 文档文件、封面图、音频文件
-- **写入**：`docs/promo-video.mp4`、`docs/promo-video-15s.mp4`
+- **写入**：`docs/promo-video.mp4`
 - **禁止**：修改任何源文档或封面图文件
 
 ### 视频策略
 
-从 `docs/promotional-materials.md` 和 `docs/album-overview.md` 提取视频脚本概念，生成两种规格的宣传视频：
+从 `docs/promotional-materials.md` 和 `docs/album-overview.md` 提取视频脚本概念，生成一段 6 秒宣传视频（MiniMax video 模型固定 6 秒时长）。
 
 | 规格 | 时长 | 用途 |
 |------|------|------|
-| 完整版 | 25-30 秒 | 社交媒体主视频（B站/小红书/视频号） |
-| 精简版 | 15 秒 | 短视频平台（抖音/快手/Reels/Shorts） |
+| 标准版 | 6 秒 | 社交媒体短视频（抖音/小红书/视频号/Reels/Shorts） |
 
 ### 视频生成方式
 
@@ -45,17 +44,10 @@ phase6-cover-executor 完成后自动启动。
 不使用首帧参考，完全从文字描述生成：
 
 ```bash
-# 完整版 25-30 秒
 mmx video generate \
   --prompt "{专辑宣传视频完整描述：视觉风格、转场节奏、情绪氛围}" \
   --model MiniMax-Hailuo-2.3 \
   --download docs/promo-video.mp4
-
-# 精简版 15 秒
-mmx video generate \
-  --prompt "{精简版视频描述：快速节奏、核心视觉冲击}" \
-  --model MiniMax-Hailuo-2.3 \
-  --download docs/promo-video-15s.mp4
 ```
 
 #### 方式 B：首帧参考 + Text-to-Video（推荐）
@@ -63,19 +55,11 @@ mmx video generate \
 使用最佳专辑封面作为首帧参考，保持视觉一致性：
 
 ```bash
-# 完整版 — 以封面为首帧
 mmx video generate \
   --prompt "{视频动作/转场描述：封面逐渐展开、歌词意象浮现、情绪推进}" \
   --first-frame generate/covers/album-cover-p1.png \
   --model MiniMax-Hailuo-2.3 \
   --download docs/promo-video.mp4
-
-# 精简版 — 以封面为首帧
-mmx video generate \
-  --prompt "{精简版动作描述：封面快速展开 + 核心视觉元素闪现}" \
-  --first-frame generate/covers/album-cover-p1.png \
-  --model MiniMax-Hailuo-2.3 \
-  --download docs/promo-video-15s.mp4
 ```
 
 ### Prompt 编写指南
@@ -108,7 +92,7 @@ Motion: {运镜方式：推拉摇移/缩放/粒子}
 Typography: {文字出现方式：淡入/手写/打字机}
 Mood: {整体情绪基调}
 
-Technical: {N} second video, {16:9 或 9:16}, cinematic quality
+Technical: 6 second video, {16:9 或 9:16}, cinematic quality
 ```
 
 ### 画面比例选择
@@ -137,9 +121,9 @@ Technical: {N} second video, {16:9 或 9:16}, cinematic quality
 | # | 检查项 | 打勾标准 |
 |---|--------|---------|
 | 1 | 完整版视频已生成 | `docs/promo-video.mp4` 存在 |
-| 2 | 精简版视频已生成 | `docs/promo-video-15s.mp4` 存在 |
+| 2 | 视频已生成 | `docs/promo-video.mp4` 存在 |
 | 3 | 视频文件可播放 | 非损坏文件，文件大小 ≥ 1MB |
-| 4 | 视频时长符合规格 | 完整版 20-30s，精简版 12-18s |
+| 4 | 视频时长符合规格 | 固定 6 秒 |
 | 5 | 首帧参考（如使用）正确 | 视频开头与专辑封面视觉一致 |
 | 6 | 生成日志已保存 | 记录生成耗时/模型版本/使用方式 |
 

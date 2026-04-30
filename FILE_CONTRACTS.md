@@ -22,8 +22,7 @@
 │   ├── artist-story-short.md      ← Phase 6
 │   ├── artist-story-quotes.md     ← Phase 6
 │   ├── platform-check.txt         ← Phase 6.5
-│   ├── promo-video.mp4            ← Phase 6.7 宣传视频完整版
-│   └── promo-video-15s.mp4        ← Phase 6.7 宣传视频精简版
+│   └── promo-video.mp4            ← Phase 6.7 宣传视频（6 秒）
 ├── generate/                      ← Phase 3-4 产出
 │   ├── prompts/                   ← Phase 4 Prompt 文件
 │   │   ├── TN-曲名-prompt1.txt
@@ -799,8 +798,7 @@ generate/covers/tracks/T{N}-曲名-p3.png          ← 单曲封面 版本3
 
 #### 输出文件
 ```
-docs/promo-video.mp4           ← 宣传视频完整版（25-30秒）
-docs/promo-video-15s.mp4       ← 宣传视频精简版（15秒）
+docs/promo-video.mp4           ← 宣传视频（6 秒）
 ```
 
 #### 格式要求
@@ -812,7 +810,7 @@ docs/promo-video-15s.mp4       ← 宣传视频精简版（15秒）
 #### 验证
 - [ ] 完整版视频已生成（≥ 1MB）
 - [ ] 精简版视频已生成（≥ 1MB）
-- [ ] 视频时长符合规格（完整版 20-30s，精简版 12-18s）
+- [ ] 视频时长符合规格（固定 6 秒）
 
 ### 平台适配检查
 

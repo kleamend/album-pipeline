@@ -49,8 +49,7 @@ zip -r <专辑名>-宣传物料.zip \
   generate/covers/album-cover-p2.png \
   generate/covers/album-cover-p3.png \
   generate/covers/tracks/ \
-  docs/promo-video.mp4 \
-  docs/promo-video-15s.mp4
+  docs/promo-video.mp4
 ```
 
 ### 最终交付物清单
@@ -81,8 +80,7 @@ zip -r <专辑名>-宣传物料.zip \
 
 | 文件 | 内容 | 状态 |
 |------|------|------|
-| `docs/promo-video.mp4` | 宣传视频完整版（25-30秒） | ✅ |
-| `docs/promo-video-15s.mp4` | 宣传视频精简版（15秒） | ✅ |
+| `docs/promo-video.mp4` | 宣传视频（6 秒） | ✅ |
 
 **音频（独立目录，不在 zip 内）：**
 
@@ -113,8 +111,7 @@ zip -r <专辑名>-宣传物料.zip \
 单曲封面：`generate/covers/tracks/T{N}-曲名-p{1,2,3}.png`
 
 **宣传视频（新增）：**
-完整版：`docs/promo-video.mp4`
-精简版：`docs/promo-video-15s.mp4`
+视频：`docs/promo-video.mp4`
 
 曲目列表：
 01. T1 {曲名} - {时长}
