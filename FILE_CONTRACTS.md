@@ -15,12 +15,15 @@
 │   └── ...
 ├── docs/                          ← Phase 1 + Phase 6 产出
 │   ├── album-overview.md          ← Phase 1 主产物
-│   ├── cover-concept.md           ← Phase 6
+│   ├── cover-concept.md           ← Phase 6.4
 │   ├── promotional-materials.md   ← Phase 6
 │   ├── artist-story-cn.md         ← Phase 6
 │   ├── artist-story-en.md         ← Phase 6
 │   ├── artist-story-short.md      ← Phase 6
-│   └── artist-story-quotes.md     ← Phase 6
+│   ├── artist-story-quotes.md     ← Phase 6
+│   ├── platform-check.txt         ← Phase 6.5
+│   ├── promo-video.mp4            ← Phase 6.7 宣传视频完整版
+│   └── promo-video-15s.mp4        ← Phase 6.7 宣传视频精简版
 ├── generate/                      ← Phase 3-4 产出
 │   ├── prompts/                   ← Phase 4 Prompt 文件
 │   │   ├── TN-曲名-prompt1.txt
@@ -32,7 +35,17 @@
 │   ├── cn/                        ← Phase 4 中文原始生成
 │   ├── en/                        ← Phase 4 英文原始生成
 │   ├── cn_320k/                   ← Phase 5 中文最终交付
-│   └── en_320k/                   ← Phase 5 英文最终交付
+│   ├── en_320k/                   ← Phase 5 英文最终交付
+│   └── covers/                    ← Phase 6.4.5-6.4.6 封面产物
+│       ├── album-cover-p1.png
+│       ├── album-cover-p2.png
+│       ├── album-cover-p3.png
+│       ├── prompts/               ← Phase 6.4.5 Prompt 文件
+│       │   ├── album-cover-prompt{1,2,3}.txt
+│       │   ├── T{N}-曲名-cover-prompt{1,2,3}.txt
+│       │   └── index.json
+│       └── tracks/                ← Phase 6.4.6 单曲封面
+│           └── T{N}-曲名-p{1,2,3}.png
 └── assets/                        ← Phase 6 封面概念图
 ```
 
@@ -708,9 +721,98 @@ Phase 6 更新 `docs/album-overview.md` 的评分总览时，应将 Phase 1 的 
 | `docs/artist-story-en.md` | 艺人说英文长版（~1400 词） |
 | `docs/artist-story-short.md` | 艺人说中英文短版（各 ~400 字/词） |
 | `docs/artist-story-quotes.md` | 金句提取（5 条中英对照） |
-| `docs/cover-concept.md` | 封面概念（≥3 方向 + HEX 配色） |
+| `docs/cover-concept.md` | 封面概念（≥3 方向 + HEX 配色 + 图片生成结构化描述） |
 | `docs/platform-check.txt` | 平台适配检查结果 |
 | `*.zip` | `<project-root>/<专辑名>-宣传物料.zip` |
+
+### Phase 6.4.5 契约 — Cover Prompt Generator
+
+#### 输入
+| 来源 | 文件 | 内容 |
+|------|------|------|
+| Phase 6.4 | `docs/cover-concept.md` | 封面概念方案 |
+| Phase 1 | `docs/album-overview.md` | 核心概念/叙事轴 |
+| Phase 2 | `songs/T{N}-曲名.md` | 每首歌核心意象 |
+
+#### 输出文件
+```
+generate/covers/prompts/album-cover-prompt1.txt     ← 专辑封面 版本1：概念忠实型
+generate/covers/prompts/album-cover-prompt2.txt     ← 专辑封面 版本2：情绪氛围型
+generate/covers/prompts/album-cover-prompt3.txt     ← 专辑封面 版本3：极简符号型
+generate/covers/prompts/T{N}-曲名-cover-prompt1.txt ← 单曲封面 版本1
+generate/covers/prompts/T{N}-曲名-cover-prompt2.txt ← 单曲封面 版本2
+generate/covers/prompts/T{N}-曲名-cover-prompt3.txt ← 单曲封面 版本3
+generate/covers/prompts/index.json                  ← Prompt 索引
+```
+
+#### Prompt 策略
+
+| 版本 | 策略 | 组织方式 | 字符上限 |
+|------|------|---------|----------|
+| 1 | 概念忠实型 | 直接映射封面概念方案 | ≤ 1000 |
+| 2 | 情绪氛围型 | 从情绪弧线和身体感出发 | ≤ 1000 |
+| 3 | 极简符号型 | 核心悖论 → 视觉符号 | ≤ 1000 |
+
+#### 验证
+- [ ] 专辑封面 3 个 Prompt 已生成
+- [ ] 每首歌 3 个单曲封面 Prompt 已生成
+- [ ] 每个 Prompt ≤ 1000 字符
+- [ ] index.json 已生成
+
+### Phase 6.4.6 契约 — Cover Executor
+
+#### 输入
+| 来源 | 文件 | 内容 |
+|------|------|------|
+| Phase 6.4.5 | `generate/covers/prompts/*.txt` | 封面 Prompt 文件 |
+| Phase 6.4.5 | `generate/covers/prompts/index.json` | Prompt 索引 |
+
+#### 输出文件
+```
+generate/covers/album-cover-p1.png              ← 专辑封面 版本1
+generate/covers/album-cover-p2.png              ← 专辑封面 版本2
+generate/covers/album-cover-p3.png              ← 专辑封面 版本3
+generate/covers/tracks/T{N}-曲名-p1.png          ← 单曲封面 版本1
+generate/covers/tracks/T{N}-曲名-p2.png          ← 单曲封面 版本2
+generate/covers/tracks/T{N}-曲名-p3.png          ← 单曲封面 版本3
+```
+
+#### 格式要求
+- CLI 工具：`mmx image generate`
+- 分辨率：2048×2048px（正方形）
+- 格式：PNG
+
+#### 验证
+- [ ] 专辑封面 3 张已生成（≥ 50KB）
+- [ ] 单曲封面全部已生成（N首 × 3张）
+- [ ] 产物目录结构正确
+
+### Phase 6.7 契约 — Promo Video Executor
+
+#### 输入
+| 来源 | 文件 | 内容 |
+|------|------|------|
+| Phase 6 | `docs/album-overview.md` | 核心概念/曲目单 |
+| Phase 6 | `docs/promotional-materials.md` | 宣传文档 |
+| Phase 6 | `docs/cover-concept.md` | 封面概念 |
+| Phase 6.4.6 | `generate/covers/album-cover-p1.png` | 最佳专辑封面（首帧参考） |
+
+#### 输出文件
+```
+docs/promo-video.mp4           ← 宣传视频完整版（25-30秒）
+docs/promo-video-15s.mp4       ← 宣传视频精简版（15秒）
+```
+
+#### 格式要求
+- CLI 工具：`mmx video generate`
+- 模型：MiniMax-Hailuo-2.3
+- 画面比例：默认 16:9
+- 首帧参考：可选（推荐用 album-cover-p1.png）
+
+#### 验证
+- [ ] 完整版视频已生成（≥ 1MB）
+- [ ] 精简版视频已生成（≥ 1MB）
+- [ ] 视频时长符合规格（完整版 20-30s，精简版 12-18s）
 
 ### 平台适配检查
 
@@ -757,4 +859,11 @@ Phase 5 输出 → Phase 6 输入
   generate/en_320k/*.mp3  ──最终音频──→  上传平台
   songs/T{N}-*.md  ──高光文案──→  promotional-materials.md
   docs/album-overview.md  ──统筹信息──→  album-packager
+
+Phase 6 内部依赖
+  docs/cover-concept.md  ──结构化描述──→  phase6-cover-prompt-generator
+  generate/covers/prompts/*.txt  ──Prompt──→  phase6-cover-executor → 封面图 PNG
+  generate/covers/album-cover-p1.png  ──首帧参考──→  phase6-promo-video-executor
+  docs/promotional-materials.md  ──视频脚本──→  phase6-promo-video-executor → 宣传视频 MP4
+  全部产物（封面图+视频+文档）──→  phase6-packager → zip 压缩包
 ```
