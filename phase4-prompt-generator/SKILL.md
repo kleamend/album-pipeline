@@ -61,7 +61,7 @@ Scene: {Usage scenario}
 **Condensation rules:**
 - Preserve the core time range and arrangement action of each section
 - Remove millisecond-precision timestamps, dB values, and Sound Design tables
-- Transform technical descriptions into感性 (sensory/emotive) descriptions that music models can understand
+- Transform technical descriptions into sensory/emotive descriptions that music models can understand
 - Cover at least 60% of core arrangement design information
 
 ### Prompt Version 2 — Emotional Narrative Driven

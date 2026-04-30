@@ -176,8 +176,8 @@ Each Skill must strictly follow the file contracts for its Phase and may not dev
 | Reference | Path |
 |-----------|------|
 | Full pipeline retrospective | `docs/production-pipeline-review.md` |
-| Example song | `examples/songs/T1-出发.md` (98-point final draft) |
-| Lyrics example | `examples/lyrics/cn/T1-出发.txt` |
+| Example song | `examples/songs/T1-Departure.md` (98-point final draft) |
+| Lyrics example | `examples/lyrics/cn/T1-出发.txt` (Chinese) / `examples/lyrics/en/T1-Departure.txt` (English) |
 | MiniMax CLI | `minimax music generate --help` |
 | Model duration | music-2.6 can generate 3–5 minutes of high-quality content; quality typically scales positively with duration (see tuning experiment data, TBD) |
 | Lyrics length | ≤ 3,500 characters (excluding structure tag text) |

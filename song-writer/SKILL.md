@@ -173,5 +173,5 @@ Strictly follows the Phase 2 contract in `FILE_CONTRACTS.md`.
 
 ## References
 
-- `examples/songs/T1-出发.md` — 98-point final version example
+- `examples/songs/T1-Departure.md` — 98-point final version example (English) / `examples/songs/T1-出发.md` (Chinese)
 - `FILE_CONTRACTS.md` — Phase 2 file format contract

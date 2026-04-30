@@ -200,7 +200,7 @@ I walked out
 **Special processing for "admitting" two characters:**
 - Pronunciation weighted, sense of "swallowing" (not theatrical, truly speaking)
 - "Is" slightly drags beat, like convincing oneself
-- No breath between the two characters, one breath说完, sense of holding it in
+- No breath between the two characters, one breath through, sense of holding it in
 
 - 3:30: Full track enters: drums + bass + electric guitar + strings + synthesizer
 - 3:42: **Core emotional turning point — vocal silence (drums pause 2 beats)**
@@ -214,7 +214,7 @@ I walked out
 | Parameter | Original | Round8 Optimization | Reason |
 |-----------|----------|---------------------|---------|
 | Reverb | None (dry) | **Long reverb (6-8s), but reverb itself doesn't fade** | "Dissipation" isn't abrupt cut-off, but sound "dissolving into air"; dry too short, no "sky" extension |
-| Tail envelope | Natural decay | Slight artificial slow release (last 0.5s -3dB soft拐点) | Prevent digital audio noise amplification at ultra-low levels |
+| Tail envelope | Natural decay | Slight artificial slow release (last 0.5s -3dB soft curve) | Prevent digital audio noise amplification at ultra-low levels |
 | Fade | None | **Pure reverb tail (Fader stays put, only reverb naturally disappears)** | Key: Fader doesn't move, let reverb naturally "leak" away — this is professional mixing's "controlled lack of control" |
 | Piano tail | Single note falls lightly | Piano enters 0.5s before vocal, deep reverb (8s+) | Piano "sees vocal off," after vocal disappears piano reverb alone floats away, deeper lingering |
 
@@ -253,7 +253,7 @@ I walked out
 **🔗 T1-T2 Connection Design (4:30-5:00)**
 - 4:30-4:36: **6-beat reverse sound effect** (expanded from original 4 beats, increased momentum)
   - Sound content: Reverse playback of footsteps (from tail to head), like "sucking sound back"
-  - **+heartbeat sample mixed in (60BPM, rhythmically aligned with footsteps)**: At the last two beats of reverse effect, heartbeat enters at extremely light volume (-38dB), like something蓄力待发
+  - **+heartbeat sample mixed in (60BPM, rhythmically aligned with footsteps)**: At the last two beats of reverse effect, heartbeat enters at extremely light volume (-38dB), like coiled energy ready to spring
   - Very light electronic noise mixed in (high-frequency grain), -30dB
   - Effect: footsteps "sucked back" + heartbeat "falling down" = building momentum for T2 Intro's electronic pulse
 - 4:36: Full track fade out
@@ -381,7 +381,7 @@ This **suspend→resolve→suspend→resolve** rhyme rhythm completely synchroni
 |----------|----------------|-------------|
 | Urban transition youth | 25-33, career/relationship/self-reconstruction, late night alone/commute/gym stretching | ★★★★★ |
 | Indie/depth users | NetEase Cloud core users, actively exploring, comment section social, sensitive to "copy" | ★★★★☆ |
-| Graduate/overseas student groups | Graduation season/开学 season/before/after going abroad, seasonal explosive playback | ★★★★★ |
+| Graduate/overseas student groups | Graduation season/back-to-school season/before/after going abroad, seasonal explosive playback | ★★★★★ |
 | Pan-literary youth | 25-40, café/reading/work background music, don't like too loud or too poppy | ★★★☆☆ |
 
 **Less suitable audiences:**
@@ -406,7 +406,7 @@ This **suspend→resolve→suspend→resolve** rhyme rhythm completely synchroni
 
 | Type | Potential | Analysis |
 |------|-----------|----------|
-| Film/TV OST | High | Urban-themed dramas/films (Beijing漂/overseas/career transition scenes) |
+| Film/TV OST | High | Urban-themed dramas/films (Beijing drift/overseas/career transition scenes) |
 | Auto brands | Medium-High | "Walking" imagery naturally matches driving/road |
 | Graduation season marketing | High | Seasonal strong demand; "walk into sky" can be graduation campaign theme song |
 | Sports brands | Low | BPM doesn't support sports scenes |

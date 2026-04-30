@@ -35,7 +35,7 @@ You may read all existing sections (lyrics, arrangement design, etc.) for refere
 2. **Hook rhyme check**: Confirm whether Hook section rhymes are unified
 3. **Verse→Hook transition check**: Whether rhyme seeds are planted in Verse and carried to Hook
 4. **BPM alignment check**: Whether rhyme landing points align with BPM beats (e.g., 2/4 rhyme)
-5. **Rhyme × Arrangement alignment check**: Whether key rhythm nodes have arrangement actions to配合
+5. **Rhyme × Arrangement alignment check**: Whether key rhythm nodes have arrangement actions to accompany
 6. **Break detection**: Whether there are lines that unexpectedly break from the main rhyme group
 
 **Instrumental tracks:**
@@ -43,7 +43,7 @@ You may read all existing sections (lyrics, arrangement design, etc.) for refere
 2. **Timbre layer check**: Whether main melody/accompaniment/ambience layers have clear timbre separation
 3. **Dynamic change check**: Whether timbre/intensity changes at emotional turning points are natural
 4. **BPM alignment check**: Whether rhythm landing points align with BPM beats
-5. **Timbre × Arrangement alignment check**: Whether key timbre nodes have arrangement actions to配合
+5. **Timbre × Arrangement alignment check**: Whether key timbre nodes have arrangement actions to accompany
 6. **Break detection**: Whether there are unexpected timbre/rhythm breaks
 
 ### Round 1 (Required Analysis)
@@ -80,7 +80,7 @@ After completing analysis, based on the previous round's scoring results:
 | 2 | Hook rhymes unified | Hook section rhymes are consistent, or intentional variants are explained |
 | 3 | Verse→Hook transition | Rhyme seeds are planted in Verse and carried to Hook |
 | 4 | BPM alignment | Rhyme landing points align with BPM beats (e.g., 2/4 time rhyme) |
-| 5 | Rhyme × Arrangement alignment | Key rhythm nodes have arrangement actions to配合 (white space/explosion/sudden stop) |
+| 5 | Rhyme × Arrangement alignment | Key rhythm nodes have arrangement actions to accompany (white space/explosion/sudden stop) |
 | 6 | No rhyme breaks | No lines unexpectedly break from the main rhyme group; if any, annotate the reason |
 
 ---

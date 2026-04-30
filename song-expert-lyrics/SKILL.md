@@ -101,4 +101,4 @@ Lyrics must be written to the "Lyrics" section of `songs/TN-track-name.md`, usin
 
 ## Reference
 
-The lyrics section in `examples/songs/T1-出发.md` is a format example.
+The lyrics section in `examples/songs/T1-Departure.md` (English) / `examples/songs/T1-出发.md` (Chinese) are format examples.

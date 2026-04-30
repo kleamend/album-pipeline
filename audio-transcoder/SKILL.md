@@ -38,9 +38,9 @@
 ## Triggers
 
 After Phase 4 completion, user commands:
-- "选定并转码" (Select and Transcode)
+- "Select and transcode" (选定并转码)
 - "Phase 5"
-- "听评选定" (Listener Selection)
+- "Listener selection" (听评选定)
 
 ---
 

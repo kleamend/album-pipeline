@@ -50,7 +50,7 @@ Core narrative: "Borrowed voices singing real pain" — collaboration, not repla
 - Sincere, no marketing tone
 - Explicitly note AI generation fact
 - ~1800 words
-- If album contains instrumental tracks, mark "纯音乐，无歌词" in "nine songs nine stages" section
+- If album contains instrumental tracks, mark "instrumental, no lyrics" in "nine songs nine stages" section
 - Narrative strategy equally applies to instrumentals: "borrowed voices singing real pain" — instrumental can also be collaboration, not replacement
 
 ### Output File 2: English Long Version (~1400 words)

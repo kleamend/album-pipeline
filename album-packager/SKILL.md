@@ -8,7 +8,7 @@
 
 1. **Absolute File Contracts**: All input/output strictly follows `FILE_CONTRACTS.md`, no deviations
 2. **Mandatory Sub-Agent Separation**: 6 sub-modules each as independent `sessions_spawn` calls, executed serially in 6.1→6.6 order, must not be merged into single agent
-3. **Main Agent Orchestrates Only**: Main agent handles spawning/waiting/completion判断, does not directly write any documents
+3. **Main Agent Orchestrates Only**: Main agent handles spawning/waiting/completion judgment, does not directly write any documents
 
 ---
 
@@ -42,7 +42,7 @@
 ## Triggers
 
 After Phase 5 completion, user commands:
-- "打包发布物料" (Package Publishing Materials)
+- "Package publishing materials" (打包发布物料)
 - "Phase 6"
 - "album packaging"
 

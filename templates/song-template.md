@@ -34,7 +34,7 @@ Lyrics line...
 
 ## English Lyrics (Round{N} · {Status Description})
 
-> Fill only for bilingual/English albums. Delete for Chinese-only albums. For instrumental tracks, mark "纯音乐，无".
+> Fill only for bilingual/English albums. Delete for Chinese-only albums. For instrumental tracks, mark "instrumental, no lyrics".
 
 ```
 [Structure Tag]
