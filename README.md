@@ -5,7 +5,8 @@
 <h1 align="center">Album Pipeline</h1>
 
 <p align="center">
-  <strong>AI music album production pipeline — from concept to release, fully automated</strong>
+  <strong>AI music album production pipeline — from concept to release, fully automated</strong><br/>
+  <em>Powered by <a href="https://github.com/MiniMax-AI/cli">MiniMax CLI</a></em>
 </p>
 
 <p align="center">
