@@ -17,6 +17,7 @@
 </p>
 
 <p align="center">
+  <a href="#live-demo">Live Demo</a> ·
   <a href="#architecture">Architecture</a> ·
   <a href="#phase-details">Phase Details</a> ·
   <a href="#directory-structure">Directory Structure</a> ·
@@ -37,6 +38,19 @@ Album Pipeline is an **OpenClaw Skill** that automates the entire AI music album
 - **3–6 Rounds** per song — minimum 3 rounds, maximum 6, score must reach ≥ 80 to pass
 - **Bilingual** — Chinese + English albums produced in parallel
 - **Parallel by song, serial by expert** — N songs run simultaneously; within each song, experts work one after another
+
+---
+
+## Live Demo
+
+**Album:** 《赝品候鸟》 / Counterfeit Migrants — 9 tracks, ~45 min, AI-generated concept album
+
+| Version | Platform | Link |
+|---------|----------|------|
+| Chinese | NetEase Cloud Music | http://music.163.com/album/370761076/ |
+| English | NetEase Cloud Music | http://music.163.com/album/370788757/ |
+
+**Install this skill:** `openclaw skills install album-pipeline` ([ClawHub](https://clawhub.ai/skill/album-pipeline))
 
 ---
 
@@ -309,6 +323,7 @@ MIT License — See [LICENSE](LICENSE)
 </p>
 
 <p align="center">
+  <a href="#演示专辑">演示专辑</a> ·
   <a href="#架构总览">架构总览</a> ·
   <a href="#各阶段详解">各阶段详解</a> ·
   <a href="#目录结构">目录结构</a> ·
@@ -329,6 +344,19 @@ Album Pipeline 是一个**OpenClaw Skill**，负责自动化整个 AI 音乐专�
 - **3–6 轮迭代** 每首歌 — 最少 3 轮，最多 6 轮，分数必须达到 ≥ 80 才能通过
 - **双语并行** — 中文 + 英文专辑同步产出
 - **歌曲间并行，专家间串行** — N 首歌同时运行；每首歌内部专家依次操作
+
+---
+
+## 演示专辑
+
+**专辑：** 《赝品候鸟》 / Counterfeit Migrants — 9 首，约 45 分钟，AI 生成概念专辑
+
+| 版本 | 平台 | 链接 |
+|------|------|------|
+| 中文版 | 网易云音乐 | http://music.163.com/album/370761076/ |
+| 英文版 | 网易云音乐 | http://music.163.com/album/370788757/ |
+
+**安装技能：** `openclaw skills install album-pipeline`（[ClawHub](https://clawhub.ai/skill/album-pipeline)）
 
 ---
 
