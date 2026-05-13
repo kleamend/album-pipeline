@@ -1,0 +1,33 @@
+import type { AlbumProject, NewAlbumInput, PhaseRun, ProviderStatus } from '@/src/types';
+
+const BASE_URL = 'http://localhost:8000/api';
+
+async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(err.detail || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export const api = {
+  // Albums
+  listAlbums: () => request<AlbumProject[]>('/albums'),
+  getAlbum: (id: string) => request<AlbumProject>(`/albums/${id}`),
+  createAlbum: (input: NewAlbumInput) => request<AlbumProject>('/albums', { method: 'POST', body: JSON.stringify(input) }),
+  deleteAlbum: (id: string) => request<void>(`/albums/${id}`, { method: 'DELETE' }),
+
+  // Providers
+  getProviderStatus: () => request<{ minimax: ProviderStatus; netease: string }>('/providers/status'),
+
+  // Workflow
+  startPhase: (albumId: string, phase: string) =>
+    request<PhaseRun>(`/albums/${albumId}/phases/${phase}/start`, { method: 'POST' }),
+  getPhases: (albumId: string) => request<PhaseRun[]>(`/albums/${albumId}/phases`),
+  confirmConcept: (albumId: string, approved: boolean) =>
+    request<{ status: string }>(`/albums/${albumId}/decisions/concept`, { method: 'POST', body: JSON.stringify({ approved }) }),
+};
