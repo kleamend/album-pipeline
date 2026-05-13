@@ -3,14 +3,18 @@ import type { AlbumProject, NewAlbumInput, PhaseRun, ProviderStatus } from '@/sr
 const BASE_URL = 'http://localhost:8000/api';
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const { headers: customHeaders, ...rest } = options ?? {};
   const res = await fetch(`${BASE_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...options,
+    headers: { 'Content-Type': 'application/json', ...customHeaders },
+    ...rest,
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }));
     throw new Error(err.detail || `HTTP ${res.status}`);
   }
+  // Don't try to parse JSON for empty responses (204, etc.)
+  const contentLength = res.headers.get('content-length');
+  if (contentLength === '0' || res.status === 204) return undefined as T;
   return res.json();
 }
 
