@@ -1,9 +1,17 @@
-export default function Home() {
+import Sidebar from './components/Sidebar';
+import Hero from './components/Hero';
+import ProviderStatus from './components/ProviderStatus';
+import RecentProjects from './components/RecentProjects';
+
+export default function HomePage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface-dark">
-      <h1 className="font-display text-4xl font-bold text-white">
-        Album Pipeline
-      </h1>
-    </main>
+    <div className="flex h-screen">
+      <Sidebar />
+      <main className="flex-1 overflow-y-auto p-8">
+        <Hero />
+        <ProviderStatus />
+        <RecentProjects />
+      </main>
+    </div>
   );
 }
