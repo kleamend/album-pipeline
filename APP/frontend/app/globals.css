@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-muted-border;
+  }
+
+  body {
+    @apply bg-surface-dark text-slate-200 font-sans antialiased;
+  }
+
+  html {
+    @apply bg-surface-dark;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg px-6 py-3 text-sm font-semibold
+           text-white transition-all duration-200
+           bg-gradient-to-r from-accent-orange to-accent-pink
+           hover:from-accent-warm hover:to-accent-rose
+           active:scale-[0.98]
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-accent-orange disabled:hover:to-accent-pink;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-lg px-6 py-3 text-sm font-medium
+           text-slate-300 transition-all duration-200
+           border border-muted-border bg-surface hover:bg-surface-hover
+           hover:text-white hover:border-muted-light
+           active:scale-[0.98]
+           disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+
+  .card {
+    @apply rounded-xl border border-muted-border bg-surface
+           hover:bg-surface-hover hover:border-muted-light
+           transition-colors duration-200;
+  }
+}
