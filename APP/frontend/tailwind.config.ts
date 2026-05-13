@@ -31,9 +31,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["Playfair Display", "serif"],
-        sans: ["Inter", "Noto Sans SC", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        display: ["var(--font-playfair-display)", "serif"],
+        sans: ["var(--font-inter)", "var(--font-noto-sans-sc)", "sans-serif"],
+        mono: ["var(--font-jetbrains-mono)", "monospace"],
       },
       animation: {
         "fade-in-up": "fadeInUp 0.5s ease-out",
