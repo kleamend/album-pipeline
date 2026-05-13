@@ -13,7 +13,8 @@ const statusConfig: Record<string, { color: string; label: string }> = {
 };
 
 export default function ProviderStatus() {
-  const { minimaxStatus, setMinimaxStatus } = useAppStore();
+  const minimaxStatus = useAppStore((s) => s.minimaxStatus);
+  const setMinimaxStatus = useAppStore((s) => s.setMinimaxStatus);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ export default function ProviderStatus() {
       </div>
       <div className="flex-1" />
       <span className="text-xs text-muted-dim">
-        网易云 <span className="text-yellow-400">未连接</span>
+        网易云 <span className="text-accent-orange">未连接</span>
       </span>
     </div>
   );

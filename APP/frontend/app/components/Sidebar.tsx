@@ -1,25 +1,29 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useAppStore } from '@/src/stores/appStore';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+const BASE_ITEMS = [
+  { href: '/', label: '🏠', tooltip: '主页' },
+  { href: '/albums', label: '📁', tooltip: '过往专辑' },
+  { href: '/settings', label: '⚙️', tooltip: '设置' },
+];
+
 export default function Sidebar() {
-  const { sidebarCollapsed, currentAlbumId } = useAppStore();
+  const currentAlbumId = useAppStore((s) => s.currentAlbumId);
   const pathname = usePathname();
 
-  const navItems = [
-    { href: '/', label: '🏠', tooltip: '主页' },
-    { href: '/albums', label: '📁', tooltip: '过往专辑' },
-    { href: '/settings', label: '⚙️', tooltip: '设置' },
-  ];
-
-  if (currentAlbumId) {
-    navItems.splice(2, 0, { href: `/albums/${currentAlbumId}`, label: '📦', tooltip: '当前专辑' });
-  }
+  const navItems = useMemo(() => {
+    if (!currentAlbumId) return BASE_ITEMS;
+    const items = [...BASE_ITEMS];
+    items.splice(2, 0, { href: `/albums/${currentAlbumId}`, label: '📦', tooltip: '当前专辑' });
+    return items;
+  }, [currentAlbumId]);
 
   return (
-    <aside className={`flex flex-col items-center border-r border-surface-border py-6 transition-all duration-300 ${sidebarCollapsed ? 'w-14' : 'w-14'}`}>
+    <aside className="flex flex-col items-center border-r border-surface-border py-6 transition-all duration-300 w-14">
       <div className="mb-8">
         <div className="w-7 h-7 rounded-md bg-gradient-to-br from-accent-orange to-accent-pink" />
       </div>

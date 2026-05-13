@@ -27,6 +27,7 @@ const config: Config = {
           DEFAULT: "#64748b",
           light: "#94a3b8",
           dark: "#475569",
+          dim: "#64748b",
           border: "#1e293b",
         },
       },

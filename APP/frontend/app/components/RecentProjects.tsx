@@ -19,7 +19,8 @@ const statusLabels: Record<string, string> = {
 };
 
 export default function RecentProjects() {
-  const { recentAlbums, setRecentAlbums } = useAppStore();
+  const recentAlbums = useAppStore((s) => s.recentAlbums);
+  const setRecentAlbums = useAppStore((s) => s.setRecentAlbums);
 
   useEffect(() => {
     api.listAlbums().then(setRecentAlbums).catch(() => {});
