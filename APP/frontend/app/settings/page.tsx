@@ -84,22 +84,22 @@ export default function SettingsPage() {
         <h1 className="font-display text-2xl font-bold text-white mb-2">设置</h1>
         <p className="text-muted-dim text-sm mb-8">管理 LLM API 配置和本地工具链</p>
 
-        <div className="max-w-2xl space-y-6">
+        <div className="max-w-2xl space-y-8">
           {/* LLM Configuration */}
-          <div className="card p-6">
-            <h2 className="text-sm font-semibold text-white mb-2">LLM API 配置</h2>
-            <p className="text-xs text-muted-dim mb-6">
+          <div className="card-glow p-6">
+            <h2 className="section-header mb-2">LLM API 配置</h2>
+            <p className="text-xs text-muted-dim mb-6 mt-2">
               Agent Runtime 调用 LLM 生成歌词、编曲、评分等文字内容。支持 OpenAI 兼容接口。
             </p>
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
-                <label className="block text-xs text-muted-dim mb-2">
-                  API Key <span className="text-red-400">*</span>
+                <label className="block text-xs text-muted-dim mb-2 font-medium">
+                  API Key <span className="text-accent-rose">*</span>
                 </label>
                 <div className="relative">
                   <input
                     type={showKey ? 'text' : 'password'}
-                    className="w-full bg-surface border border-surface-border rounded-lg px-4 py-3 pr-14 text-sm text-white focus:border-accent-orange/40 focus:outline-none transition-colors"
+                    className="input-field pr-14 font-mono"
                     placeholder="sk-xxxxxxxxxxxxxxxx"
                     value={llmKey}
                     onChange={(e) => setLlmKey(e.target.value)}
@@ -107,52 +107,64 @@ export default function SettingsPage() {
                   <button
                     type="button"
                     onClick={() => setShowKey(!showKey)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-dim hover:text-muted transition-colors"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg text-[10px] text-muted-dim hover:text-white hover:bg-white/[0.06] transition-all duration-200 border border-transparent hover:border-muted-border"
                   >
                     {showKey ? '隐藏' : '显示'}
                   </button>
                 </div>
-                <p className="text-[10px] text-muted-dim mt-1">API Key 仅存储在本机，不会上传到任何服务器。</p>
+                <p className="text-[10px] text-muted-dim mt-1.5">API Key 仅存储在本机，不会上传到任何服务器。</p>
               </div>
               <div>
-                <label className="block text-xs text-muted-dim mb-2">API Base URL</label>
+                <label className="block text-xs text-muted-dim mb-2 font-medium">API Base URL</label>
                 <input
-                  className="w-full bg-surface border border-surface-border rounded-lg px-4 py-3 text-sm text-white focus:border-accent-orange/40 focus:outline-none transition-colors font-mono"
+                  className="input-field font-mono"
+                  placeholder="https://api.openai.com/v1"
                   value={llmBaseUrl}
                   onChange={(e) => setLlmBaseUrl(e.target.value)}
                 />
-                <p className="text-[10px] text-muted-dim mt-1">默认 OpenAI，MiniMax 填 https://api.minimax.chat/v1</p>
+                <p className="text-[10px] text-muted-dim mt-1.5">默认 OpenAI，MiniMax 填 https://api.minimax.chat/v1</p>
               </div>
               <div>
-                <label className="block text-xs text-muted-dim mb-2">模型名称</label>
+                <label className="block text-xs text-muted-dim mb-2 font-medium">模型名称</label>
                 <input
-                  className="w-full bg-surface border border-surface-border rounded-lg px-4 py-3 text-sm text-white focus:border-accent-orange/40 focus:outline-none transition-colors"
+                  className="input-field"
+                  placeholder="gpt-4o"
                   value={llmModel}
                   onChange={(e) => setLlmModel(e.target.value)}
                 />
-                <p className="text-[10px] text-muted-dim mt-1">例如 gpt-4o / deepseek-chat / abab7-chat</p>
+                <p className="text-[10px] text-muted-dim mt-1.5">例如 gpt-4o / deepseek-chat / abab7-chat</p>
               </div>
             </div>
           </div>
 
           {/* MiniMax CLI */}
-          <div className="card p-6">
-            <h2 className="text-sm font-semibold text-white mb-2">MiniMax CLI</h2>
-            <p className="text-xs text-muted-dim mb-6">
-              CLI 用于音乐/图片/视频生成。在终端运行 <code className="px-1.5 py-0.5 bg-surface rounded text-xs">minimax auth login</code> 登录。
+          <div className="card-glow p-6">
+            <h2 className="section-header mb-2">MiniMax CLI</h2>
+            <p className="text-xs text-muted-dim mb-6 mt-2">
+              CLI 用于音乐/图片/视频生成。在终端运行 <code className="px-1.5 py-0.5 bg-surface-elevated rounded text-xs text-accent-orange">minimax auth login</code> 登录。
             </p>
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div>
-                <label className="block text-xs text-muted-dim mb-2">CLI 状态</label>
+                <label className="block text-xs text-muted-dim mb-2 font-medium">CLI 状态</label>
                 <div className="flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${cliStatus.includes('检测到') ? 'bg-green-400' : 'bg-yellow-400'}`} />
-                  <span className="text-sm text-muted">{cliStatus}</span>
+                  {cliStatus.includes('已就绪') || cliStatus.includes('检测到') ? (
+                    <span className="badge-success gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-glow-sm" />
+                      {cliStatus}
+                    </span>
+                  ) : (
+                    <span className="badge-warning gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse-soft" />
+                      {cliStatus}
+                    </span>
+                  )}
                 </div>
               </div>
               <div>
-                <label className="block text-xs text-muted-dim mb-2">默认音乐模型</label>
+                <label className="block text-xs text-muted-dim mb-2 font-medium">默认音乐模型</label>
                 <input
-                  className="w-full bg-surface border border-surface-border rounded-lg px-4 py-3 text-sm text-white focus:border-accent-orange/40 focus:outline-none transition-colors"
+                  className="input-field"
+                  placeholder="music-01"
                   value={musicModel}
                   onChange={(e) => setMusicModel(e.target.value)}
                 />
@@ -161,44 +173,45 @@ export default function SettingsPage() {
           </div>
 
           {/* Save button */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-6 py-2.5 bg-accent-orange hover:bg-accent-orange/80 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`btn-primary ${saved ? '!bg-gradient-to-r !from-emerald-500 !to-emerald-400 !shadow-emerald-500/20' : ''}`}
             >
-              {saving ? '保存中...' : '保存配置'}
+              {saving ? '保存中...' : saved ? '已保存' : '保存配置'}
             </button>
-            {saved && <span className="text-sm text-green-400">保存成功</span>}
-            {error && <span className="text-sm text-red-400">{error}</span>}
+            {error && <span className="text-sm text-red-400 animate-fade-in">{error}</span>}
           </div>
 
           {/* Workspace */}
-          <div className="card p-6">
-            <h2 className="text-sm font-semibold text-white mb-4">工作区</h2>
+          <div className="card-glow p-6">
+            <h2 className="section-header mb-4">工作区</h2>
             <div>
-              <label className="block text-xs text-muted-dim mb-2">项目目录</label>
-              <div className="w-full bg-surface border border-surface-border rounded-lg px-4 py-3 text-sm text-muted font-mono">
+              <label className="block text-xs text-muted-dim mb-2 font-medium">项目目录</label>
+              <div className="input-field font-mono text-muted cursor-default">
                 ~/album-workspace/projects/
               </div>
             </div>
           </div>
 
           {/* Netease */}
-          <div className="card p-6">
-            <h2 className="text-sm font-semibold text-white mb-4">网易云音乐</h2>
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-yellow-400 rounded-full" />
-              <span className="text-sm text-muted">未连接</span>
+          <div className="card-glow p-6">
+            <h2 className="section-header mb-4">网易云音乐</h2>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="badge-warning gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                未连接
+              </span>
             </div>
-            <p className="text-xs text-muted-dim mt-2">连接后可生成更完整的上传清单，并快速进入发布流程。</p>
+            <p className="text-xs text-muted-dim">连接后可生成更完整的上传清单，并快速进入发布流程。</p>
           </div>
 
           {/* App Info */}
-          <div className="card p-6">
-            <h2 className="text-sm font-semibold text-white mb-4">关于</h2>
-            <div className="text-xs text-muted-dim space-y-1">
-              <p>Album Pipeline v0.1.0</p>
+          <div className="card-glow p-6">
+            <h2 className="section-header mb-4">关于</h2>
+            <div className="text-xs text-muted-dim space-y-1.5">
+              <p className="text-white font-medium">Album Pipeline v0.1.0</p>
               <p>AI 音乐专辑生产流水线</p>
               <p>Powered by MiniMax CLI</p>
             </div>

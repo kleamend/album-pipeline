@@ -31,29 +31,32 @@ export default function TakePlayer({ albumId }: Props) {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="px-8 py-5 border-b border-surface-border bg-surface-light/50">
-        <div className="flex items-center justify-between">
+      <div className="px-8 py-5 border-b border-muted-border bg-surface-light/50">
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="font-display text-xl font-bold text-white">Phase 5 · 听选与转码</h1>
+            <div className="flex items-center gap-3 mb-1">
+              <span className="badge-accent">Phase 5</span>
+              <h1 className="section-header !text-xs !mb-0">听选与转码</h1>
+            </div>
             <p className="text-xs text-muted-dim mt-1">每首歌对比 3 个 Take，选择最佳版本</p>
           </div>
-          <span className="px-3 py-1 bg-green-400/10 text-green-400 rounded-full text-xs">
+          <span className={`badge ${Object.keys(selections).length === tracks.length ? 'badge-success' : 'badge-info'}`}>
             {Object.keys(selections).length}/{tracks.length} 已选定
           </span>
         </div>
 
         {/* Track pills */}
-        <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
+        <div className="flex gap-2 overflow-x-auto pb-2">
           {tracks.map((t, i) => (
             <button
               key={t.track_id}
               onClick={() => setCurrentTrackIdx(i)}
-              className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
+              className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-300 ${
                 i === currentTrackIdx
-                  ? 'bg-accent-orange/10 border border-accent-orange/30 text-accent-orange'
+                  ? 'bg-accent-orange/15 border border-accent-orange/40 text-accent-orange shadow-glow-sm'
                   : selections[t.track_id]
-                  ? 'bg-green-400/10 border border-green-400/20 text-green-400'
-                  : 'bg-surface-light border border-surface-border text-muted-dim'
+                  ? 'badge-success'
+                  : 'bg-surface-elevated border border-muted-border text-muted-dim hover:text-white hover:border-white/[0.12]'
               }`}
             >
               {String(t.index).padStart(2, '0')} · {t.title}
@@ -67,15 +70,22 @@ export default function TakePlayer({ albumId }: Props) {
       <div className="flex-1 overflow-y-auto p-8">
         {currentTrack ? (
           <div>
-            {/* Album art placeholder */}
+            {/* Album art placeholder - vinyl inspired */}
             <div className="flex items-center gap-6 mb-8">
-              <div className="w-28 h-28 rounded-xl bg-gradient-to-br from-accent-orange/20 to-accent-pink/10 flex items-center justify-center">
-                <span className="font-display text-2xl font-bold text-accent-orange/30">
-                  {String(currentTrack.index).padStart(2, '0')}
-                </span>
+              <div className="vinyl-accent">
+                <div className="w-28 h-28 rounded-full bg-gradient-to-br from-surface-elevated to-surface flex items-center justify-center relative shadow-glow-md">
+                  {/* Concentric rings */}
+                  <div className="absolute inset-2.5 rounded-full border border-white/[0.06]" />
+                  <div className="absolute inset-5 rounded-full border border-white/[0.04]" />
+                  <div className="absolute inset-9 rounded-full bg-accent-orange/10 flex items-center justify-center">
+                    <span className="font-display text-xl font-bold text-gradient">
+                      {String(currentTrack.index).padStart(2, '0')}
+                    </span>
+                  </div>
+                </div>
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">{currentTrack.title}</h2>
+                <h2 className="font-display text-lg font-semibold text-white">{currentTrack.title}</h2>
                 <p className="text-xs text-muted-dim mt-1">3 个 Take 版本 · 键盘快捷键 1/2/3 切换播放 · Enter 确认</p>
               </div>
             </div>
@@ -87,47 +97,49 @@ export default function TakePlayer({ albumId }: Props) {
                 return (
                   <div
                     key={v.id}
-                    className={`p-5 rounded-xl border transition-all cursor-pointer ${
+                    className={`p-5 rounded-xl border transition-all duration-300 cursor-pointer ${
                       isSelected
-                        ? 'bg-green-400/5 border-green-400/20'
-                        : 'bg-surface-light border-surface-border hover:border-accent-orange/20'
+                        ? 'bg-emerald-500/[0.04] border-emerald-400/30 shadow-glow-sm'
+                        : 'bg-surface-elevated border-muted-border hover:border-white/[0.12] hover:bg-white/[0.03] shadow-card hover:shadow-card-hover'
                     }`}
                     onClick={() => {
                       setSelections((s) => ({ ...s, [currentTrack.track_id]: v.version }));
                     }}
                   >
                     <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-lg">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg transition-colors ${
+                        isSelected ? 'bg-emerald-400/10 text-emerald-400' : 'bg-white/[0.04] text-muted-dim'
+                      }`}>
                         ▶
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-3">
                           <span className="text-sm font-semibold text-white">{v.version.toUpperCase()} · {v.strategy}</span>
                           {isSelected && (
-                            <span className="px-2 py-0.5 bg-green-400/15 text-green-400 rounded text-[10px]">已选定</span>
+                            <span className="badge-success text-[10px] px-2 py-0.5">已选定</span>
                           )}
                         </div>
-                        <div className="text-xs text-muted-dim mt-2">
+                        <div className="text-xs text-muted-dim mt-2 font-mono">
                           ~4.2 MB · 03:24 · 320kbps · 44.1kHz
                         </div>
-                        {/* Waveform visualization placeholder */}
+                        {/* Waveform visualization */}
                         <div className="flex items-end gap-0.5 h-8 mt-3">
                           {Array.from({ length: 30 }).map((_, i) => (
                             <div
                               key={i}
                               className="w-1.5 rounded-sm"
                               style={{
-                                height: `${12 + Math.random() * 20}px`,
+                                height: `${12 + Math.sin(i * 0.7) * 6 + Math.random() * 14}px`,
                                 background: isSelected
-                                  ? 'linear-gradient(180deg, #4ade80, #22c55e)'
-                                  : 'linear-gradient(180deg, #94a3b8, #64748b)',
+                                  ? 'linear-gradient(180deg, #34d399, #10b981, #059669)'
+                                  : 'linear-gradient(180deg, #fb923c, #f97316, #f472b6)',
                               }}
                             />
                           ))}
                         </div>
                       </div>
-                      <div className="text-center pl-4 border-l border-surface-border">
-                        <div className={`text-lg font-bold ${isSelected ? 'text-green-400' : 'text-muted'}`}>
+                      <div className="text-center pl-4 border-l border-muted-border">
+                        <div className={`text-lg font-bold ${isSelected ? 'text-gradient' : 'text-muted'}`}>
                           {v.version === 'p1' ? '92' : v.version === 'p2' ? '88' : '85'}
                         </div>
                         <div className="text-[10px] text-muted-dim">P2 评分</div>
@@ -139,18 +151,24 @@ export default function TakePlayer({ albumId }: Props) {
             </div>
 
             {/* Actions */}
-            <div className="flex justify-between items-center mt-8 pt-6 border-t border-surface-border">
-              <div className="flex gap-2 text-xs text-muted-dim">
-                <kbd className="px-2 py-0.5 bg-surface-border rounded text-[10px]">1/2/3</kbd>
+            <div className="flex justify-between items-center mt-8 pt-6 border-t border-muted-border">
+              <div className="flex items-center gap-3 text-xs text-muted-dim">
+                <div className="flex items-center gap-1.5">
+                  <kbd className="px-1.5 py-0.5 bg-white/[0.04] border border-muted-border rounded text-[10px] text-muted-light font-mono">1</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-white/[0.04] border border-muted-border rounded text-[10px] text-muted-light font-mono">2</kbd>
+                  <kbd className="px-1.5 py-0.5 bg-white/[0.04] border border-muted-border rounded text-[10px] text-muted-light font-mono">3</kbd>
+                </div>
                 <span>切换播放</span>
-                <kbd className="px-2 py-0.5 bg-surface-border rounded text-[10px] ml-3">Enter</kbd>
+                <div className="flex items-center gap-1.5 ml-2">
+                  <kbd className="px-1.5 py-0.5 bg-white/[0.04] border border-muted-border rounded text-[10px] text-muted-light font-mono">Enter</kbd>
+                </div>
                 <span>确认选择</span>
               </div>
               <div className="flex gap-3">
                 <button
                   onClick={() => setCurrentTrackIdx(Math.max(0, currentTrackIdx - 1))}
                   disabled={currentTrackIdx === 0}
-                  className="btn-secondary text-xs px-4 py-2"
+                  className="btn-ghost text-xs px-4 py-2"
                 >
                   ← 上一首
                 </button>
