@@ -8,16 +8,29 @@ interface Props {
   albumId: string;
 }
 
+const EXPERT_NAMES: Record<string, string> = {
+  creative: '创意总监',
+  market: '市场专家',
+  music: '音乐总监',
+};
+
 export default function ConceptReview({ albumId }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [started, setStarted] = useState(false);
+  const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleStart = async () => {
     setLoading(true);
+    setError(null);
+    setStarted(true);
     try {
-      await api.startPhase(albumId, 'phase1');
-      setStarted(true);
+      const data = await api.executePhase1(albumId);
+      setResult(data);
+    } catch (err: any) {
+      setError(err.message || '生成失败，请检查 API Key 和网络连接');
+      setStarted(false);
     } finally {
       setLoading(false);
     }
@@ -59,80 +72,151 @@ export default function ConceptReview({ albumId }: Props) {
           </div>
           <p className="text-base text-white font-medium mb-2">准备开始了吗？</p>
           <p className="text-muted text-sm mb-8">点击下方按钮启动概念生成流水线，AI 专家团队将为你创作专辑概念</p>
+          {error && (
+            <p className="text-red-400 text-sm mb-4">{error}</p>
+          )}
           <button onClick={handleStart} disabled={loading} className="btn-primary">
-            {loading ? '启动中...' : '开始概念生成'}
+            {loading ? '正在生成...' : '开始概念生成'}
           </button>
         </div>
       ) : (
         <div className="space-y-8">
-          <div className="card-glow p-6 animate-fade-in-up">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-3 h-3 bg-accent-orange rounded-full animate-pulse-soft shadow-[0_0_10px_rgba(251,146,60,0.6)]" />
-              <span className="text-sm font-medium text-white">概念生成中...</span>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm text-muted-dim">
-                3 个专家正在并行工作（创意总监 / 市场专家 / 音乐总监），随后主评审将进行评分。
+          {loading && !result && (
+            <div className="card-glow p-6 animate-fade-in-up">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-3 h-3 bg-accent-orange rounded-full animate-pulse-soft shadow-[0_0_10px_rgba(251,146,60,0.6)]" />
+                <span className="text-sm font-medium text-white">概念生成中...</span>
+              </div>
+              <p className="text-sm text-muted-dim mb-4">
+                正在调用 LLM 生成专辑概念，3 个专家并行工作，随后主评审评分。请稍候...
               </p>
               <div className="flex gap-2 pt-2">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="h-1 flex-1 rounded-full bg-white/[0.04] overflow-hidden">
-                    <div className="h-full rounded-full bg-accent-orange/30 animate-pulse-soft" style={{ animationDelay: `${i * 200}ms`, width: `${30 + Math.random() * 40}%` }} />
+                {['creative', 'market', 'music'].map((key, i) => (
+                  <div key={key} className="flex-1">
+                    <div className="flex justify-between text-[10px] mb-1">
+                      <span className="text-muted-dim">{EXPERT_NAMES[key]}</span>
+                      <span className="text-muted-dark">···</span>
+                    </div>
+                    <div className="h-1 rounded-full bg-white/[0.04] overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-accent-orange/30 animate-shimmer"
+                        style={{ width: `${20 + i * 15}%` }}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
+              <p className="text-center text-xs text-muted-dim mt-4 animate-pulse-soft">
+                等待 LLM 响应中...
+              </p>
             </div>
-          </div>
+          )}
 
-          {/* Simulated results for demo */}
-          <div className="card-glow p-6 animate-fade-in-up animate-delay-200">
-            <div className="section-header mb-5">核心概念</div>
-            <div className="space-y-5">
-              <div>
-                <span className="text-xs text-muted-dim tracking-wide uppercase">专辑名称</span>
-                <p className="text-white font-display text-xl font-semibold mt-2">《赝品候鸟》<span className="text-muted-dim font-sans text-sm font-normal">/ Counterfeit Migrants</span></p>
-              </div>
-              <div className="divider" />
-              <div>
-                <span className="text-xs text-muted-dim tracking-wide uppercase">核心概念</span>
-                <p className="text-white mt-2 leading-relaxed">我们以为在迁徙，其实是在逃离。每只候鸟体内都藏着一个赝品的秘密。</p>
-              </div>
-              <div className="divider" />
-              <div>
-                <span className="text-xs text-muted-dim tracking-wide uppercase">核心悖论</span>
-                <p className="mt-2 font-medium text-gradient text-lg">飞得越远，离自己越近。</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="card-glow p-6 animate-scale-in">
-            <h2 className="section-header mb-5">评分总览</h2>
-            <div className="space-y-5">
-              {([
-                ['概念原创性', 22],
-                ['叙事连贯性', 24],
-                ['市场潜力', 21],
-                ['音乐一致性', 23],
-              ]).map(([dim, score]) => (
-                <div key={dim}>
-                  <div className="flex justify-between items-baseline text-sm mb-2">
-                    <span className="text-muted-dim">{dim}</span>
-                    <span className="text-white font-semibold tabular-nums text-base">{score}<span className="text-muted-dark text-xs font-normal">/25</span></span>
+          {result && (
+            <>
+              <div className="card-glow p-6 animate-fade-in-up">
+                <div className="section-header mb-5">核心概念</div>
+                <div className="space-y-5">
+                  <div>
+                    <span className="text-xs text-muted-dim tracking-wide uppercase">专辑名称</span>
+                    <p className="text-white font-display text-xl font-semibold mt-2">
+                      《{result.results.creative.album_name_cn}》
+                      <span className="text-muted-dim font-sans text-sm font-normal">/ {result.results.creative.album_name_en}</span>
+                    </p>
                   </div>
-                  <div className="progress-bar h-2">
-                    <div
-                      className="progress-bar-fill"
-                      style={{ width: `${(score as number) / 25 * 100}%` }}
-                    />
+                  <div className="divider" />
+                  <div>
+                    <span className="text-xs text-muted-dim tracking-wide uppercase">核心概念</span>
+                    <p className="text-white mt-2 leading-relaxed">{result.results.creative.core_concept}</p>
+                  </div>
+                  <div className="divider" />
+                  <div>
+                    <span className="text-xs text-muted-dim tracking-wide uppercase">核心悖论</span>
+                    <p className="mt-2 font-medium text-gradient text-lg">{result.results.creative.core_paradox}</p>
+                  </div>
+                  {(result.results.creative.narrative_axes?.length ?? 0) > 0 && (
+                    <>
+                      <div className="divider" />
+                      <div>
+                        <span className="text-xs text-muted-dim tracking-wide uppercase">叙事弧线</span>
+                        <div className="mt-3 space-y-2">
+                          {result.results.creative.narrative_axes.map((axis: any, i: number) => (
+                            <div key={i} className="flex items-start gap-2 text-sm">
+                              <span className="text-accent-orange font-medium shrink-0">{axis.name}</span>
+                              <span className="text-muted-dim">— {axis.meaning}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {(result.results.creative.tracks?.length ?? 0) > 0 && (
+                <div className="card-glow p-6 animate-fade-in-up animate-delay-200">
+                  <h2 className="section-header mb-4">曲目列表</h2>
+                  <div className="space-y-2">
+                    {result.results.creative.tracks.map((t: any) => (
+                      <div key={t.index} className="flex items-center gap-4 p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                        <span className="text-xs text-muted-dim font-mono w-8">{String(t.index).padStart(2, '0')}</span>
+                        <div className="flex-1">
+                          <span className="text-sm text-white font-medium">{t.name}</span>
+                          {t.english_name && <span className="text-xs text-muted-dim ml-2">/ {t.english_name}</span>}
+                        </div>
+                        {t.core_hook && (
+                          <span className="text-xs text-accent-orange bg-accent-orange/5 px-2 py-0.5 rounded">{t.core_hook}</span>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))}
-              <div className="border-t border-white/[0.06] pt-5 mt-3 flex justify-between items-center">
-                <span className="text-white font-semibold text-base">总分</span>
-                <span className="font-display text-4xl font-bold text-gradient tracking-tight">90<span className="text-muted-dark font-sans text-xl font-normal ml-1.5">/100</span></span>
-              </div>
+              )}
+
+              {result.review && (
+                <div className="card-glow p-6 animate-scale-in">
+                  <h2 className="section-header mb-5">评分总览</h2>
+                  <div className="space-y-5">
+                    {([
+                      ['概念原创性', result.review.conceptual_originality || 0],
+                      ['叙事连贯性', result.review.narrative_coherence || 0],
+                      ['市场潜力', result.review.market_potential || 0],
+                      ['音乐一致性', result.review.musical_consistency || 0],
+                    ]).map(([dim, score]) => (
+                      <div key={dim}>
+                        <div className="flex justify-between items-baseline text-sm mb-2">
+                          <span className="text-muted-dim">{dim}</span>
+                          <span className="text-white font-semibold tabular-nums text-base">{score}<span className="text-muted-dark text-xs font-normal">/25</span></span>
+                        </div>
+                        <div className="progress-bar h-2">
+                          <div className="progress-bar-fill" style={{ width: `${(Number(score) / 25 * 100)}%` }} />
+                        </div>
+                      </div>
+                    ))}
+                    <div className="border-t border-white/[0.06] pt-5 mt-3 flex justify-between items-center">
+                      <span className="text-white font-semibold text-base">总分</span>
+                      <span className="font-display text-4xl font-bold text-gradient tracking-tight">{result.review.total || 0}<span className="text-muted-dark font-sans text-xl font-normal ml-1.5">/100</span></span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {result.errors && result.errors.length > 0 && (
+                <div className="card-glow p-4 border border-red-500/20 animate-fade-in-up">
+                  <p className="text-xs text-red-400 font-medium mb-2">部分专家执行出错：</p>
+                  {result.errors.map((err: string, i: number) => (
+                    <p key={i} className="text-xs text-red-400/70">{err}</p>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {error && (
+            <div className="card-glow p-4 border border-red-500/20 animate-fade-in-up">
+              <p className="text-sm text-red-400">{error}</p>
             </div>
-          </div>
+          )}
 
           <div className="flex gap-4 animate-fade-in-up animate-delay-400 pt-2">
             <button onClick={handleApprove} disabled={loading} className="btn-primary flex-1">
