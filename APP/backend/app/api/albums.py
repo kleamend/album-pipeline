@@ -12,7 +12,7 @@ router = APIRouter(tags=["albums"])
 
 
 def _slugify(text: str) -> str:
-    slug = re.sub(r"[^\w\-]", "-", text.lower())[:40].strip("-")
+    slug = re.sub(r"[^\w\-]", "-", text.lower(), flags=re.ASCII)[:40].strip("-")
     return slug or "new-album"
 
 
@@ -31,8 +31,8 @@ def get_album(album_id: str, db: Session = Depends(get_db)):
 
 @router.post("/albums", response_model=AlbumResponse, status_code=201)
 def create_album(input: NewAlbumInput, db: Session = Depends(get_db)):
-    slug = _slugify(input.theme)
-    workspace = WORKSPACE_ROOT / "projects" / f"album-{slug}"
+    slug = f"album-{_slugify(input.theme)}"
+    workspace = WORKSPACE_ROOT / "projects" / slug
 
     # Create workspace directories
     dirs = [

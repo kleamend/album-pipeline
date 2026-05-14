@@ -15,7 +15,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from .api import albums, providers
+from .api import albums, providers, workflow
 
 app.include_router(albums.router, prefix="/api")
 app.include_router(providers.router, prefix="/api")
+app.include_router(workflow.router, prefix="/api")
