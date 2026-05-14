@@ -1,4 +1,6 @@
+import json
 from pathlib import Path
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from ..db.connection import get_db
@@ -66,3 +68,42 @@ def package_album(album_id: str, db: Session = Depends(get_db)):
         raise HTTPException(500, result["error"])
 
     return {"status": "packaged", "output_file": result["output_file"], "file_size": result["file_size"]}
+
+
+@router.post("/albums/{album_id}/phases/phase6/execute")
+def execute_phase6(album_id: str, db: Session = Depends(get_db)):
+    album = db.query(AlbumProject).filter_by(id=album_id).first()
+    if not album: raise HTTPException(404, "Album not found")
+    orch = Orchestrator(db)
+    try: run = orch.start_phase(album, "phase6")
+    except ValueError as e: raise HTTPException(400, str(e))
+
+    from ..services.agents.runtime import AgentRuntime
+    from ..services.agents.definitions.phase6_promo import PROMO_AGENT
+    from ..services.agents.definitions.phase6_artist import ARTIST_STORY_AGENT
+    from ..services.agents.definitions.phase6_cover_concept import COVER_CONCEPT_AGENT
+    from ..services.agents.definitions.phase6_platform import PLATFORM_CHECK_AGENT
+
+    agents = [
+        ("phase6_promo", PROMO_AGENT, {"album_name": album.title or "Untitled", "core_concept": album.theme or ""}),
+        ("phase6_artist", ARTIST_STORY_AGENT, {"album_name": album.title or "Untitled", "core_concept": album.theme or ""}),
+        ("phase6_cover_concept", COVER_CONCEPT_AGENT, {"album_name": album.title or "Untitled", "core_concept": album.theme or "", "core_paradox": ""}),
+        ("phase6_platform", PLATFORM_CHECK_AGENT, {"album_name": album.title or "Untitled", "track_count": album.track_count}),
+    ]
+
+    runtime = AgentRuntime()
+    results = {}
+    for agent_key, agent_def, ctx in agents:
+        try:
+            expert_run = ExpertRun(phase_run_id=run.id, album_id=album.id, agent_key=agent_key, status="running")
+            db.add(expert_run); db.commit()
+            output = runtime.run(agent_def, ctx, expert_run)
+            expert_run.status = "completed"
+            expert_run.output_json = json.dumps(output, ensure_ascii=False)
+            db.commit()
+            results[agent_key] = {"status": "ok"}
+        except Exception as e:
+            results[agent_key] = {"status": "error", "error": str(e)}
+
+    orch.complete_phase(run)
+    return {"phase_run_id": run.id, "results": results}
