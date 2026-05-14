@@ -69,6 +69,10 @@ class Orchestrator:
         status_map = {
             "phase1": "start_concept",
             "phase2": "confirm_concept",
+            "phase3": "lyrics_extracted",
+            "phase4": "music_gen_started",
+            "phase5": "listening_started",
+            "phase6": "packaging_started",
         }
         trigger = status_map.get(phase)
         if trigger:
@@ -84,14 +88,26 @@ class Orchestrator:
         return run
 
     def complete_phase(self, phase_run: PhaseRun):
-        """Mark a phase run as completed."""
+        """Mark a phase run as completed and advance project state."""
         phase_run.status = "completed"
         album = self.db.query(AlbumProject).filter_by(id=phase_run.album_id).first()
-        if album:
-            if phase_run.phase == "phase1":
-                m = create_project_machine(album.status)
-                m.trigger("concept_complete")
-                album.status = m.state
+        if not album:
+            self.db.commit()
+            return
+
+        phase_to_trigger = {
+            "phase1": "concept_complete",
+            "phase2": "songwriting_complete",
+            "phase3": "lyrics_extracted",
+            "phase4": "music_gen_complete",
+            "phase5": "transcoding_complete",
+            "phase6": "packaging_complete",
+        }
+        trigger = phase_to_trigger.get(phase_run.phase)
+        if trigger and can_transition(album.status, trigger):
+            m = create_project_machine(album.status)
+            m.trigger(trigger)
+            album.status = m.state
         self.db.commit()
 
     def fail_phase(self, phase_run: PhaseRun, error: str):

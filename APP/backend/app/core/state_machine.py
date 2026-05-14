@@ -6,6 +6,7 @@ PROJECT_STATES = [
     "draft", "concept_running", "concept_review",
     "songwriting_running", "lyrics_ready", "music_generating",
     "listening_review", "transcoding", "packaging",
+    "lyrics_formatted", "music_generated", "transcoding_done",
     "completed", "failed", "archived",
 ]
 
@@ -15,6 +16,14 @@ PROJECT_TRANSITIONS = [
     {"trigger": "confirm_concept", "source": "concept_review", "dest": "songwriting_running"},
     {"trigger": "reject_concept", "source": "concept_review", "dest": "concept_running"},
     {"trigger": "songwriting_complete", "source": "songwriting_running", "dest": "lyrics_ready"},
+    {"trigger": "lyrics_extracted", "source": "lyrics_ready", "dest": "lyrics_formatted"},
+    {"trigger": "music_gen_started", "source": "lyrics_formatted", "dest": "music_generating"},
+    {"trigger": "music_gen_complete", "source": "music_generating", "dest": "music_generated"},
+    {"trigger": "listening_started", "source": "music_generated", "dest": "listening_review"},
+    {"trigger": "transcoding_started", "source": "listening_review", "dest": "transcoding"},
+    {"trigger": "transcoding_complete", "source": "transcoding", "dest": "transcoding_done"},
+    {"trigger": "packaging_started", "source": "transcoding_done", "dest": "packaging"},
+    {"trigger": "packaging_complete", "source": "packaging", "dest": "completed"},
     {"trigger": "mark_failed", "source": "*", "dest": "failed"},
     {"trigger": "archive", "source": ["completed", "failed"], "dest": "archived"},
 ]

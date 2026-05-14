@@ -56,3 +56,26 @@ class TestPhaseMachine:
         assert m.state == "failed"
         m.trigger("phase_retry")
         assert m.state == "running"
+
+
+class TestFullPipelineTransitions:
+    def test_full_pipeline_flow(self):
+        m = create_project_machine("draft")
+        flow = [
+            ("start_concept", "concept_running"),
+            ("concept_complete", "concept_review"),
+            ("confirm_concept", "songwriting_running"),
+            ("songwriting_complete", "lyrics_ready"),
+            ("lyrics_extracted", "lyrics_formatted"),
+            ("music_gen_started", "music_generating"),
+            ("music_gen_complete", "music_generated"),
+            ("listening_started", "listening_review"),
+            ("transcoding_started", "transcoding"),
+            ("transcoding_complete", "transcoding_done"),
+            ("packaging_started", "packaging"),
+            ("packaging_complete", "completed"),
+        ]
+        for trigger, expected_state in flow:
+            assert can_transition(m.state, trigger), f"Cannot trigger {trigger} from state {m.state}"
+            m.trigger(trigger)
+            assert m.state == expected_state, f"After {trigger}, expected {expected_state}, got {m.state}"
