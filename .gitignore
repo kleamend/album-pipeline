@@ -19,6 +19,10 @@ minimax-output/
 album-output/
 state/
 
+# Python
+__pycache__/
+*.pyc
+
 # Temp
 tmp/
 *.tmp
