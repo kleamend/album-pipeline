@@ -43,19 +43,36 @@ export default function NewAlbumWizard() {
   return (
     <div className="max-w-2xl mx-auto">
       {/* Step indicator */}
-      <div className="flex border-b border-surface-border mb-8">
+      <div className="flex items-center justify-center gap-2 mb-10 flex-wrap px-2">
         {STEPS.map((label, i) => (
-          <div
-            key={i}
-            className={`flex-1 text-center pb-3 text-xs font-medium transition-colors ${
-              i === step
-                ? 'text-accent-orange border-b-2 border-accent-orange'
-                : i < step
-                ? 'text-green-400'
-                : 'text-muted-dim'
-            }`}
-          >
-            {i + 1}. {label}
+          <div key={i} className="flex items-center gap-1.5">
+            <div
+              className={`relative transition-all duration-500 text-xs font-medium rounded-full px-3.5 py-1.5 border ${
+                i === step
+                  ? 'border-accent-orange/30 text-accent-orange'
+                  : i < step
+                  ? 'bg-emerald-500/8 border-emerald-500/20 text-emerald-400'
+                  : 'border-transparent text-muted-dim'
+              }`}
+            >
+              {i < step ? (
+                <span className="inline-flex items-center gap-0.5">
+                  <svg className="w-3 h-3" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  {label}
+                </span>
+              ) : (
+                <>{i + 1}. {label}</>
+              )}
+              {/* Glowing underline for current step */}
+              {i === step && (
+                <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-3/4 h-0.5 rounded-full bg-gradient-to-r from-accent-orange via-accent-warm to-accent-pink shadow-[0_0_8px_rgba(251,146,60,0.5)]" />
+              )}
+            </div>
+            {i < STEPS.length - 1 && (
+              <div className={`w-5 h-px rounded-full transition-all duration-500 ${
+                i < step ? 'bg-emerald-500/30' : i === step ? 'bg-accent-orange/20' : 'bg-white/[0.04]'
+              }`} />
+            )}
           </div>
         ))}
       </div>
@@ -63,26 +80,28 @@ export default function NewAlbumWizard() {
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.2 }}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className="p-8"
         >
           {/* Step 0: Core theme */}
           {step === 0 && (
             <div>
-              <h2 className="text-lg font-semibold text-white mb-2">你想做什么样的专辑？</h2>
+              <h2 className="section-header mb-4">核心主题</h2>
+              <p className="text-lg font-semibold text-white mb-2">你想做什么样的专辑？</p>
               <p className="text-muted-dim text-sm mb-6">用一两句话描述专辑的主题、情绪或故事</p>
               <label className="block text-sm text-muted mb-2">专辑主题 / 核心概念 *</label>
               <textarea
-                className="w-full h-28 bg-surface-light border border-surface-border rounded-xl p-4 text-white text-sm resize-none focus:border-accent-orange/40 focus:outline-none transition-colors"
+                className="textarea-field h-28"
                 placeholder="例：关于离开这个概念——不是物理上的移动，而是心理上的断舍离。用 3 首歌讲述一个人从被困住到走出来的过程。"
                 value={form.theme}
                 onChange={(e) => update('theme', e.target.value)}
               />
               <label className="block text-sm text-muted mt-4 mb-2">补充说明（可选）</label>
               <textarea
-                className="w-full h-16 bg-surface-light border border-surface-border rounded-xl p-4 text-white text-sm resize-none focus:border-accent-orange/40 focus:outline-none transition-colors"
+                className="textarea-field h-16"
                 placeholder="任何你想补充的灵感、情绪方向..."
                 value={form.notes}
                 onChange={(e) => update('notes', e.target.value)}
@@ -101,10 +120,10 @@ export default function NewAlbumWizard() {
                     <button
                       key={n}
                       onClick={() => update('trackCount', n)}
-                      className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      className={`px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
                         form.trackCount === n
-                          ? 'bg-accent-orange/10 border border-accent-orange text-accent-orange'
-                          : 'bg-surface-light border border-surface-border text-muted-dim hover:text-muted'
+                          ? 'bg-accent-orange/10 border border-accent-orange/30 text-accent-orange shadow-glow-sm'
+                          : 'bg-white/[0.02] border border-white/[0.05] text-muted-dim hover:text-white hover:border-white/[0.12] hover:bg-white/[0.05] hover:-translate-y-0.5'
                       }`}
                     >
                       {n} 首
@@ -124,10 +143,10 @@ export default function NewAlbumWizard() {
                     <button
                       key={opt.value}
                       onClick={() => update('language', opt.value)}
-                      className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                      className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
                         form.language === opt.value
-                          ? 'bg-accent-orange/10 border border-accent-orange text-accent-orange'
-                          : 'bg-surface-light border border-surface-border text-muted-dim hover:text-muted'
+                          ? 'bg-accent-orange/10 border border-accent-orange/30 text-accent-orange shadow-glow-sm'
+                          : 'bg-white/[0.02] border border-white/[0.05] text-muted-dim hover:text-white hover:border-white/[0.12] hover:bg-white/[0.05] hover:-translate-y-0.5'
                       }`}
                     >
                       {opt.label}
@@ -153,14 +172,14 @@ export default function NewAlbumWizard() {
               <h2 className="text-lg font-semibold text-white mb-6">风格和听众</h2>
               <label className="block text-sm text-muted mb-2">参考风格</label>
               <input
-                className="w-full bg-surface-light border border-surface-border rounded-xl p-4 text-white text-sm focus:border-accent-orange/40 focus:outline-none transition-colors mb-6"
+                className="input-field mb-6"
                 placeholder="例：林俊杰、Coldplay、坂本龙一..."
                 value={form.referenceStyle}
                 onChange={(e) => update('referenceStyle', e.target.value)}
               />
               <label className="block text-sm text-muted mb-2">目标听众</label>
               <textarea
-                className="w-full h-20 bg-surface-light border border-surface-border rounded-xl p-4 text-white text-sm resize-none focus:border-accent-orange/40 focus:outline-none transition-colors"
+                className="textarea-field h-20"
                 placeholder="谁在听这张专辑？在什么场景下听？..."
                 value={form.targetAudience}
                 onChange={(e) => update('targetAudience', e.target.value)}
@@ -182,10 +201,10 @@ export default function NewAlbumWizard() {
                   <button
                     key={opt.value}
                     onClick={() => update('publishTarget', opt.value)}
-                    className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    className={`px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
                       form.publishTarget === opt.value
-                        ? 'bg-accent-orange/10 border border-accent-orange text-accent-orange'
-                        : 'bg-surface-light border border-surface-border text-muted-dim'
+                        ? 'bg-accent-orange/10 border border-accent-orange/30 text-accent-orange shadow-glow-sm'
+                        : 'bg-white/[0.02] border border-white/[0.05] text-muted-dim hover:text-white hover:border-white/[0.12] hover:bg-white/[0.05] hover:-translate-y-0.5'
                     }`}
                   >
                     {opt.label}
@@ -216,13 +235,30 @@ export default function NewAlbumWizard() {
           {/* Step 4: Confirm */}
           {step === 4 && (
             <div>
-              <h2 className="text-lg font-semibold text-white mb-6">确认创建</h2>
-              <div className="bg-surface-light border border-surface-border rounded-xl p-6 space-y-3 text-sm">
-                <div className="flex justify-between"><span className="text-muted-dim">主题</span><span className="text-white">{form.theme || '—'}</span></div>
-                <div className="flex justify-between"><span className="text-muted-dim">曲目数</span><span className="text-white">{form.trackCount} 首</span></div>
-                <div className="flex justify-between"><span className="text-muted-dim">语言</span><span className="text-white">{form.language}</span></div>
-                <div className="flex justify-between"><span className="text-muted-dim">参考风格</span><span className="text-white">{form.referenceStyle || '未指定'}</span></div>
-                <div className="flex justify-between"><span className="text-muted-dim">目标平台</span><span className="text-white">{form.publishTarget === 'none' ? '暂不发布' : form.publishTarget}</span></div>
+              <h2 className="section-header mb-6">确认创建</h2>
+              <div className="card-glow p-6">
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between items-center py-1.5 border-b border-white/[0.04]">
+                    <span className="text-muted-dim">主题</span>
+                    <span className="text-white font-medium max-w-[60%] text-right">{form.theme || '—'}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1.5 border-b border-white/[0.04]">
+                    <span className="text-muted-dim">曲目数</span>
+                    <span className="text-white font-medium">{form.trackCount} 首</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1.5 border-b border-white/[0.04]">
+                    <span className="text-muted-dim">语言</span>
+                    <span className="text-white font-medium">{form.language}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1.5 border-b border-white/[0.04]">
+                    <span className="text-muted-dim">参考风格</span>
+                    <span className="text-white font-medium">{form.referenceStyle || '未指定'}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1.5">
+                    <span className="text-muted-dim">目标平台</span>
+                    <span className="text-white font-medium">{form.publishTarget === 'none' ? '暂不发布' : form.publishTarget}</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -231,10 +267,10 @@ export default function NewAlbumWizard() {
 
       {/* Navigation */}
       <div className="flex justify-between items-center mt-10 pt-6 border-t border-surface-border">
-        <div className="text-xs text-muted-dim">步骤 {step + 1}/{STEPS.length}</div>
+        <span className="badge-accent">步骤 {step + 1}/{STEPS.length}</span>
         <div className="flex gap-3">
           {step > 0 && (
-            <button onClick={() => setStep(step - 1)} className="btn-secondary">
+            <button onClick={() => setStep(step - 1)} className="btn-ghost">
               上一步
             </button>
           )}
