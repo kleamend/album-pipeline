@@ -10,6 +10,7 @@ export default function SettingsPage() {
   const [llmBaseUrl, setLlmBaseUrl] = useState('');
   const [llmModel, setLlmModel] = useState('');
   const [musicModel, setMusicModel] = useState('');
+  const [maxWorkers, setMaxWorkers] = useState(2);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
@@ -24,6 +25,7 @@ export default function SettingsPage() {
         setLlmBaseUrl(data.llm_base_url || '');
         setLlmModel(data.llm_model || '');
         setMusicModel(data.music_model || '');
+        setMaxWorkers(data.max_workers || 2);
       })
       .catch(() => {});
     fetch(`${BASE}/api/providers/status`)
@@ -57,6 +59,7 @@ export default function SettingsPage() {
           llm_base_url: llmBaseUrl,
           llm_model: llmModel,
           music_model: musicModel,
+          max_workers: maxWorkers,
         }),
       });
 
@@ -133,6 +136,18 @@ export default function SettingsPage() {
                   onChange={(e) => setLlmModel(e.target.value)}
                 />
                 <p className="text-[10px] text-muted-dim mt-1.5">例如 gpt-4o / deepseek-chat / abab7-chat</p>
+              </div>
+              <div>
+                <label className="block text-xs text-muted-dim mb-2 font-medium">Agent 并发数</label>
+                <input
+                  className="input-field w-24"
+                  type="number" min={1} max={6}
+                  value={maxWorkers}
+                  onChange={(e) => setMaxWorkers(Number(e.target.value))}
+                />
+                <p className="text-[10px] text-muted-dim mt-1.5">
+                  同时执行的歌曲数量（Phase 2 并行调度）
+                </p>
               </div>
             </div>
           </div>
