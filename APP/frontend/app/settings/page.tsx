@@ -30,10 +30,12 @@ export default function SettingsPage() {
       .then((res) => res.json())
       .then((data) => {
         const labels: Record<string, string> = {
-          ready: 'MiniMax CLI 已检测到',
-          cli_missing: 'MiniMax CLI 未安装',
-          api_key_missing: 'CLI 未登录',
-          not_configured: '未配置',
+          ready: 'MiniMax CLI 已就绪',
+          cli_missing: 'MiniMax CLI 未安装（pip install minimax）',
+          cli_not_authenticated: 'CLI 未登录（运行 minimax auth login）',
+          cli_version_unknown: '检测到 mmx 但可能不是 MiniMax CLI',
+          api_key_missing: 'API Key 未配置',
+          not_configured: 'CLI 未配置',
           error: '检测失败',
         };
         setCliStatus(labels[data.minimax] || data.minimax);

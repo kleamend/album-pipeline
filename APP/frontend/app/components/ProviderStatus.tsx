@@ -6,10 +6,12 @@ import { useAppStore } from '@/src/stores/appStore';
 
 const statusConfig: Record<string, { color: string; label: string }> = {
   ready: { color: 'bg-green-500', label: 'MiniMax Ready' },
-  cli_missing: { color: 'bg-yellow-500', label: 'CLI 未检测到' },
+  cli_missing: { color: 'bg-gray-500', label: 'MiniMax CLI 未安装' },
+  cli_not_authenticated: { color: 'bg-yellow-500', label: 'CLI 未登录 (minimax auth login)' },
+  cli_version_unknown: { color: 'bg-yellow-500', label: 'CLI 可能不是 MiniMax' },
   api_key_missing: { color: 'bg-red-500', label: 'API Key 缺失' },
-  not_configured: { color: 'bg-gray-500', label: '未配置' },
-  error: { color: 'bg-red-500', label: '连接错误' },
+  not_configured: { color: 'bg-gray-500', label: 'CLI 未配置' },
+  error: { color: 'bg-red-500', label: '检测失败' },
 };
 
 export default function ProviderStatus() {
