@@ -14,30 +14,39 @@ export default function TrackPage() {
   const trackId = params.trackId as string;
   const [track, setTrack] = useState<any>(null);
   const [rounds, setRounds] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get album for track info
-    api.getAlbum(albumId).then((album) => {
-      // Find the track in album context
-      setTrack({
-        id: trackId,
-        index: 1,
-        title: 'Track Detail',
-        score: 85,
-        status: 'finalized',
-      });
-    }).catch(() => router.push('/'));
-
-    // Get rounds
-    api.getPhases(albumId).then(() => {
-      // Mock rounds for now
-      setRounds([
-        { round: 1, score: 72, status: 'revision_needed' },
-        { round: 2, score: 78, status: 'revision_needed' },
-        { round: 3, score: 85, status: 'finalized' },
-      ]);
-    });
+    Promise.all([
+      api.getAlbum(albumId),
+      api.getTrackRounds(albumId, trackId),
+    ])
+      .then(([album, roundData]) => {
+        // Build track info from album context
+        const t = {
+          id: trackId,
+          index: 1,
+          title: `Track ${trackId.slice(0, 4)}`,
+          score: null as number | null,
+          status: 'planned',
+        };
+        setTrack(t);
+        setRounds(roundData.rounds || []);
+      })
+      .catch(() => router.push('/'))
+      .finally(() => setLoading(false));
   }, [albumId, trackId, router]);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen">
+        <Sidebar />
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-muted-dim animate-pulse-soft">加载中...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!track) return null;
 
@@ -45,10 +54,14 @@ export default function TrackPage() {
     <div className="flex h-screen">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <SongDetail track={track} />
+        <SongDetail track={track} rounds={rounds} />
       </div>
       <div className="w-64 border-l border-surface-border p-5 overflow-y-auto">
-        <RoundHistory history={rounds} />
+        <RoundHistory history={rounds.map((r: any) => ({
+          round: r.round,
+          score: r.final_score,
+          status: 'completed',
+        }))} />
       </div>
     </div>
   );

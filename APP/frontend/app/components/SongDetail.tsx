@@ -4,6 +4,12 @@ import { useState } from 'react';
 
 const TABS = ['歌词', '编曲', 'Sound Design', '押韵', '市场', '评分'];
 
+interface RoundData {
+  round: number;
+  agents: Record<string, { status: string; output_json: string | null; score?: number }>;
+  final_score: number | null;
+}
+
 interface Props {
   track: {
     id: string;
@@ -11,11 +17,50 @@ interface Props {
     title: string;
     score: number | null;
     status: string;
+    core_hook?: string;
+    emotional_arc?: string;
+    arrangement_style?: string;
   };
+  rounds: RoundData[];
 }
 
-export default function SongDetail({ track }: Props) {
+function getLatestAgentOutput(rounds: RoundData[], agentName: string): any | null {
+  for (let i = rounds.length - 1; i >= 0; i--) {
+    const agent = rounds[i].agents?.[agentName];
+    if (agent?.output_json) {
+      try { return JSON.parse(agent.output_json); } catch { continue; }
+    }
+  }
+  return null;
+}
+
+function getLatestRoundNumber(rounds: RoundData[]): number {
+  if (rounds.length === 0) return 0;
+  return rounds[rounds.length - 1].round;
+}
+
+export default function SongDetail({ track, rounds }: Props) {
   const [activeTab, setActiveTab] = useState(0);
+
+  const lyricsData = getLatestAgentOutput(rounds, 'phase2_lyrics');
+  const arrangementData = getLatestAgentOutput(rounds, 'phase2_arrangement');
+  const soundDesignData = getLatestAgentOutput(rounds, 'phase2_sound_design');
+  const rhymeData = getLatestAgentOutput(rounds, 'phase2_rhyme');
+  const marketData = getLatestAgentOutput(rounds, 'phase2_market');
+  const scoringData = getLatestAgentOutput(rounds, 'phase2_scoring');
+
+  const currentRound = getLatestRoundNumber(rounds);
+  const noData = rounds.length === 0;
+
+  const emptyMessage = (agentName: string) => (
+    <div className="max-w-2xl">
+      <div className="card p-8 text-center">
+        <p className="text-muted-dim text-sm">
+          {noData ? '尚未生成 — 请先运行 Phase 2' : `Phase 2 ${agentName} 数据尚未生成`}
+        </p>
+      </div>
+    </div>
+  );
 
   return (
     <div className="h-full flex flex-col">
@@ -61,7 +106,7 @@ export default function SongDetail({ track }: Props) {
         ))}
         <div className="flex-1" />
         <span className="flex items-center text-xs text-muted-dim">
-          Round 1/6
+          Round {currentRound}/6
         </span>
       </div>
 
@@ -69,160 +114,192 @@ export default function SongDetail({ track }: Props) {
       <div className="flex-1 overflow-y-auto p-8">
         {/* Lyrics tab */}
         {activeTab === 0 && (
-          <div className="max-w-2xl space-y-6">
-            <div className="card p-6 bg-surface-elevated/50">
-              <h3 className="section-header mb-5">中文歌词</h3>
-              <pre className="font-mono text-sm text-muted-light leading-loose whitespace-pre-wrap">
-{'[Verse]\n第一行歌词内容\n第二行歌词内容\n\n[Pre Chorus]\n过渡段落\n\n[Hook]\n副歌核心句子\n重复加强记忆'}
-              </pre>
-              <div className="divider my-4" />
-              <div className="text-xs text-muted-dim">字数: 1,234 / 3,500</div>
+          lyricsData ? (
+            <div className="max-w-2xl space-y-6">
+              <div className="card p-6 bg-surface-elevated/50">
+                <h3 className="section-header mb-5">中文歌词</h3>
+                <pre className="font-mono text-sm text-muted-light leading-loose whitespace-pre-wrap">
+                  {lyricsData.chinese_lyrics || lyricsData.lyrics || lyricsData.zh_lyrics || '暂无中文歌词'}
+                </pre>
+                {lyricsData.zh_char_count != null && (
+                  <div className="divider my-4" />
+                )}
+                {lyricsData.zh_char_count != null && (
+                  <div className="text-xs text-muted-dim">字数: {lyricsData.zh_char_count} / {lyricsData.zh_char_limit || '3,500'}</div>
+                )}
+              </div>
+              <div className="card p-6 bg-surface-elevated/50">
+                <h3 className="section-header mb-5">English Lyrics</h3>
+                <pre className="font-mono text-sm text-muted-light leading-loose whitespace-pre-wrap">
+                  {lyricsData.english_lyrics || lyricsData.en_lyrics || '暂无英文歌词'}
+                </pre>
+                {lyricsData.en_char_count != null && (
+                  <div className="divider my-4" />
+                )}
+                {lyricsData.en_char_count != null && (
+                  <div className="text-xs text-muted-dim">Chars: {lyricsData.en_char_count} / {lyricsData.en_char_limit || '3,500'}</div>
+                )}
+              </div>
             </div>
-            <div className="card p-6 bg-surface-elevated/50">
-              <h3 className="section-header mb-5">English Lyrics</h3>
-              <pre className="font-mono text-sm text-muted-light leading-loose whitespace-pre-wrap">
-{'[Verse]\nFirst line of lyrics\nSecond line\n\n[Hook]\nThe chorus hook line'}
-              </pre>
-              <div className="divider my-4" />
-              <div className="text-xs text-muted-dim">Chars: 890 / 3,500</div>
-            </div>
-          </div>
+          ) : emptyMessage('歌词')
         )}
 
         {/* Arrangement tab */}
         {activeTab === 1 && (
-          <div className="space-y-6 max-w-3xl">
-            <div className="card p-5">
-              <div className="flex items-center gap-8 mb-4">
-                <div><span className="text-xs text-muted-dim">BPM</span><p className="text-white font-semibold text-lg">78</p></div>
-                <div><span className="text-xs text-muted-dim">Key</span><p className="text-white font-semibold text-lg">Am</p></div>
-                <div><span className="text-xs text-muted-dim">Style</span><p className="text-white font-semibold text-lg">Alternative Pop</p></div>
+          arrangementData ? (
+            <div className="space-y-6 max-w-3xl">
+              <div className="card p-5">
+                <div className="flex items-center gap-8 mb-4">
+                  {arrangementData.bpm != null && (
+                    <div><span className="text-xs text-muted-dim">BPM</span><p className="text-white font-semibold text-lg">{arrangementData.bpm}</p></div>
+                  )}
+                  {arrangementData.key && (
+                    <div><span className="text-xs text-muted-dim">Key</span><p className="text-white font-semibold text-lg">{arrangementData.key}</p></div>
+                  )}
+                  {arrangementData.style && (
+                    <div><span className="text-xs text-muted-dim">Style</span><p className="text-white font-semibold text-lg">{arrangementData.style}</p></div>
+                  )}
+                </div>
               </div>
+              {(arrangementData.sections || []).map((s: any, i: number) => (
+                <div key={i} className="card p-5 border-l-2"
+                  style={{ borderLeftColor: 'transparent', borderImage: 'linear-gradient(to bottom, #fb923c, #f472b6) 1' }}>
+                  <h3 className="text-sm font-semibold text-white mb-2">
+                    {i + 1}. {s.name || s.section} <span className="text-muted-dim font-normal text-xs">{s.time || s.start || ''}</span>
+                  </h3>
+                  <p className="text-sm text-muted leading-relaxed">{s.desc || s.description || ''}</p>
+                </div>
+              ))}
             </div>
-            {[
-              { name: 'Intro', time: '0:00–0:24', desc: 'Solo electric piano, felt hammers, room ambience. Sparse and intimate.' },
-              { name: 'Verse 1', time: '0:24–1:10', desc: 'Piano continues with ambient guitar swells entering at 0:40. Close-mic vocals, dry processing.' },
-              { name: 'Pre-Chorus', time: '1:10–1:28', desc: 'Drums enter softly — kick drum on 1 and 3, brushes on snare. Tension building.' },
-              { name: 'Chorus', time: '1:28–2:00', desc: 'Full band entry. String section layers in at 1:42. Backing vocal harmonies bloom.' },
-              { name: 'Outro', time: '3:00–3:30', desc: 'Fade out with solo piano callback to intro. Reverb tail decays naturally.' },
-            ].map((s, i) => (
-              <div key={i} className="card p-5 border-l-2"
-                style={{ borderLeftColor: 'transparent', borderImage: 'linear-gradient(to bottom, #fb923c, #f472b6) 1' }}>
-                <h3 className="text-sm font-semibold text-white mb-2">
-                  {i + 1}. {s.name} <span className="text-muted-dim font-normal text-xs">{s.time}</span>
-                </h3>
-                <p className="text-sm text-muted leading-relaxed">{s.desc}</p>
-              </div>
-            ))}
-          </div>
+          ) : emptyMessage('编曲')
         )}
 
         {/* Sound Design tab */}
         {activeTab === 2 && (
-          <div className="max-w-2xl">
-            <div className="card overflow-hidden rounded-2xl">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-muted-border bg-white/[0.02]">
-                    <th className="text-left p-4 text-xs text-muted-dim font-medium">Sound</th>
-                    <th className="text-left p-4 text-xs text-muted-dim font-medium">Description</th>
-                    <th className="text-left p-4 text-xs text-muted-dim font-medium">Position</th>
-                    <th className="text-right p-4 text-xs text-muted-dim font-medium">Volume</th>
-                  </tr>
-                </thead>
-                <tbody className="text-muted">
-                  <tr className="border-b border-muted-border hover:bg-white/[0.02] transition-colors">
-                    <td className="p-4 text-white font-medium">Vinyl Crackle</td><td className="p-4">Subtle vinyl noise for warmth</td><td className="p-4">Intro, Outro</td><td className="p-4 text-right font-mono text-xs">-24dB</td>
-                  </tr>
-                  <tr className="border-b border-muted-border bg-white/[0.01] hover:bg-white/[0.03] transition-colors">
-                    <td className="p-4 text-white font-medium">Reverse Reverb</td><td className="p-4">Reverse reverb swell into chorus</td><td className="p-4">Pre-Chorus → Chorus</td><td className="p-4 text-right font-mono text-xs">-12dB</td>
-                  </tr>
-                  <tr className="hover:bg-white/[0.02] transition-colors">
-                    <td className="p-4 text-white font-medium">String Swell</td><td className="p-4">Gradual string section crescendo</td><td className="p-4">Chorus (1:42)</td><td className="p-4 text-right font-mono text-xs">-8dB</td>
-                  </tr>
-                </tbody>
-              </table>
+          soundDesignData ? (
+            <div className="max-w-2xl">
+              <div className="card overflow-hidden rounded-2xl">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-muted-border bg-white/[0.02]">
+                      <th className="text-left p-4 text-xs text-muted-dim font-medium">Sound</th>
+                      <th className="text-left p-4 text-xs text-muted-dim font-medium">Description</th>
+                      <th className="text-left p-4 text-xs text-muted-dim font-medium">Position</th>
+                      <th className="text-right p-4 text-xs text-muted-dim font-medium">Volume</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-muted">
+                    {(soundDesignData.sounds || soundDesignData.items || []).map((s: any, i: number) => (
+                      <tr key={i} className={`border-b border-muted-border hover:bg-white/[0.02] transition-colors ${i % 2 === 1 ? 'bg-white/[0.01]' : ''}`}>
+                        <td className="p-4 text-white font-medium">{s.name || s.sound}</td>
+                        <td className="p-4">{s.desc || s.description}</td>
+                        <td className="p-4">{s.position || s.section}</td>
+                        <td className="p-4 text-right font-mono text-xs">{s.volume || s.level}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          ) : emptyMessage('Sound Design')
         )}
 
         {/* Rhyme tab */}
         {activeTab === 3 && (
-          <div className="max-w-2xl space-y-6">
-            <div className="card overflow-hidden rounded-2xl">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-muted-border bg-white/[0.02]">
-                    <th className="text-left p-4 text-xs text-muted-dim font-medium">Rhyme</th><th className="text-left p-4 text-xs text-muted-dim font-medium">Sound</th><th className="text-left p-4 text-xs text-muted-dim font-medium">Position</th><th className="text-left p-4 text-xs text-muted-dim font-medium">Emotion</th>
-                  </tr>
-                </thead>
-                <tbody className="text-muted">
-                  <tr className="border-b border-muted-border hover:bg-white/[0.02] transition-colors"><td className="p-4 text-white font-medium">-ang</td><td className="p-4">开口呼</td><td className="p-4">Verse, Hook</td><td className="p-4">释放、开阔</td></tr>
-                  <tr className="hover:bg-white/[0.02] transition-colors bg-white/[0.01]"><td className="p-4 text-white font-medium">-u</td><td className="p-4">合口呼</td><td className="p-4">Bridge</td><td className="p-4">内敛、低沉</td></tr>
-                </tbody>
-              </table>
+          rhymeData ? (
+            <div className="max-w-2xl space-y-6">
+              <div className="card overflow-hidden rounded-2xl">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-muted-border bg-white/[0.02]">
+                      <th className="text-left p-4 text-xs text-muted-dim font-medium">Rhyme</th>
+                      <th className="text-left p-4 text-xs text-muted-dim font-medium">Sound</th>
+                      <th className="text-left p-4 text-xs text-muted-dim font-medium">Position</th>
+                      <th className="text-left p-4 text-xs text-muted-dim font-medium">Emotion</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-muted">
+                    {(rhymeData.rhymes || rhymeData.items || []).map((r: any, i: number) => (
+                      <tr key={i} className={`border-b border-muted-border hover:bg-white/[0.02] transition-colors ${i % 2 === 1 ? 'bg-white/[0.01]' : ''}`}>
+                        <td className="p-4 text-white font-medium">{r.rhyme || r.name}</td>
+                        <td className="p-4">{r.sound || r.type}</td>
+                        <td className="p-4">{r.position || r.location}</td>
+                        <td className="p-4">{r.emotion || r.mood}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {rhymeData.hook_design && (
+                <div className="card p-5">
+                  <h3 className="text-sm font-semibold text-white mb-3">Hook 韵脚设计</h3>
+                  <p className="text-sm text-muted">{rhymeData.hook_design}</p>
+                </div>
+              )}
             </div>
-            <div className="card p-5">
-              <h3 className="text-sm font-semibold text-white mb-3">Hook 韵脚设计</h3>
-              <p className="text-sm text-muted">连续 -ang 韵贯穿 Hook 段落，营造"飞翔/释放"的情绪统一性。</p>
-            </div>
-          </div>
+          ) : emptyMessage('押韵')
         )}
 
         {/* Market tab */}
         {activeTab === 4 && (
-          <div className="max-w-2xl space-y-6">
-            <div className="card p-5 bg-gradient-to-r from-accent-orange/5 to-accent-pink/5">
-              <span className="text-xs text-muted-dim">封面高光文案</span>
-              <p className="text-lg font-display font-bold text-white mt-2">"我把笼子走成天空"</p>
+          marketData ? (
+            <div className="max-w-2xl space-y-6">
+              {marketData.highlight && (
+                <div className="card p-5 bg-gradient-to-r from-accent-orange/5 to-accent-pink/5">
+                  <span className="text-xs text-muted-dim">封面高光文案</span>
+                  <p className="text-lg font-display font-bold text-white mt-2">{marketData.highlight}</p>
+                </div>
+              )}
+              {marketData.core_competitiveness || marketData.advantages ? (
+                <div className="card p-5">
+                  <h3 className="text-sm font-semibold text-white mb-3">核心竞争力</h3>
+                  <ul className="space-y-2 text-sm text-muted">
+                    {(marketData.core_competitiveness || marketData.advantages || []).map((a: any, i: number) => (
+                      <li key={i}>· {typeof a === 'string' ? a : a.point || a.text || a.desc}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
             </div>
-            <div className="card p-5">
-              <h3 className="text-sm font-semibold text-white mb-3">核心竞争力</h3>
-              <ul className="space-y-2 text-sm text-muted">
-                <li>· 核心悖论"自由是被困住的另一种形式"具有传播穿透力</li>
-                <li>· Hook 段落旋律记忆度极高</li>
-                <li>· 编曲中的反向混响设计增加了听觉新鲜感</li>
-              </ul>
-            </div>
-          </div>
+          ) : emptyMessage('市场')
         )}
 
         {/* Scoring tab */}
         {activeTab === 5 && (
-          <div className="max-w-2xl space-y-6">
-            <div className="card p-6">
-              <div className="space-y-5">
-                {[
-                  ['韵律', 16, 20],
-                  ['市场', 17, 20],
-                  ['结构', 18, 20],
-                  ['哲学', 19, 20],
-                  ['编曲', 15, 20],
-                ].map(([dim, score, max]) => {
-                  const pct = (Number(score) / Number(max)) * 100;
-                  return (
-                    <div key={dim as string}>
-                      <div className="flex justify-between text-sm mb-2">
-                        <span className="text-muted">{dim as string}</span>
-                        <span className="text-white font-medium">{String(score)}/{String(max)}</span>
+          scoringData ? (
+            <div className="max-w-2xl space-y-6">
+              <div className="card p-6">
+                <div className="space-y-5">
+                  {(scoringData.dimensions || scoringData.scores || []).map((d: any) => {
+                    const score = d.score ?? d.value ?? 0;
+                    const max = d.max ?? d.max_score ?? 20;
+                    const pct = max > 0 ? (score / max) * 100 : 0;
+                    return (
+                      <div key={d.name || d.dimension}>
+                        <div className="flex justify-between text-sm mb-2">
+                          <span className="text-muted">{d.name || d.dimension}</span>
+                          <span className="text-white font-medium">{score}/{max}</span>
+                        </div>
+                        <div className="progress-bar h-2.5">
+                          <div
+                            className="progress-bar-fill"
+                            style={{ width: `${Math.min(pct, 100)}%` }}
+                          />
+                        </div>
                       </div>
-                      <div className="progress-bar h-2.5">
-                        <div
-                          className="progress-bar-fill"
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="divider my-6" />
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-white font-semibold">总分</span>
-                <span className="text-3xl font-bold text-gradient">85/100</span>
+                    );
+                  })}
+                </div>
+                <div className="divider my-6" />
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-white font-semibold">总分</span>
+                  <span className="text-3xl font-bold text-gradient">
+                    {scoringData.total_score ?? scoringData.total ?? 0}/{scoringData.max_total ?? scoringData.total_max ?? 100}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
+          ) : emptyMessage('评分')
         )}
       </div>
     </div>
