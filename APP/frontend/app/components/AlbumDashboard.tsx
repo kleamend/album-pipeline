@@ -95,11 +95,11 @@ export default function AlbumDashboard({ albumId }: Props) {
           <div className="divider my-6" />
           <div className="section-header mb-4">操作</div>
           <div className="flex flex-col gap-1">
-            <button className="text-xs text-muted-dim hover:text-white transition-all duration-200 text-left px-3 py-2 rounded-lg hover:bg-white/[0.05] hover:translate-x-0.5">
-              <span className="mr-2">📋</span>查看日志
+            <button className="text-xs text-muted-dim hover:text-white transition-all duration-200 text-left px-3 py-2 rounded-lg hover:bg-white/[0.05] hover:translate-x-0.5 cursor-pointer">
+              <svg className="w-3.5 h-3.5 inline-block mr-2 -mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>查看日志
             </button>
-            <button className="text-xs text-muted-dim hover:text-white transition-all duration-200 text-left px-3 py-2 rounded-lg hover:bg-white/[0.05] hover:translate-x-0.5">
-              <span className="mr-2">📂</span>打开文件夹
+            <button className="text-xs text-muted-dim hover:text-white transition-all duration-200 text-left px-3 py-2 rounded-lg hover:bg-white/[0.05] hover:translate-x-0.5 cursor-pointer">
+              <svg className="w-3.5 h-3.5 inline-block mr-2 -mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>打开文件夹
             </button>
           </div>
         </div>
@@ -117,12 +117,12 @@ export default function AlbumDashboard({ albumId }: Props) {
           <div className="divider my-6" />
           <div className="section-header mb-4">系统状态</div>
           <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] transition-all duration-300">
+            <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] transition-all duration-300 cursor-pointer">
               <span className="w-2 h-2 bg-emerald-400 rounded-full shadow-[0_0_8px_rgba(52,211,153,0.5)] animate-pulse-soft" />
               <span className="text-xs text-muted">MiniMax CLI</span>
               <span className="badge-success ml-auto text-[10px]">在线</span>
             </div>
-            <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] transition-all duration-300">
+            <div className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:border-white/[0.08] transition-all duration-300 cursor-pointer">
               <span className="w-2 h-2 bg-amber-400 rounded-full shadow-[0_0_6px_rgba(251,191,36,0.3)]" />
               <span className="text-xs text-muted">网易云音乐</span>
               <span className="badge-warning ml-auto text-[10px]">未连接</span>

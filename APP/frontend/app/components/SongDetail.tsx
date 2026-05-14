@@ -92,7 +92,7 @@ export default function SongDetail({ track, rounds }: Props) {
           <button
             key={i}
             onClick={() => setActiveTab(i)}
-            className={`relative px-5 py-3 text-xs font-medium transition-all duration-300 ${
+            className={`relative px-5 py-3 text-xs font-medium transition-all duration-300 cursor-pointer ${
               i === activeTab
                 ? 'text-accent-orange'
                 : 'text-muted-dim hover:text-muted'

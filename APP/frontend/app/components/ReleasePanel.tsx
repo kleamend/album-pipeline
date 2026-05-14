@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-const TABS = ['🎨 封面', '🎬 宣传视频', '📝 宣传文案', '🎤 艺人故事', '🔍 平台检查'];
+const TABS = ['封面', '宣传视频', '宣传文案', '艺人故事', '平台检查'];
 
 interface Props {
   albumId: string;
@@ -37,7 +37,7 @@ export default function ReleasePanel({ albumId }: Props) {
       <div className="flex border-b border-muted-border px-8">
         {TABS.map((label, i) => (
           <button key={i} onClick={() => setActiveTab(i)}
-            className={`relative px-5 py-3 text-xs font-medium transition-all duration-300 ${
+            className={`relative px-5 py-3 text-xs font-medium transition-all duration-300 cursor-pointer ${
               i === activeTab ? 'text-accent-orange' : 'text-muted-dim hover:text-muted'
             }`}>
             {label}

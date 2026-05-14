@@ -114,7 +114,7 @@ export default function TakePlayer({ albumId }: Props) {
                     }}
                   >
                     <div className="flex items-center gap-5">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg transition-colors ${
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg transition-colors cursor-pointer ${
                         isSelected ? 'bg-emerald-400/10 text-emerald-400' : 'bg-white/[0.04] text-muted-dim'
                       }`}>
                         ▶
@@ -197,7 +197,7 @@ export default function TakePlayer({ albumId }: Props) {
           <div className="flex items-center justify-center h-full text-center">
             <div>
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent-orange/10 to-accent-pink/10 border border-surface-border flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🎧</span>
+                <svg className="w-8 h-8 text-accent-orange/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>
               </div>
               <p className="text-muted-dim text-sm">加载 Take 列表中...</p>
             </div>

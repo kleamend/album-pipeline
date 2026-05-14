@@ -15,36 +15,52 @@ interface Props {
 }
 
 export default function PhaseTimeline({ phaseRuns, currentPhase }: Props) {
-  const statusMap: Record<string, { icon: string; color: string }> = {
-    completed: { icon: '✓', color: 'text-green-400 bg-green-400/10' },
-    running: { icon: '◎', color: 'text-accent-orange bg-accent-orange/10 animate-pulse-soft' },
-    waiting_user: { icon: '⏸', color: 'text-yellow-400 bg-yellow-400/10' },
-    failed: { icon: '✗', color: 'text-red-400 bg-red-400/10' },
+  const statusMap: Record<string, { icon: string; dotClass: string }> = {
+    completed: { icon: '✓', dotClass: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_8px_rgba(16,185,129,0.3)]' },
+    running: { icon: '◎', dotClass: 'bg-accent-orange/15 text-accent-orange border border-accent-orange/30 shadow-glow-sm animate-pulse-soft' },
+    waiting_user: { icon: '⏸', dotClass: 'bg-amber-500/10 text-amber-400 border border-amber-500/20' },
+    failed: { icon: '✗', dotClass: 'bg-red-500/10 text-red-400 border border-red-500/20' },
+  };
+
+  const getLineClass = (i: number) => {
+    const currentRun = phaseRuns.find((r) => r.phase === phases[i].key);
+    const currentStatus = currentRun?.status || 'pending';
+    const nextRun = phaseRuns.find((r) => r.phase === phases[i + 1].key);
+    const nextStatus = nextRun?.status || 'pending';
+
+    if (currentStatus === 'completed' && nextStatus === 'completed') return 'bg-gradient-to-b from-emerald-500/30 to-emerald-500/20';
+    if (currentStatus === 'completed' && nextStatus === 'running') return 'bg-gradient-to-b from-emerald-500/30 to-accent-orange/20';
+    if (currentStatus === 'running') return 'bg-gradient-to-b from-accent-orange/20 to-surface-border';
+    return 'bg-white/[0.06]';
   };
 
   return (
     <div>
-      <h3 className="text-xs font-semibold text-muted-dim uppercase tracking-widest mb-4">流水线进度</h3>
       <div className="flex flex-col gap-0">
         {phases.map((p, i) => {
           const run = phaseRuns.find((r) => r.phase === p.key);
           const status = run?.status || 'pending';
-          const cfg = statusMap[status] || { icon: '', color: 'text-muted-dim border border-surface-border' };
+          const cfg = statusMap[status] || { icon: '', dotClass: 'bg-white/[0.04] border border-white/[0.06] text-muted-dim' };
 
           return (
             <div key={p.key}>
-              <div className="flex items-center gap-3 py-2">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs ${cfg.color}`}>
+              <div className="flex items-center gap-3 py-2.5">
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs flex-shrink-0 transition-all duration-500 ${cfg.dotClass}`}>
                   {cfg.icon || ''}
                 </div>
-                <div className="flex-1">
-                  <div className={`text-xs font-medium ${status === 'pending' ? 'text-muted-dim' : 'text-white'}`}>
+                <div className="flex-1 min-w-0">
+                  <div className={`text-xs font-medium truncate transition-colors duration-300 ${
+                    status === 'pending' ? 'text-muted-dim' :
+                    status === 'running' ? 'text-gradient font-semibold' :
+                    status === 'completed' ? 'text-white' :
+                    'text-white'
+                  }`}>
                     {p.label}
                   </div>
                 </div>
               </div>
               {i < phases.length - 1 && (
-                <div className={`w-px h-4 ml-[13px] ${status === 'completed' ? 'bg-green-400/30' : 'bg-surface-border'}`} />
+                <div className={`w-px h-5 ml-[13px] transition-colors duration-500 ${getLineClass(i)}`} />
               )}
             </div>
           );
