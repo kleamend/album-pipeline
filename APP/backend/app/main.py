@@ -9,13 +9,13 @@ app = FastAPI(title="Album Pipeline API", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],
+    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://localhost:3333", "http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-from .api import albums, providers, workflow, workflow_phase2, workflow_phase3, workflow_phase4, workflow_phase5, workflow_phase6
+from .api import albums, providers, workflow, workflow_phase2, workflow_phase3, workflow_phase4, workflow_phase5, workflow_phase6, config
 
 # Create all tables after models are imported
 Base.metadata.create_all(bind=engine)
@@ -28,3 +28,4 @@ app.include_router(workflow_phase3.router, prefix="/api")
 app.include_router(workflow_phase4.router, prefix="/api")
 app.include_router(workflow_phase5.router, prefix="/api")
 app.include_router(workflow_phase6.router, prefix="/api")
+app.include_router(config.router, prefix="/api")
