@@ -81,7 +81,7 @@ export default function RecentProjects() {
 
               <div className="px-0.5">
                 <h3 className="text-sm font-semibold text-white group-hover:text-accent-orange transition-colors duration-300 truncate">
-                  {album.title || '未命名专辑'}
+                  {album.title || album.slug?.replace('album-', '')?.replace(/-/g, ' ') || '未命名专辑'}
                 </h3>
                 <p className="text-xs text-muted-dim mt-1.5">
                   {statusLabels[album.status] || album.status} · {album.trackCount ?? 0} 首

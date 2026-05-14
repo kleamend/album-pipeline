@@ -16,6 +16,15 @@ export default function AlbumsPage() {
     api.listAlbums().then(setAlbums).catch(() => {});
   }, []);
 
+  const filteredAlbums = albums.filter(a => {
+    if (filter === '全部') return true;
+    if (filter === '制作中') return !['completed', 'failed', 'archived'].includes(a.status);
+    if (filter === '等待确认') return a.status === 'concept_review';
+    if (filter === '已完成') return a.status === 'completed';
+    if (filter === '失败') return a.status === 'failed';
+    return true;
+  });
+
   return (
     <div className="flex h-screen">
       <Sidebar />
@@ -62,7 +71,7 @@ export default function AlbumsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {albums.map((album, idx) => (
+            {filteredAlbums.map((album, idx) => (
               <Link
                 key={album.id}
                 href={`/albums/${album.id}`}

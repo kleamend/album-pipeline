@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const TABS = ['🎨 封面', '🎬 宣传视频', '📝 宣传文案', '🎤 艺人故事', '🔍 平台检查'];
 
@@ -10,6 +10,13 @@ interface Props {
 
 export default function ReleasePanel({ albumId }: Props) {
   const [activeTab, setActiveTab] = useState(0);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/albums/' + albumId + '/deliverables')
+      .then(res => res.json())
+      .then(data => {/* update deliverable statuses */})
+      .catch(() => {});
+  }, [albumId]);
 
   return (
     <div className="flex flex-col h-full">

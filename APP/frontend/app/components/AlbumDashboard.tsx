@@ -16,6 +16,7 @@ export default function AlbumDashboard({ albumId }: Props) {
   const router = useRouter();
   const [album, setAlbum] = useState<AlbumProject | null>(null);
   const [phases, setPhases] = useState<PhaseRun[]>([]);
+  const [tracks, setTracks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,7 +24,18 @@ export default function AlbumDashboard({ albumId }: Props) {
       api.getAlbum(albumId),
       api.getPhases(albumId),
     ])
-      .then(([a, p]) => { setAlbum(a); setPhases(p); })
+      .then(([a, p]) => {
+        setAlbum(a);
+        setPhases(p);
+        const mockTracks = Array.from({ length: a.trackCount }, (_, i) => ({
+          id: `${albumId}-t${i + 1}`,
+          index: i + 1,
+          title: a.title ? `T${i + 1} · ${a.title}` : `T${i + 1}`,
+          score: null as number | null,
+          status: 'planned' as string,
+        }));
+        setTracks(mockTracks);
+      })
       .catch(() => router.push('/'))
       .finally(() => setLoading(false));
   }, [albumId, router]);
@@ -95,7 +107,7 @@ export default function AlbumDashboard({ albumId }: Props) {
         {/* Center - Track list */}
         <div className="p-6 overflow-y-auto border-r border-white/[0.05]">
           <div className="section-header mb-5">曲目</div>
-          <TrackList tracks={[]} albumId={albumId} />
+          <TrackList tracks={tracks} albumId={albumId} />
         </div>
 
         {/* Right sidebar */}

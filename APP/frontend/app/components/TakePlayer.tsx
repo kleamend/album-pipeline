@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface TakeVersion {
   id: string;
@@ -27,6 +27,13 @@ export default function TakePlayer({ albumId }: Props) {
 
   const currentTrack = tracks[currentTrackIdx];
   const selectedVersion = currentTrack ? selections[currentTrack.track_id] : null;
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/albums/' + albumId + '/takes')
+      .then(res => res.json())
+      .then(data => setTracks(data.tracks || []))
+      .catch(() => {});
+  }, [albumId]);
 
   return (
     <div className="flex flex-col h-full">
