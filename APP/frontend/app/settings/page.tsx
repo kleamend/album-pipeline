@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '@/app/components/Sidebar';
 
+const BASE = 'http://localhost:8000';
+
 export default function SettingsPage() {
   const [llmKey, setLlmKey] = useState('');
   const [llmBaseUrl, setLlmBaseUrl] = useState('');
@@ -12,9 +14,10 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
   const [cliStatus, setCliStatus] = useState('检测中...');
+  const [showKey, setShowKey] = useState(false);
 
   useEffect(() => {
-    fetch('/api/config')
+    fetch(`${BASE}/api/config`)
       .then((res) => res.json())
       .then((data) => {
         setLlmKey(data.llm_api_key || '');
@@ -23,7 +26,7 @@ export default function SettingsPage() {
         setMusicModel(data.music_model || '');
       })
       .catch(() => {});
-    fetch('/api/providers/status')
+    fetch(`${BASE}/api/providers/status`)
       .then((res) => res.json())
       .then((data) => {
         const labels: Record<string, string> = {
@@ -44,7 +47,7 @@ export default function SettingsPage() {
     setError('');
 
     try {
-      const res = await fetch('/api/config', {
+      const res = await fetch(`${BASE}/api/config`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -55,7 +58,11 @@ export default function SettingsPage() {
         }),
       });
 
-      if (!res.ok) throw new Error('保存失败');
+      if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        const msg = body ? (() => { try { return JSON.parse(body).detail; } catch { return body.slice(0, 200); } })() : `HTTP ${res.status}`;
+        throw new Error(msg);
+      }
 
       const data = await res.json();
       setLlmKey(data.llm_api_key || '');
@@ -80,25 +87,30 @@ export default function SettingsPage() {
           <div className="card p-6">
             <h2 className="text-sm font-semibold text-white mb-2">LLM API 配置</h2>
             <p className="text-xs text-muted-dim mb-6">
-              Agent Runtime 调用 LLM 生成歌词、编曲、评分等文字内容。支持任何 OpenAI 兼容接口
-              （如 MiniMax API、DeepSeek、OpenAI 等）。
+              Agent Runtime 调用 LLM 生成歌词、编曲、评分等文字内容。支持 OpenAI 兼容接口。
             </p>
             <div className="space-y-4">
               <div>
                 <label className="block text-xs text-muted-dim mb-2">
-                  API Key
-                  <span className="text-red-400 ml-1">*</span>
+                  API Key <span className="text-red-400">*</span>
                 </label>
-                <input
-                  type="password"
-                  className="w-full bg-surface border border-surface-border rounded-lg px-4 py-3 text-sm text-white focus:border-accent-orange/40 focus:outline-none transition-colors"
-                  placeholder="sk-xxxxxxxxxxxxxxxx"
-                  value={llmKey}
-                  onChange={(e) => setLlmKey(e.target.value)}
-                />
-                <p className="text-[10px] text-muted-dim mt-1">
-                  API Key 仅存储在本机，不会上传到任何服务器。支持 sk- 前缀的密钥。
-                </p>
+                <div className="relative">
+                  <input
+                    type={showKey ? 'text' : 'password'}
+                    className="w-full bg-surface border border-surface-border rounded-lg px-4 py-3 pr-14 text-sm text-white focus:border-accent-orange/40 focus:outline-none transition-colors"
+                    placeholder="sk-xxxxxxxxxxxxxxxx"
+                    value={llmKey}
+                    onChange={(e) => setLlmKey(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowKey(!showKey)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-dim hover:text-muted transition-colors"
+                  >
+                    {showKey ? '隐藏' : '显示'}
+                  </button>
+                </div>
+                <p className="text-[10px] text-muted-dim mt-1">API Key 仅存储在本机，不会上传到任何服务器。</p>
               </div>
               <div>
                 <label className="block text-xs text-muted-dim mb-2">API Base URL</label>
@@ -107,9 +119,7 @@ export default function SettingsPage() {
                   value={llmBaseUrl}
                   onChange={(e) => setLlmBaseUrl(e.target.value)}
                 />
-                <p className="text-[10px] text-muted-dim mt-1">
-                  默认 OpenAI，使用 MiniMax 可填 https://api.minimax.chat/v1
-                </p>
+                <p className="text-[10px] text-muted-dim mt-1">默认 OpenAI，MiniMax 填 https://api.minimax.chat/v1</p>
               </div>
               <div>
                 <label className="block text-xs text-muted-dim mb-2">模型名称</label>
@@ -118,9 +128,7 @@ export default function SettingsPage() {
                   value={llmModel}
                   onChange={(e) => setLlmModel(e.target.value)}
                 />
-                <p className="text-[10px] text-muted-dim mt-1">
-                  例如 gpt-4o / deepseek-chat / abab7-chat
-                </p>
+                <p className="text-[10px] text-muted-dim mt-1">例如 gpt-4o / deepseek-chat / abab7-chat</p>
               </div>
             </div>
           </div>
@@ -129,8 +137,7 @@ export default function SettingsPage() {
           <div className="card p-6">
             <h2 className="text-sm font-semibold text-white mb-2">MiniMax CLI</h2>
             <p className="text-xs text-muted-dim mb-6">
-              MiniMax CLI 用于音乐生成（Phase 4）和图片/视频生成（Phase 6）。
-              CLI 有独立的认证体系，在终端运行 <code className="px-1.5 py-0.5 bg-surface rounded text-xs">minimax auth login</code> 完成登录。
+              CLI 用于音乐/图片/视频生成。在终端运行 <code className="px-1.5 py-0.5 bg-surface rounded text-xs">minimax auth login</code> 登录。
             </p>
             <div className="space-y-4">
               <div>
@@ -182,9 +189,7 @@ export default function SettingsPage() {
               <span className="w-2 h-2 bg-yellow-400 rounded-full" />
               <span className="text-sm text-muted">未连接</span>
             </div>
-            <p className="text-xs text-muted-dim mt-2">
-              连接后可生成更完整的上传清单，并快速进入发布流程。
-            </p>
+            <p className="text-xs text-muted-dim mt-2">连接后可生成更完整的上传清单，并快速进入发布流程。</p>
           </div>
 
           {/* App Info */}
