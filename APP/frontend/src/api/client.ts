@@ -32,6 +32,7 @@ export const api = {
   startPhase: (albumId: string, phase: string) =>
     request<PhaseRun>(`/albums/${albumId}/phases/${phase}/start`, { method: 'POST' }),
   getPhases: (albumId: string) => request<PhaseRun[]>(`/albums/${albumId}/phases`),
+  getGenerationQueue: (albumId: string) => request<any>(`/albums/${albumId}/generation-queue`),
   confirmConcept: (albumId: string, approved: boolean) =>
     request<{ status: string }>(`/albums/${albumId}/decisions/concept`, { method: 'POST', body: JSON.stringify({ approved }) }),
 };
