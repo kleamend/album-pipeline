@@ -142,7 +142,7 @@ def generate_music(album_id: str, db: Session = Depends(get_db)):
         track_files = sorted(prompt_dir.glob(f"T{track.index}-*.txt"))
         track_results = []
         for pf in track_files[:3]:
-            worker = MiniMaxMusicWorker()
+            worker = MiniMaxMusicWorker(api_key=config.get("minimax_api_key") or config.get("llm_api_key"))
             out_file = Path(album.workspace_path) / "generate" / "cn" / f"T{track.index}-{track.title}-{pf.stem.split('-')[-1]}.mp3"
             try:
                 lyrics_file = None

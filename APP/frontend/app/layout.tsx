@@ -6,6 +6,7 @@ import {
   Playfair_Display,
 } from "next/font/google";
 import "./globals.css";
+import Toast from "./components/Toast";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -49,6 +50,7 @@ export default function RootLayout({
         className={`${inter.variable} ${notoSansSC.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable}`}
       >
         {children}
+        <Toast />
       </body>
     </html>
   );

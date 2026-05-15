@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { api } from '@/src/api/client';
+import { toast } from '@/src/stores/toastStore';
 import type { LanguageMode } from '@/src/types';
 
 const STEPS = ['核心主题', '曲目 & 语言', '风格 & 听众', '发布计划', '确认创建'];
@@ -34,7 +35,7 @@ export default function NewAlbumWizard() {
       const album = await api.createAlbum(form);
       router.push(`/albums/${album.id}/concept`);
     } catch (e) {
-      console.error(e);
+      toast().error((e as Error)?.message || '创建失败，请检查网络连接');
     } finally {
       setSubmitting(false);
     }
