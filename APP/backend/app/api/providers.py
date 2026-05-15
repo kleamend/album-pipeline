@@ -7,7 +7,7 @@ router = APIRouter(tags=["providers"])
 
 @router.get("/providers/status", response_model=ProviderStatusResponse)
 def get_provider_status():
-    from ..config_manager import load_config
+    from ..services.config_manager import load_config
     config = load_config()
     minimax_status = check_minimax_status()
     return ProviderStatusResponse(
