@@ -75,7 +75,7 @@ export default function SongDetail({ track, rounds }: Props) {
             </div>
           </div>
           <div>
-            <h1 className="font-display text-xl font-bold text-white">{track.title}</h1>
+            <h1 className="font-display text-xl font-bold text-primary">{track.title}</h1>
             <p className="text-xs text-muted mt-1">
               Track {track.index} · 状态: {track.status}
               {track.score != null && (
@@ -151,20 +151,20 @@ export default function SongDetail({ track, rounds }: Props) {
               <div className="card p-5">
                 <div className="flex items-center gap-8 mb-4">
                   {arrangementData.bpm != null && (
-                    <div><span className="text-xs text-muted-dim">BPM</span><p className="text-white font-semibold text-lg">{arrangementData.bpm}</p></div>
+                    <div><span className="text-xs text-muted-dim">BPM</span><p className="text-primary font-semibold text-lg">{arrangementData.bpm}</p></div>
                   )}
                   {arrangementData.key && (
-                    <div><span className="text-xs text-muted-dim">Key</span><p className="text-white font-semibold text-lg">{arrangementData.key}</p></div>
+                    <div><span className="text-xs text-muted-dim">Key</span><p className="text-primary font-semibold text-lg">{arrangementData.key}</p></div>
                   )}
                   {arrangementData.style && (
-                    <div><span className="text-xs text-muted-dim">Style</span><p className="text-white font-semibold text-lg">{arrangementData.style}</p></div>
+                    <div><span className="text-xs text-muted-dim">Style</span><p className="text-primary font-semibold text-lg">{arrangementData.style}</p></div>
                   )}
                 </div>
               </div>
               {(arrangementData.sections || []).map((s: any, i: number) => (
                 <div key={i} className="card p-5 border-l-2"
                   style={{ borderLeftColor: 'transparent', borderImage: 'linear-gradient(to bottom, #fb923c, #f472b6) 1' }}>
-                  <h3 className="text-sm font-semibold text-white mb-2">
+                  <h3 className="text-sm font-semibold text-primary mb-2">
                     {i + 1}. {s.name || s.section} <span className="text-muted-dim font-normal text-xs">{s.time || s.start || ''}</span>
                   </h3>
                   <p className="text-sm text-muted leading-relaxed">{s.desc || s.description || ''}</p>
@@ -191,7 +191,7 @@ export default function SongDetail({ track, rounds }: Props) {
                   <tbody className="text-muted">
                     {(soundDesignData.sounds || soundDesignData.items || []).map((s: any, i: number) => (
                       <tr key={i} className={`border-b border-muted-border hover:bg-white/[0.02] transition-colors ${i % 2 === 1 ? 'bg-white/[0.01]' : ''}`}>
-                        <td className="p-4 text-white font-medium">{s.name || s.sound}</td>
+                        <td className="p-4 text-primary font-medium">{s.name || s.sound}</td>
                         <td className="p-4">{s.desc || s.description}</td>
                         <td className="p-4">{s.position || s.section}</td>
                         <td className="p-4 text-right font-mono text-xs">{s.volume || s.level}</td>
@@ -221,7 +221,7 @@ export default function SongDetail({ track, rounds }: Props) {
                   <tbody className="text-muted">
                     {(rhymeData.rhymes || rhymeData.items || []).map((r: any, i: number) => (
                       <tr key={i} className={`border-b border-muted-border hover:bg-white/[0.02] transition-colors ${i % 2 === 1 ? 'bg-white/[0.01]' : ''}`}>
-                        <td className="p-4 text-white font-medium">{r.rhyme || r.name}</td>
+                        <td className="p-4 text-primary font-medium">{r.rhyme || r.name}</td>
                         <td className="p-4">{r.sound || r.type}</td>
                         <td className="p-4">{r.position || r.location}</td>
                         <td className="p-4">{r.emotion || r.mood}</td>
@@ -232,7 +232,7 @@ export default function SongDetail({ track, rounds }: Props) {
               </div>
               {rhymeData.hook_design && (
                 <div className="card p-5">
-                  <h3 className="text-sm font-semibold text-white mb-3">Hook 韵脚设计</h3>
+                  <h3 className="text-sm font-semibold text-primary mb-3">Hook 韵脚设计</h3>
                   <p className="text-sm text-muted">{rhymeData.hook_design}</p>
                 </div>
               )}
@@ -247,12 +247,12 @@ export default function SongDetail({ track, rounds }: Props) {
               {marketData.highlight && (
                 <div className="card p-5 bg-gradient-to-r from-accent-orange/5 to-accent-pink/5">
                   <span className="text-xs text-muted-dim">封面高光文案</span>
-                  <p className="text-lg font-display font-bold text-white mt-2">{marketData.highlight}</p>
+                  <p className="text-lg font-display font-bold text-primary mt-2">{marketData.highlight}</p>
                 </div>
               )}
               {marketData.core_competitiveness || marketData.advantages ? (
                 <div className="card p-5">
-                  <h3 className="text-sm font-semibold text-white mb-3">核心竞争力</h3>
+                  <h3 className="text-sm font-semibold text-primary mb-3">核心竞争力</h3>
                   <ul className="space-y-2 text-sm text-muted">
                     {(marketData.core_competitiveness || marketData.advantages || []).map((a: any, i: number) => (
                       <li key={i}>· {typeof a === 'string' ? a : a.point || a.text || a.desc}</li>
@@ -278,7 +278,7 @@ export default function SongDetail({ track, rounds }: Props) {
                       <div key={d.name || d.dimension}>
                         <div className="flex justify-between text-sm mb-2">
                           <span className="text-muted">{d.name || d.dimension}</span>
-                          <span className="text-white font-medium">{score}/{max}</span>
+                          <span className="text-primary font-medium">{score}/{max}</span>
                         </div>
                         <div className="progress-bar h-2.5">
                           <div
@@ -292,7 +292,7 @@ export default function SongDetail({ track, rounds }: Props) {
                 </div>
                 <div className="divider my-6" />
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-white font-semibold">总分</span>
+                  <span className="text-sm text-primary font-semibold">总分</span>
                   <span className="text-3xl font-bold text-gradient">
                     {scoringData.total_score ?? scoringData.total ?? 0}/{scoringData.max_total ?? scoringData.total_max ?? 100}
                   </span>

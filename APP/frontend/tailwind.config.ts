@@ -36,6 +36,10 @@ const config: Config = {
           DEFAULT: "rgb(var(--color-success) / <alpha-value>)",
           muted: "#34d399",
         },
+        primary: {
+          DEFAULT: "rgb(var(--color-text) / <alpha-value>)",
+          muted: "rgb(var(--color-text-muted) / <alpha-value>)",
+        },
       },
       fontFamily: {
         display: ["var(--font-playfair-display)", "serif"],

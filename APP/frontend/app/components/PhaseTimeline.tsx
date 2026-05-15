@@ -52,8 +52,8 @@ export default function PhaseTimeline({ phaseRuns, currentPhase }: Props) {
                   <div className={`text-xs font-medium truncate transition-colors duration-300 ${
                     status === 'pending' ? 'text-muted-dim' :
                     status === 'running' ? 'text-gradient font-semibold' :
-                    status === 'completed' ? 'text-white' :
-                    'text-white'
+                    status === 'completed' ? 'text-primary' :
+                    'text-primary'
                   }`}>
                     {p.label}
                   </div>

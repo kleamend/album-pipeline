@@ -50,7 +50,7 @@ export default function MusicGenPanel({ albumId }: Props) {
           <h3 className="section-header mb-4">曲目 · Prompt 状态</h3>
           {queue.map((t) => (
             <div key={t.track_id} className="card p-3 mb-2">
-              <div className="text-xs text-white font-medium">{String(t.index).padStart(2, '0')} · {t.title}</div>
+              <div className="text-xs text-primary font-medium">{String(t.index).padStart(2, '0')} · {t.title}</div>
               <div className="flex gap-1.5 mt-2">
                 {t.prompts.map((p: any) => (
                   <span key={p.version} className={
@@ -75,7 +75,7 @@ export default function MusicGenPanel({ albumId }: Props) {
                 </svg>
               </div>
             </div>
-            <h2 className="font-display text-lg font-semibold text-white mb-3">Prompt 生成工作区</h2>
+            <h2 className="font-display text-lg font-semibold text-primary mb-3">Prompt 生成工作区</h2>
             <p className="text-sm text-muted leading-relaxed">
               {phaseStarted
                 ? '选择左侧曲目查看 3 种策略的 Prompt 并进行审查。审查通过后自动加入 MiniMax 生成队列。'
@@ -106,7 +106,7 @@ export default function MusicGenPanel({ albumId }: Props) {
           <div className="space-y-2 mb-4">
             <div className="card p-3 border-l-2 border-l-amber-400/40 overflow-hidden relative">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-white font-medium">01 · 笼中鸟</span>
+                <span className="text-xs text-primary font-medium">01 · 笼中鸟</span>
                 <span className="badge-warning text-[9px] px-2 py-0.5">生成中</span>
               </div>
               <div className="progress-bar h-1.5 relative overflow-hidden">
@@ -117,7 +117,7 @@ export default function MusicGenPanel({ albumId }: Props) {
             </div>
             <div className="card p-3 border-l-2 border-l-amber-400/40 overflow-hidden relative">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-white font-medium">02 · 夜色</span>
+                <span className="text-xs text-primary font-medium">02 · 夜色</span>
                 <span className="badge-warning text-[9px] px-2 py-0.5">生成中</span>
               </div>
               <div className="progress-bar h-1.5 relative overflow-hidden">
@@ -144,16 +144,16 @@ export default function MusicGenPanel({ albumId }: Props) {
             <div className="text-xs text-muted-dim mb-3">并发控制</div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <button className="w-8 h-8 rounded-lg bg-white/[0.04] border border-muted-border text-muted hover:text-white hover:border-white/[0.15] hover:bg-white/[0.08] transition-all duration-200 flex items-center justify-center text-sm font-medium active:scale-95">
+                <button className="w-8 h-8 rounded-lg bg-white/[0.04] border border-muted-border text-muted hover:text-primary hover:border-white/[0.15] hover:bg-white/[0.08] transition-all duration-200 flex items-center justify-center text-sm font-medium active:scale-95">
                   −
                 </button>
-                <span className="text-white font-semibold text-sm w-6 text-center">2</span>
-                <button className="w-8 h-8 rounded-lg bg-white/[0.04] border border-muted-border text-muted hover:text-white hover:border-white/[0.15] hover:bg-white/[0.08] transition-all duration-200 flex items-center justify-center text-sm font-medium active:scale-95">
+                <span className="text-primary font-semibold text-sm w-6 text-center">2</span>
+                <button className="w-8 h-8 rounded-lg bg-white/[0.04] border border-muted-border text-muted hover:text-primary hover:border-white/[0.15] hover:bg-white/[0.08] transition-all duration-200 flex items-center justify-center text-sm font-medium active:scale-95">
                   +
                 </button>
               </div>
               <div className="text-xs text-muted-dim">
-                队列: <span className="text-white font-medium">0</span> · 预计: <span className="text-white font-medium">--</span>
+                队列: <span className="text-primary font-medium">0</span> · 预计: <span className="text-primary font-medium">--</span>
               </div>
             </div>
           </div>

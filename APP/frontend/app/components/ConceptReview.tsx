@@ -58,7 +58,7 @@ export default function ConceptReview({ albumId }: Props) {
 
   return (
     <div className="max-w-3xl mx-auto py-10">
-      <h1 className="font-display text-2xl font-bold text-white mb-2">Phase 1 · 专辑概念</h1>
+      <h1 className="font-display text-2xl font-bold text-primary mb-2">Phase 1 · 专辑概念</h1>
       <p className="text-muted-dim text-sm mb-8">
         4 个专家将协作生成专辑概念：创意总监、市场专家、音乐总监 → 主评审评分。
       </p>
@@ -70,7 +70,7 @@ export default function ConceptReview({ albumId }: Props) {
               <svg className="w-7 h-7 text-accent-orange/60" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55C7.79 13 6 14.79 6 17s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
             </div>
           </div>
-          <p className="text-base text-white font-medium mb-2">准备开始了吗？</p>
+          <p className="text-base text-primary font-medium mb-2">准备开始了吗？</p>
           <p className="text-muted text-sm mb-8">点击下方按钮启动概念生成流水线，AI 专家团队将为你创作专辑概念</p>
           {error && (
             <p className="text-red-400 text-sm mb-4">{error}</p>
@@ -111,7 +111,7 @@ export default function ConceptReview({ albumId }: Props) {
                 <div className="space-y-5">
                   <div>
                     <span className="text-xs text-muted-dim tracking-wide uppercase">专辑名称</span>
-                    <p className="text-white font-display text-xl font-semibold mt-2">
+                    <p className="text-primary font-display text-xl font-semibold mt-2">
                       《{creative.album_name_cn}》
                       <span className="text-muted-dim font-sans text-sm font-normal">/ {creative.album_name_en}</span>
                     </p>
@@ -119,7 +119,7 @@ export default function ConceptReview({ albumId }: Props) {
                   <div className="divider" />
                   <div>
                     <span className="text-xs text-muted-dim tracking-wide uppercase">核心概念</span>
-                    <p className="text-white mt-2 leading-relaxed">{creative.core_concept}</p>
+                    <p className="text-primary mt-2 leading-relaxed">{creative.core_concept}</p>
                   </div>
                   <div className="divider" />
                   <div>
@@ -153,7 +153,7 @@ export default function ConceptReview({ albumId }: Props) {
                       <div key={t.index} className="flex items-center gap-4 p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
                         <span className="text-xs text-muted-dim font-mono w-8">{String(t.index).padStart(2, '0')}</span>
                         <div className="flex-1">
-                          <span className="text-sm text-white font-medium">{t.name}</span>
+                          <span className="text-sm text-primary font-medium">{t.name}</span>
                           {t.english_name && <span className="text-xs text-muted-dim ml-2">/ {t.english_name}</span>}
                         </div>
                         {t.core_hook && (
@@ -178,7 +178,7 @@ export default function ConceptReview({ albumId }: Props) {
                       <div key={dim}>
                         <div className="flex justify-between items-baseline text-sm mb-2">
                           <span className="text-muted-dim">{dim}</span>
-                          <span className="text-white font-semibold tabular-nums text-base">{score}<span className="text-muted-dark text-xs font-normal">/25</span></span>
+                          <span className="text-primary font-semibold tabular-nums text-base">{score}<span className="text-muted-dark text-xs font-normal">/25</span></span>
                         </div>
                         <div className="progress-bar h-2">
                           <div className="progress-bar-fill" style={{ width: `${(Number(score) / 25 * 100)}%` }} />
@@ -186,7 +186,7 @@ export default function ConceptReview({ albumId }: Props) {
                       </div>
                     ))}
                     <div className="border-t border-white/[0.06] pt-5 mt-3 flex justify-between items-center">
-                      <span className="text-white font-semibold text-base">总分</span>
+                      <span className="text-primary font-semibold text-base">总分</span>
                       <span className="font-display text-4xl font-bold text-gradient tracking-tight">{review.total || 0}<span className="text-muted-dark font-sans text-xl font-normal ml-1.5">/100</span></span>
                     </div>
                   </div>

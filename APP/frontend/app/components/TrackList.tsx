@@ -43,7 +43,7 @@ export default function TrackList({ tracks, albumId }: Props) {
                 {String(track.index).padStart(2, '0')}
               </span>
               <span className={`text-sm font-medium flex-1 min-w-0 truncate transition-colors duration-300 ${
-                activeTrack === track.id ? 'text-accent-orange' : 'text-white group-hover:text-white'
+                activeTrack === track.id ? 'text-accent-orange' : 'text-primary group-hover:text-primary'
               }`}>
                 {track.title}
               </span>

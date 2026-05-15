@@ -37,7 +37,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h1 className="font-display text-6xl font-bold text-white mb-2 tracking-tight">
+          <h1 className="font-display text-6xl font-bold text-primary mb-2 tracking-tight">
             HELLO<span className="text-gradient">，</span>
           </h1>
         </motion.div>

@@ -19,7 +19,7 @@ export default function RoundHistory({ history }: Props) {
           const h = r.score ? `${(r.score / 100) * 100}%` : '10%';
           return (
             <div key={r.round} className="flex-1 flex flex-col items-center gap-2">
-              <span className="text-xs font-semibold text-white">{r.score ?? '—'}</span>
+              <span className="text-xs font-semibold text-primary">{r.score ?? '—'}</span>
               <div
                 className="w-full rounded-t-md bg-gradient-to-t from-accent-orange/60 to-accent-pink/40 transition-all"
                 style={{ height: h }}

@@ -64,7 +64,7 @@ export default function TakePlayer({ albumId }: Props) {
                   ? 'bg-accent-orange/15 border border-accent-orange/40 text-accent-orange shadow-glow-sm'
                   : selections[t.track_id]
                   ? 'badge-success'
-                  : 'bg-surface-elevated border border-muted-border text-muted-dim hover:text-white hover:border-white/[0.12]'
+                  : 'bg-surface-elevated border border-muted-border text-muted-dim hover:text-primary hover:border-white/[0.12]'
               }`}
             >
               {String(t.index).padStart(2, '0')} · {t.title}
@@ -93,7 +93,7 @@ export default function TakePlayer({ albumId }: Props) {
                 </div>
               </div>
               <div>
-                <h2 className="font-display text-lg font-semibold text-white">{currentTrack.title}</h2>
+                <h2 className="font-display text-lg font-semibold text-primary">{currentTrack.title}</h2>
                 <p className="text-xs text-muted-dim mt-1">3 个 Take 版本 · 键盘快捷键 1/2/3 切换播放 · Enter 确认</p>
               </div>
             </div>
@@ -122,7 +122,7 @@ export default function TakePlayer({ albumId }: Props) {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-3">
-                          <span className="text-sm font-semibold text-white">{v.version.toUpperCase()} · {v.strategy}</span>
+                          <span className="text-sm font-semibold text-primary">{v.version.toUpperCase()} · {v.strategy}</span>
                           {isSelected && (
                             <span className="badge-success text-[10px] px-2 py-0.5">已选定</span>
                           )}

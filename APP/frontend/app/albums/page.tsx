@@ -29,7 +29,7 @@ export default function AlbumsPage() {
     <div className="flex h-screen">
       <Sidebar />
       <main className="flex-1 overflow-y-auto p-8">
-        <h1 className="font-display text-2xl font-bold text-white mb-2">过往专辑</h1>
+        <h1 className="font-display text-2xl font-bold text-primary mb-2">过往专辑</h1>
         <p className="text-muted-dim text-sm mb-8">管理你的所有 AI 专辑项目</p>
 
         <div className="flex gap-2 mb-8 flex-wrap">
@@ -40,7 +40,7 @@ export default function AlbumsPage() {
               className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
                 filter === f
                   ? 'badge-accent shadow-glow-sm'
-                  : 'badge bg-white/[0.02] border border-white/[0.04] text-muted-dim hover:text-white hover:border-white/[0.10] hover:bg-white/[0.05] hover:-translate-y-0.5'
+                  : 'badge bg-white/[0.02] border border-white/[0.04] text-muted-dim hover:text-primary hover:border-white/[0.10] hover:bg-white/[0.05] hover:-translate-y-0.5'
               }`}
             >
               {f}
@@ -83,7 +83,7 @@ export default function AlbumsPage() {
                   {/* Reflection line */}
                   <div className="absolute top-0 left-1/4 right-1/4 h-1/3 bg-gradient-to-b from-white/[0.04] to-transparent rounded-full" />
                 </div>
-                <h3 className="text-sm font-semibold text-white group-hover:text-accent-orange transition-colors truncate">
+                <h3 className="text-sm font-semibold text-primary group-hover:text-accent-orange transition-colors truncate">
                   {album.title || '未命名'}
                 </h3>
                 <div className="flex items-center gap-2 mt-1.5 text-xs text-muted-dim">

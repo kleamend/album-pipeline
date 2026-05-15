@@ -79,7 +79,7 @@ export default function RecentProjects() {
               </div>
 
               <div className="px-0.5">
-                <h3 className="text-sm font-semibold text-white group-hover:text-accent-orange transition-colors duration-300 truncate">
+                <h3 className="text-sm font-semibold text-primary group-hover:text-accent-orange transition-colors duration-300 truncate">
                   {album.title || album.slug?.replace('album-', '')?.replace(/-/g, ' ') || '未命名专辑'}
                 </h3>
                 <p className="text-xs text-muted-dim mt-1.5">

@@ -62,7 +62,7 @@ export default function ReleasePanel({ albumId }: Props) {
                 { name: '方案 C · 极简符号型', colors: ['#ffffff', '#94a3b8', '#1e293b'] },
               ].map((item, i) => (
                 <div key={i} className={`card p-4 cursor-pointer ${i === 0 ? 'border-accent-orange/30 bg-accent-orange/[0.04]' : ''}`}>
-                  <div className="text-xs text-white font-medium mb-2">{item.name}</div>
+                  <div className="text-xs text-primary font-medium mb-2">{item.name}</div>
                   <div className="flex gap-1.5">
                     {item.colors.map((c, ci) => (
                       <span key={ci} className="w-4 h-4 rounded-full border border-white/10" style={{ backgroundColor: c }} />
@@ -100,7 +100,7 @@ export default function ReleasePanel({ albumId }: Props) {
                 </svg>
               </div>
             </div>
-            <h2 className="font-display text-lg font-semibold text-white mb-2">宣传视频生成</h2>
+            <h2 className="font-display text-lg font-semibold text-primary mb-2">宣传视频生成</h2>
             <p className="text-sm text-muted max-w-md mx-auto leading-relaxed">
               6 秒宣传视频 · 以专辑封面为首帧 · 配合 Hook 段落音频 · 自动适配短视频平台比例
             </p>
@@ -149,11 +149,11 @@ export default function ReleasePanel({ albumId }: Props) {
               <h3 className="section-header mb-4">金句摘录（5 组中英对照）</h3>
               <div className="space-y-3">
                 <div className="card p-4 bg-surface-elevated/50 border-l-2" style={{ borderLeftColor: 'transparent', borderImage: 'linear-gradient(to bottom, #fb923c, #f472b6) 1' }}>
-                  <p className="text-sm text-white font-medium">"我把笼子走成天空"</p>
+                  <p className="text-sm text-primary font-medium">"我把笼子走成天空"</p>
                   <p className="text-xs text-muted mt-1 font-mono">"I walked my cage into the sky"</p>
                 </div>
                 <div className="card p-4 bg-surface-elevated/50 border-l-2" style={{ borderLeftColor: 'transparent', borderImage: 'linear-gradient(to bottom, #fb923c, #f472b6) 1' }}>
-                  <p className="text-sm text-white font-medium">"自由是被困住的另一种形式"</p>
+                  <p className="text-sm text-primary font-medium">"自由是被困住的另一种形式"</p>
                   <p className="text-xs text-muted mt-1 font-mono">"Freedom is another form of being trapped"</p>
                 </div>
               </div>

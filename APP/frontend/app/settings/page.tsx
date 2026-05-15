@@ -73,7 +73,7 @@ export default function SettingsPage() {
       <Sidebar />
       <main className="flex-1 overflow-y-auto flex justify-center p-8">
         <div className="w-full max-w-3xl space-y-8">
-        <h1 className="font-display text-2xl font-bold text-white mb-2">设置</h1>
+        <h1 className="font-display text-2xl font-bold text-primary mb-2">设置</h1>
         <p className="text-muted-dim text-sm mb-8">管理 LLM API 配置和本地工具链</p>
 
         <div className="space-y-8">
@@ -99,7 +99,7 @@ export default function SettingsPage() {
                   <button
                     type="button"
                     onClick={() => setShowKey(!showKey)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg text-[10px] text-muted-dim hover:text-white hover:bg-white/[0.06] transition-all duration-200 border border-transparent hover:border-muted-border"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg text-[10px] text-muted-dim hover:text-primary hover:bg-white/[0.06] transition-all duration-200 border border-transparent hover:border-muted-border"
                   >
                     {showKey ? '隐藏' : '显示'}
                   </button>
@@ -220,7 +220,7 @@ export default function SettingsPage() {
           <div className="card-glow p-6">
             <h2 className="section-header mb-4">关于</h2>
             <div className="text-xs text-muted-dim space-y-1.5">
-              <p className="text-white font-medium">Album Pipeline v0.1.0</p>
+              <p className="text-primary font-medium">Album Pipeline v0.1.0</p>
               <p>AI 音乐专辑生产流水线</p>
               <p>Powered by MiniMax CLI</p>
             </div>

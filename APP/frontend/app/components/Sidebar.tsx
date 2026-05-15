@@ -65,7 +65,7 @@ export default function Sidebar() {
           </svg>
         </button>
         {!collapsed && (
-          <span className="font-display text-sm font-bold text-white whitespace-nowrap">Pipeline</span>
+          <span className="font-display text-sm font-bold text-primary whitespace-nowrap">Pipeline</span>
         )}
       </div>
 

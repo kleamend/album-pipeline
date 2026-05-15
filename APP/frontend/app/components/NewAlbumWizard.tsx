@@ -91,7 +91,7 @@ export default function NewAlbumWizard() {
           {step === 0 && (
             <div>
               <h2 className="section-header mb-4">核心主题</h2>
-              <p className="text-lg font-semibold text-white mb-2">你想做什么样的专辑？</p>
+              <p className="text-lg font-semibold text-primary mb-2">你想做什么样的专辑？</p>
               <p className="text-muted-dim text-sm mb-6">用一两句话描述专辑的主题、情绪或故事</p>
               <label className="block text-sm text-muted mb-2">专辑主题 / 核心概念 *</label>
               <textarea
@@ -113,7 +113,7 @@ export default function NewAlbumWizard() {
           {/* Step 1: Tracks & language */}
           {step === 1 && (
             <div>
-              <h2 className="text-lg font-semibold text-white mb-6">曲目和语言设置</h2>
+              <h2 className="text-lg font-semibold text-primary mb-6">曲目和语言设置</h2>
               <div className="mb-6">
                 <label className="block text-sm text-muted mb-3">曲目数量</label>
                 <div className="flex gap-3">
@@ -124,7 +124,7 @@ export default function NewAlbumWizard() {
                       className={`px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
                         form.trackCount === n
                           ? 'bg-accent-orange/10 border border-accent-orange/30 text-accent-orange shadow-glow-sm'
-                          : 'bg-white/[0.02] border border-white/[0.05] text-muted-dim hover:text-white hover:border-white/[0.12] hover:bg-white/[0.05] hover:-translate-y-0.5'
+                          : 'bg-white/[0.02] border border-white/[0.05] text-muted-dim hover:text-primary hover:border-white/[0.12] hover:bg-white/[0.05] hover:-translate-y-0.5'
                       }`}
                     >
                       {n} 首
@@ -147,7 +147,7 @@ export default function NewAlbumWizard() {
                       className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
                         form.language === opt.value
                           ? 'bg-accent-orange/10 border border-accent-orange/30 text-accent-orange shadow-glow-sm'
-                          : 'bg-white/[0.02] border border-white/[0.05] text-muted-dim hover:text-white hover:border-white/[0.12] hover:bg-white/[0.05] hover:-translate-y-0.5'
+                          : 'bg-white/[0.02] border border-white/[0.05] text-muted-dim hover:text-primary hover:border-white/[0.12] hover:bg-white/[0.05] hover:-translate-y-0.5'
                       }`}
                     >
                       {opt.label}
@@ -170,7 +170,7 @@ export default function NewAlbumWizard() {
           {/* Step 2: Style & audience */}
           {step === 2 && (
             <div>
-              <h2 className="text-lg font-semibold text-white mb-6">风格和听众</h2>
+              <h2 className="text-lg font-semibold text-primary mb-6">风格和听众</h2>
               <label className="block text-sm text-muted mb-2">参考风格</label>
               <input
                 className="input-field mb-6"
@@ -191,7 +191,7 @@ export default function NewAlbumWizard() {
           {/* Step 3: Publish target */}
           {step === 3 && (
             <div>
-              <h2 className="text-lg font-semibold text-white mb-6">发布计划</h2>
+              <h2 className="text-lg font-semibold text-primary mb-6">发布计划</h2>
               <label className="block text-sm text-muted mb-3">目标平台</label>
               <div className="flex gap-3 mb-6">
                 {([
@@ -205,7 +205,7 @@ export default function NewAlbumWizard() {
                     className={`px-6 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
                       form.publishTarget === opt.value
                         ? 'bg-accent-orange/10 border border-accent-orange/30 text-accent-orange shadow-glow-sm'
-                        : 'bg-white/[0.02] border border-white/[0.05] text-muted-dim hover:text-white hover:border-white/[0.12] hover:bg-white/[0.05] hover:-translate-y-0.5'
+                        : 'bg-white/[0.02] border border-white/[0.05] text-muted-dim hover:text-primary hover:border-white/[0.12] hover:bg-white/[0.05] hover:-translate-y-0.5'
                     }`}
                   >
                     {opt.label}
@@ -241,23 +241,23 @@ export default function NewAlbumWizard() {
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between items-center py-1.5 border-b border-white/[0.04]">
                     <span className="text-muted-dim">主题</span>
-                    <span className="text-white font-medium max-w-[60%] text-right">{form.theme || '—'}</span>
+                    <span className="text-primary font-medium max-w-[60%] text-right">{form.theme || '—'}</span>
                   </div>
                   <div className="flex justify-between items-center py-1.5 border-b border-white/[0.04]">
                     <span className="text-muted-dim">曲目数</span>
-                    <span className="text-white font-medium">{form.trackCount} 首</span>
+                    <span className="text-primary font-medium">{form.trackCount} 首</span>
                   </div>
                   <div className="flex justify-between items-center py-1.5 border-b border-white/[0.04]">
                     <span className="text-muted-dim">语言</span>
-                    <span className="text-white font-medium">{form.language}</span>
+                    <span className="text-primary font-medium">{form.language}</span>
                   </div>
                   <div className="flex justify-between items-center py-1.5 border-b border-white/[0.04]">
                     <span className="text-muted-dim">参考风格</span>
-                    <span className="text-white font-medium">{form.referenceStyle || '未指定'}</span>
+                    <span className="text-primary font-medium">{form.referenceStyle || '未指定'}</span>
                   </div>
                   <div className="flex justify-between items-center py-1.5">
                     <span className="text-muted-dim">目标平台</span>
-                    <span className="text-white font-medium">{form.publishTarget === 'none' ? '暂不发布' : form.publishTarget}</span>
+                    <span className="text-primary font-medium">{form.publishTarget === 'none' ? '暂不发布' : form.publishTarget}</span>
                   </div>
                 </div>
               </div>

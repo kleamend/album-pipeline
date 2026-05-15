@@ -64,7 +64,7 @@ export default function AlbumDashboard({ albumId }: Props) {
       <div className="flex items-center justify-between px-8 py-6 border-b border-white/[0.05] bg-surface-dark/50 backdrop-blur-sm">
         <div>
           <div className="flex items-center gap-4">
-            <h1 className="font-display text-2xl font-bold text-white tracking-tight">
+            <h1 className="font-display text-2xl font-bold text-primary tracking-tight">
               《{album.title || '未命名专辑'}》
               {album.titleEn && <span className="text-muted-dim font-sans text-base font-normal ml-2">/ {album.titleEn}</span>}
             </h1>
@@ -79,9 +79,9 @@ export default function AlbumDashboard({ albumId }: Props) {
           </div>
           <p className="text-xs text-muted-dim mt-2 flex items-center gap-1.5">
             <span>创建于 {new Date(album.createdAt).toLocaleDateString('zh-CN')}</span>
-            <span className="text-white/[0.10]">·</span>
+            <span className="text-primary/[0.10]">·</span>
             <span>{album.languageMode}</span>
-            <span className="text-white/[0.10]">·</span>
+            <span className="text-primary/[0.10]">·</span>
             <span>{album.trackCount} 首</span>
           </p>
         </div>
@@ -106,10 +106,10 @@ export default function AlbumDashboard({ albumId }: Props) {
           <div className="divider my-6" />
           <div className="section-header mb-4">操作</div>
           <div className="flex flex-col gap-1">
-            <button className="text-xs text-muted-dim hover:text-white transition-all duration-200 text-left px-3 py-2 rounded-lg hover:bg-white/[0.05] hover:translate-x-0.5 cursor-pointer">
+            <button className="text-xs text-muted-dim hover:text-primary transition-all duration-200 text-left px-3 py-2 rounded-lg hover:bg-white/[0.05] hover:translate-x-0.5 cursor-pointer">
               <svg className="w-3.5 h-3.5 inline-block mr-2 -mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>查看日志
             </button>
-            <button className="text-xs text-muted-dim hover:text-white transition-all duration-200 text-left px-3 py-2 rounded-lg hover:bg-white/[0.05] hover:translate-x-0.5 cursor-pointer">
+            <button className="text-xs text-muted-dim hover:text-primary transition-all duration-200 text-left px-3 py-2 rounded-lg hover:bg-white/[0.05] hover:translate-x-0.5 cursor-pointer">
               <svg className="w-3.5 h-3.5 inline-block mr-2 -mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>打开文件夹
             </button>
           </div>
