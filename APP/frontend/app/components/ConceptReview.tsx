@@ -103,7 +103,34 @@ export default function ConceptReview({ albumId }: Props) {
           {result && (() => {
             const creative = result?.results?.creative;
             const review = result?.review;
-            if (!creative) return null;
+            if (!creative) {
+              return (
+                <div className="card-glow p-8 text-center animate-fade-in-up">
+                  <div className="text-4xl mb-4">⚠️</div>
+                  <h3 className="text-primary font-semibold mb-2">概念生成失败</h3>
+                  <p className="text-muted-dim text-sm mb-4">
+                    所有专家 Agent 均未能成功执行。请检查：
+                  </p>
+                  <ul className="text-xs text-muted-dim space-y-1 mb-6 text-left max-w-md mx-auto">
+                    <li>· API Key 是否正确（设置页）</li>
+                    <li>· API Base URL 是否匹配你的密钥（MiniMax 用户填 https://api.minimax.chat/v1）</li>
+                    <li>· 模型名称是否可用（如 gpt-4o / deepseek-chat / abab7-chat）</li>
+                    <li>· 网络是否可达 API 端点</li>
+                  </ul>
+                  {result?.errors?.length > 0 && (
+                    <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-4 mb-6 text-left">
+                      <p className="text-xs text-red-400 font-medium mb-2">错误详情：</p>
+                      {result.errors.map((e: string, i: number) => (
+                        <p key={i} className="text-xs text-red-400/70 font-mono">{e}</p>
+                      ))}
+                    </div>
+                  )}
+                  <button onClick={handleReject} className="btn-secondary">
+                    返回重试
+                  </button>
+                </div>
+              );
+            }
             return (
             <>
               <div className="card-glow p-6 animate-fade-in-up">

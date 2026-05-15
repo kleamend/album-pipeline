@@ -1,19 +1,14 @@
 import json
-import os
 from typing import Any, Callable
 import httpx
 from ...db.models import ExpertRun
-
-LLM_API_KEY = os.getenv("LLM_API_KEY", "")
-LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://api.openai.com/v1")
-LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o")
 
 
 class AgentRuntime:
     """Executes agent definitions against an LLM provider."""
 
     def __init__(self):
-        self.client = httpx.Client(timeout=120)
+        self.client = httpx.Client(timeout=30)
 
     def run(
         self,
@@ -24,18 +19,25 @@ class AgentRuntime:
     ) -> dict:
         """Run an agent definition. Returns parsed JSON output."""
 
+        from ..config_manager import load_config
+
+        config = load_config()
+        api_key = config["llm_api_key"]
+        base_url = config["llm_base_url"]
+        model = config["llm_model"]
+
         system_prompt = agent["role_prompt"]
         user_message = json.dumps(input_context, ensure_ascii=False, indent=2)
 
         try:
             response = self.client.post(
-                f"{LLM_BASE_URL}/chat/completions",
+                f"{base_url}/chat/completions",
                 headers={
-                    "Authorization": f"Bearer {LLM_API_KEY}",
+                    "Authorization": f"Bearer {api_key}",
                     "Content-Type": "application/json",
                 },
                 json={
-                    "model": LLM_MODEL,
+                    "model": model,
                     "messages": [
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": user_message},
