@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Sidebar from '@/app/components/Sidebar';
+import ThemeSelector from '@/app/components/ThemeSelector';
 import { api } from '@/src/api/client';
 
 export default function SettingsPage() {
@@ -70,11 +71,12 @@ export default function SettingsPage() {
   return (
     <div className="flex h-screen">
       <Sidebar />
-      <main className="flex-1 overflow-y-auto p-8">
+      <main className="flex-1 overflow-y-auto flex justify-center p-8">
+        <div className="w-full max-w-3xl space-y-8">
         <h1 className="font-display text-2xl font-bold text-white mb-2">设置</h1>
         <p className="text-muted-dim text-sm mb-8">管理 LLM API 配置和本地工具链</p>
 
-        <div className="max-w-2xl space-y-8">
+        <div className="space-y-8">
           {/* LLM Configuration */}
           <div className="card-glow p-6">
             <h2 className="section-header mb-2">LLM API 配置</h2>
@@ -188,6 +190,9 @@ export default function SettingsPage() {
             {error && <span className="text-sm text-red-400 animate-fade-in">{error}</span>}
           </div>
 
+          {/* Theme */}
+          <ThemeSelector />
+
           {/* Workspace */}
           <div className="card-glow p-6">
             <h2 className="section-header mb-4">工作区</h2>
@@ -220,6 +225,7 @@ export default function SettingsPage() {
               <p>Powered by MiniMax CLI</p>
             </div>
           </div>
+        </div>
         </div>
       </main>
     </div>
