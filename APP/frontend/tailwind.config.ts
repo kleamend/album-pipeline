@@ -11,10 +11,10 @@ const config: Config = {
       colors: {
         surface: {
           DEFAULT: "rgb(var(--color-surface) / <alpha-value>)",
-          dark: "#0d0c12",
+          dark: "rgb(var(--color-bg) / <alpha-value>)",
           darker: "rgb(var(--color-bg) / <alpha-value>)",
           light: "rgb(var(--color-surface-elevated) / <alpha-value>)",
-          hover: "#1e1e32",
+          hover: "rgb(var(--color-surface-elevated) / <alpha-value>)",
           elevated: "rgb(var(--color-surface-elevated) / <alpha-value>)",
         },
         accent: {
