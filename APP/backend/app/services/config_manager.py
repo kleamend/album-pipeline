@@ -9,7 +9,7 @@ CONFIG_FILE = WORKSPACE_ROOT / "config.json"
 DEFAULT_CONFIG = {
     "minimax_api_key": "",
     "llm_api_key": "",
-    "llm_base_url": "https://api.openai.com/v1",
+    "llm_base_url": "https://api.minimaxi.com/v1",
     "llm_model": "gpt-4o",
     "music_model": "music-2.6",
     "max_workers": 2,

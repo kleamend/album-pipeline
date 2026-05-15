@@ -110,17 +110,17 @@ export default function SettingsPage() {
                 <label className="block text-xs text-muted-dim mb-2 font-medium">API Base URL</label>
                 <input
                   className="input-field font-mono"
-                  placeholder="https://api.openai.com/v1"
+                  placeholder="https://api.minimaxi.com/v1"
                   value={llmBaseUrl}
                   onChange={(e) => setLlmBaseUrl(e.target.value)}
                 />
-                <p className="text-[10px] text-muted-dim mt-1.5">默认 OpenAI，MiniMax 填 https://api.minimax.chat/v1</p>
+                <p className="text-[10px] text-muted-dim mt-1.5">国内版 MiniMax 填 https://api.minimaxi.com/v1，海外版填 https://api.minimax.chat/v1</p>
               </div>
               <div>
                 <label className="block text-xs text-muted-dim mb-2 font-medium">模型名称</label>
                 <input
                   className="input-field"
-                  placeholder="gpt-4o"
+                  placeholder="abab7-chat"
                   value={llmModel}
                   onChange={(e) => setLlmModel(e.target.value)}
                 />
