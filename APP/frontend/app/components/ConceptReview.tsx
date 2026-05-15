@@ -82,20 +82,38 @@ export default function ConceptReview({ albumId }: Props) {
       ) : (
         <div className="space-y-8">
           {loading && !result && (
-            <div className="space-y-6">
-              <div className="skeleton h-6 w-32" />
-              <div className="card-glow p-6 space-y-4">
-                <div className="skeleton h-4 w-24" />
-                <div className="skeleton h-6 w-64" />
-                <div className="skeleton h-6 w-48" />
-              </div>
-              <div className="card-glow p-6 space-y-3">
-                {Array(4).fill(0).map((_,i) => (
-                  <div key={i} className="flex items-center gap-4">
-                    <div className="skeleton h-4 w-20" />
-                    <div className="skeleton h-2 flex-1 rounded-full" />
+            <div className="space-y-6 animate-fade-in-up">
+              <div className="card-glow p-6">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-3 h-3 bg-accent-orange rounded-full animate-pulse-soft shadow-[0_0_10px_rgba(251,146,60,0.6)]" />
+                  <div>
+                    <span className="text-sm font-medium text-primary">正在生成专辑概念</span>
+                    <p className="text-[10px] text-muted-dim mt-0.5">3 位 AI 专家正在协作 — 创意总监 / 市场专家 / 音乐总监</p>
                   </div>
-                ))}
+                </div>
+                <div className="space-y-4">
+                  {[
+                    { name: '创意总监', desc: '设计专辑主题、叙事弧线和曲目定位', delay: 0 },
+                    { name: '市场专家', desc: '分析市场定位、目标受众和传播概念', delay: 800 },
+                    { name: '音乐总监', desc: '制定调性主线和音乐风格一致性', delay: 1600 },
+                  ].map((expert) => (
+                    <div key={expert.name}>
+                      <div className="flex justify-between text-xs mb-1.5">
+                        <span className="text-muted-dim">{expert.name}</span>
+                        <span className="text-muted-dim animate-pulse-soft">执行中...</span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-white/[0.04] overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-accent-orange to-accent-pink animate-shimmer"
+                          style={{ width: `${60 + Math.random() * 30}%`, animationDelay: `${expert.delay}ms` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-center text-[10px] text-muted-dim mt-5 animate-pulse-soft">
+                  预计 30-60 秒，请耐心等待...
+                </p>
               </div>
             </div>
           )}
