@@ -82,33 +82,21 @@ export default function ConceptReview({ albumId }: Props) {
       ) : (
         <div className="space-y-8">
           {loading && !result && (
-            <div className="card-glow p-6 animate-fade-in-up">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-3 h-3 bg-accent-orange rounded-full animate-pulse-soft shadow-[0_0_10px_rgba(251,146,60,0.6)]" />
-                <span className="text-sm font-medium text-white">概念生成中...</span>
+            <div className="space-y-6">
+              <div className="skeleton h-6 w-32" />
+              <div className="card-glow p-6 space-y-4">
+                <div className="skeleton h-4 w-24" />
+                <div className="skeleton h-6 w-64" />
+                <div className="skeleton h-6 w-48" />
               </div>
-              <p className="text-sm text-muted-dim mb-4">
-                正在调用 LLM 生成专辑概念，3 个专家并行工作，随后主评审评分。请稍候...
-              </p>
-              <div className="flex gap-2 pt-2">
-                {['creative', 'market', 'music'].map((key, i) => (
-                  <div key={key} className="flex-1">
-                    <div className="flex justify-between text-[10px] mb-1">
-                      <span className="text-muted-dim">{EXPERT_NAMES[key]}</span>
-                      <span className="text-muted-dark">···</span>
-                    </div>
-                    <div className="h-1 rounded-full bg-white/[0.04] overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-accent-orange/30 animate-shimmer"
-                        style={{ width: `${20 + i * 15}%` }}
-                      />
-                    </div>
+              <div className="card-glow p-6 space-y-3">
+                {Array(4).fill(0).map((_,i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <div className="skeleton h-4 w-20" />
+                    <div className="skeleton h-2 flex-1 rounded-full" />
                   </div>
                 ))}
               </div>
-              <p className="text-center text-xs text-muted-dim mt-4 animate-pulse-soft">
-                等待 LLM 响应中...
-              </p>
             </div>
           )}
 

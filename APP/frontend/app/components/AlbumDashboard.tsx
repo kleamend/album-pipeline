@@ -41,8 +41,19 @@ export default function AlbumDashboard({ albumId }: Props) {
   }, [albumId, router]);
 
   if (loading) return (
-    <div className="flex items-center justify-center h-full">
-      <div className="animate-pulse-soft text-muted-dim">加载中...</div>
+    <div className="flex flex-col h-full">
+      <div className="flex items-center justify-between px-8 py-6 border-b border-muted-border">
+        <div className="space-y-2">
+          <div className="skeleton h-6 w-48" />
+          <div className="skeleton h-3 w-64" />
+        </div>
+        <div className="skeleton h-6 w-20 rounded-full" />
+      </div>
+      <div className="flex-1 grid grid-cols-[240px_1fr_240px] p-6 gap-6">
+        <div className="space-y-3">{Array(6).fill(0).map((_,i)=><div key={i} className="skeleton h-8 w-full" />)}</div>
+        <div className="space-y-3">{Array(4).fill(0).map((_,i)=><div key={i} className="skeleton h-16 w-full" />)}</div>
+        <div className="space-y-3">{Array(4).fill(0).map((_,i)=><div key={i} className="skeleton h-12 w-full" />)}</div>
+      </div>
     </div>
   );
   if (!album) return null;

@@ -61,8 +61,7 @@ export default function RecentProjects() {
             <Link
               key={album.id}
               href={`/albums/${album.id}`}
-              className={`card-glow group animate-fade-in`}
-              style={{ animationDelay: `${i * 80}ms` }}
+              className={`card-glow group stagger-item stagger-${Math.min(i + 1, 6)}`}
             >
               {/* Placeholder album art with vinyl groove pattern */}
               <div className="w-full aspect-square rounded-xl bg-gradient-to-br from-accent-orange/[0.08] to-accent-pink/[0.04] mb-4 flex items-center justify-center relative overflow-hidden">

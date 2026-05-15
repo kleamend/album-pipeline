@@ -178,6 +178,25 @@
   .divider {
     @apply h-px w-full bg-gradient-to-r from-transparent via-white/[0.06] to-transparent;
   }
+
+  /* Loading skeleton */
+  .skeleton {
+    @apply rounded-lg bg-muted-border/30 animate-pulse-soft;
+  }
+
+  /* Empty state container */
+  .empty-state {
+    @apply flex flex-col items-center justify-center py-16 px-8 text-center;
+  }
+  .empty-state-icon {
+    @apply w-16 h-16 mb-4 rounded-2xl bg-surface-elevated border border-muted-border flex items-center justify-center;
+  }
+
+  /* Stagger animation for lists */
+  .stagger-item {
+    @apply animate-fade-in-up;
+    animation-fill-mode: backwards;
+  }
 }
 
 /* ===== Animation utilities ===== */
@@ -191,6 +210,13 @@
   .text-gradient {
     @apply bg-gradient-to-r from-accent-orange via-accent-warm to-accent-pink bg-clip-text text-transparent;
   }
+
+  .stagger-1 { animation-delay: 50ms; }
+  .stagger-2 { animation-delay: 100ms; }
+  .stagger-3 { animation-delay: 150ms; }
+  .stagger-4 { animation-delay: 200ms; }
+  .stagger-5 { animation-delay: 250ms; }
+  .stagger-6 { animation-delay: 300ms; }
 }
 
 /* ===== 8 Character Themes ===== */

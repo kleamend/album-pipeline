@@ -49,25 +49,15 @@ export default function AlbumsPage() {
         </div>
 
         {albums.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-center animate-fade-in-up">
-            <div className="relative mb-10">
-              <div className="w-36 h-36 rounded-full bg-white/[0.02] border border-white/[0.06] flex items-center justify-center">
-                <div className="w-24 h-24 rounded-full bg-white/[0.03] border border-white/[0.04] flex items-center justify-center">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-orange/20 to-accent-pink/10 border border-accent-orange/10 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-accent-orange/40" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55C7.79 13 6 14.79 6 17s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-                  </div>
-                </div>
-              </div>
-              {/* Grooves */}
-              <div className="absolute inset-1 rounded-full border border-white/[0.02]" />
-              <div className="absolute inset-2 rounded-full border border-white/[0.02]" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-accent-orange/[0.03] blur-3xl" />
+          <div className="empty-state">
+            <div className="empty-state-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-muted-dim">
+                <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="12" y1="15" x2="12" y2="22"/>
+              </svg>
             </div>
-            <h2 className="text-xl font-display text-white mb-3">还没有专辑</h2>
-            <p className="text-sm text-muted-dim mb-8 max-w-sm">创建你的第一张 AI 专辑，开始音乐之旅</p>
-            <Link href="/" className="btn-primary">
-              创建你的第一张专辑
-            </Link>
+            <p className="text-muted-dim text-sm mb-2">还没有专辑项目</p>
+            <p className="text-muted-dim text-xs mb-6">创建你的第一张 AI 专辑</p>
+            <Link href="/albums/new" className="btn-primary text-xs px-5 py-2">制作新专辑</Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">

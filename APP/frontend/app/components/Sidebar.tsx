@@ -55,6 +55,7 @@ export default function Sidebar() {
       <div className="flex items-center gap-2 px-3 py-5">
         <button
           onClick={() => setCollapsed(!collapsed)}
+          aria-label={collapsed ? "展开侧栏" : "折叠侧栏"}
           className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-white/[0.06] transition-colors text-muted-dim hover:text-muted shrink-0"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -76,6 +77,7 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              aria-label={item.label}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
                 isActive
                   ? 'bg-accent-orange/10 text-accent-orange'

@@ -66,10 +66,10 @@ export default function Hero() {
           transition={{ duration: 0.5, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
           className="flex gap-4"
         >
-          <Link href="/albums/new" className="btn-primary">
+          <Link href="/albums/new" className="btn-primary transition-all duration-200 active:scale-[0.97]">
             制作新专辑
           </Link>
-          <Link href="/albums" className="btn-secondary">
+          <Link href="/albums" className="btn-secondary transition-all duration-200 active:scale-[0.97]">
             回顾过往专辑
           </Link>
         </motion.div>
