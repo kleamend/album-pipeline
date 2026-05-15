@@ -45,7 +45,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh">
+    <html lang="zh" suppressHydrationWarning>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+              (function() {
+                var theme = localStorage.getItem('album-pipeline-theme') || 'warm-vinyl';
+                document.documentElement.setAttribute('data-theme', theme);
+              })();
+            `,
+        }}
+      />
       <body
         className={`${inter.variable} ${notoSansSC.variable} ${jetbrainsMono.variable} ${playfairDisplay.variable}`}
       >
