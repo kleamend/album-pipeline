@@ -13,7 +13,10 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
-  const [cliStatus, setCliStatus] = useState('检测中...');
+  const [cliInstalled, setCliInstalled] = useState<boolean | null>(null);
+  const [cliAuthenticated, setCliAuthenticated] = useState<boolean | null>(null);
+  const [apiConnected, setApiConnected] = useState<boolean | null>(null);
+  const [llmKeyConfigured, setLlmKeyConfigured] = useState(false);
   const [showKey, setShowKey] = useState(false);
 
   useEffect(() => {
@@ -28,18 +31,16 @@ export default function SettingsPage() {
       .catch((e: any) => console.warn('Failed to load data:', e?.message || e));
     api.getProviderStatus()
       .then((data) => {
-        const labels: Record<string, string> = {
-          ready: 'MiniMax CLI 已就绪',
-          cli_missing: 'MiniMax CLI 未安装（pip install minimax）',
-          cli_not_authenticated: 'CLI 未登录（运行 minimax auth login）',
-          cli_version_unknown: '检测到 mmx 但可能不是 MiniMax CLI',
-          api_key_missing: 'API Key 未配置',
-          not_configured: 'CLI 未配置',
-          error: '检测失败',
-        };
-        setCliStatus(labels[data.minimax] || data.minimax);
+        setCliInstalled(data.minimax.cli_installed);
+        setCliAuthenticated(data.minimax.cli_authenticated);
+        setApiConnected(data.minimax.api_connected);
+        setLlmKeyConfigured(data.llm_key_configured);
       })
-      .catch(() => setCliStatus('检测失败'));
+      .catch(() => {
+        setCliInstalled(false);
+        setCliAuthenticated(false);
+        setApiConnected(false);
+      });
   }, []);
 
   const handleSave = async () => {
@@ -147,18 +148,20 @@ export default function SettingsPage() {
             <div className="space-y-5">
               <div>
                 <label className="block text-xs text-muted-dim mb-2 font-medium">CLI 状态</label>
-                <div className="flex items-center gap-2">
-                  {cliStatus.includes('已就绪') || cliStatus.includes('检测到') ? (
-                    <span className="badge-success gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-glow-sm" />
-                      {cliStatus}
-                    </span>
-                  ) : (
-                    <span className="badge-warning gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse-soft" />
-                      {cliStatus}
-                    </span>
-                  )}
+                <div className="flex items-center gap-3 flex-wrap">
+                  {[
+                    { label: 'CLI', ok: cliInstalled, okText: '已安装', failText: '未安装' },
+                    { label: '认证', ok: cliAuthenticated, okText: '已登录', failText: '未登录' },
+                    { label: 'API', ok: apiConnected, okText: '已连通', failText: '未验证' },
+                    { label: 'LLM', ok: llmKeyConfigured, okText: 'Key 已配置', failText: 'Key 未配置' },
+                  ].map(item => (
+                    <div key={item.label} className="flex items-center gap-1.5">
+                      <span className={`w-1.5 h-1.5 rounded-full ${item.ok === null ? 'bg-muted-dim animate-pulse-soft' : item.ok ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                      <span className={`text-[10px] font-medium ${item.ok === null ? 'text-muted-dim' : item.ok ? 'text-emerald-400' : 'text-amber-400'}`}>
+                        {item.label}: {item.ok === null ? '...' : item.ok ? item.okText : item.failText}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
               <div>

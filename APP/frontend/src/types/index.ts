@@ -1,4 +1,5 @@
-export type ProviderStatus = 'not_configured' | 'api_key_missing' | 'cli_missing' | 'ready' | 'error';
+export interface ProviderStatus { minimax: MinimaxStatus; llm_key_configured: boolean; netease: string; }
+export interface MinimaxStatus { cli_installed: boolean; cli_authenticated: boolean; api_connected: boolean; }
 
 export type PipelinePhase = 'phase1' | 'phase2' | 'phase3' | 'phase4' | 'phase5' | 'phase6';
 

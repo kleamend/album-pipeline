@@ -1,12 +1,12 @@
 import { create } from 'zustand';
-import type { AlbumProject, ProviderStatus } from '@/src/types';
+import type { AlbumProject, MinimaxStatus } from '@/src/types';
 
 interface AppState {
   currentAlbumId: string | null;
   setCurrentAlbumId: (id: string | null) => void;
 
-  minimaxStatus: ProviderStatus;
-  setMinimaxStatus: (s: ProviderStatus) => void;
+  minimaxStatus: MinimaxStatus | null;
+  setMinimaxStatus: (s: MinimaxStatus | null) => void;
 
   recentAlbums: AlbumProject[];
   setRecentAlbums: (albums: AlbumProject[]) => void;
@@ -19,7 +19,7 @@ export const useAppStore = create<AppState>((set) => ({
   currentAlbumId: null,
   setCurrentAlbumId: (id) => set({ currentAlbumId: id }),
 
-  minimaxStatus: 'not_configured',
+  minimaxStatus: null,
   setMinimaxStatus: (s) => set({ minimaxStatus: s }),
 
   recentAlbums: [],

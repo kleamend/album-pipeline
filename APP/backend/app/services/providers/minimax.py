@@ -2,55 +2,30 @@ import subprocess
 import shutil
 
 
-def check_minimax_status() -> str:
-    """Returns: ready | cli_missing | cli_not_authenticated | cli_version_unknown | not_configured | error
+def check_minimax_status() -> dict:
+    """Returns dict with cli_installed, cli_authenticated, api_connected."""
+    result = {"cli_installed": False, "cli_authenticated": False, "api_connected": False}
 
-    Detection strategy:
-    1. Find 'minimax' CLI first (pip-installed), then 'mmx' as fallback
-    2. Verify the binary is actually MiniMax CLI by checking --version output
-    3. Check if CLI is authenticated
-    4. Check if API key is configured (for direct API usage)
-    """
-    from ..config_manager import get_api_key
-
-    # Priority: minimax (pip) > mmx (npm), but verify it's actually MiniMax
-    cli_path = shutil.which("minimax")
-    cli_name = "minimax"
-
+    cli_path = shutil.which("mmx") or shutil.which("minimax")
     if not cli_path:
-        cli_path = shutil.which("mmx")
-        cli_name = "mmx"
+        return result
+    result["cli_installed"] = True
 
-    if not cli_path:
-        return "cli_missing"
-
-    # Verify this is actually MiniMax CLI by checking --version output
+    # Check if CLI is authenticated
     try:
-        result = subprocess.run([cli_path, "--version"], capture_output=True, text=True, timeout=10)
-        output = (result.stdout + result.stderr).lower()
-
-        if result.returncode != 0:
-            return "not_configured"
-
-        # The real MiniMax CLI outputs something containing "minimax" or version info
-        # If output is empty or doesn't match, it's likely a different tool
-        if not output.strip():
-            return "cli_version_unknown"
-
-        # Check if authenticated via 'auth status'
-        try:
-            auth_result = subprocess.run(
-                [cli_path, "auth", "status"], capture_output=True, text=True, timeout=10
-            )
-            if auth_result.returncode != 0:
-                return "cli_not_authenticated"
-        except Exception:
-            return "error"
-
-        # CLI exists, version check passed, auth check passed
-        return "ready"
-
-    except subprocess.TimeoutExpired:
-        return "error"
+        auth = subprocess.run([cli_path, "auth", "status"], capture_output=True, text=True, timeout=10)
+        if auth.returncode == 0:
+            result["cli_authenticated"] = True
     except Exception:
-        return "error"
+        pass
+
+    # Check real API connectivity via quota (free read-only call)
+    if result["cli_authenticated"]:
+        try:
+            quota = subprocess.run([cli_path, "quota"], capture_output=True, text=True, timeout=15)
+            if quota.returncode == 0:
+                result["api_connected"] = True
+        except Exception:
+            pass
+
+    return result

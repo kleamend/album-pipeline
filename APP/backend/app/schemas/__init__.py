@@ -47,6 +47,13 @@ class PhaseRunResponse(BaseModel):
 class ConceptConfirmInput(BaseModel):
     approved: bool
 
+class MinimaxStatus(BaseModel):
+    cli_installed: bool
+    cli_authenticated: bool
+    api_connected: bool
+
+
 class ProviderStatusResponse(BaseModel):
-    minimax: str
+    minimax: MinimaxStatus
+    llm_key_configured: bool
     netease: str

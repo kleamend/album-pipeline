@@ -26,7 +26,7 @@ export const api = {
   deleteAlbum: (id: string) => request<void>(`/albums/${id}`, { method: 'DELETE' }),
 
   // Providers
-  getProviderStatus: () => request<{ minimax: ProviderStatus; netease: string }>('/providers/status'),
+  getProviderStatus: () => request<ProviderStatus>('/providers/status'),
 
   // Workflow
   startPhase: (albumId: string, phase: string) =>

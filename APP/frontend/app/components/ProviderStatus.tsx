@@ -1,82 +1,41 @@
 'use client';
-
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { api } from '@/src/api/client';
-import { useAppStore } from '@/src/stores/appStore';
-
-type BadgeVariant = 'success' | 'warning' | 'error' | 'info';
-
-const BADGE_CLASSES: Record<BadgeVariant, string> = {
-  success: 'badge-success',
-  warning: 'badge-warning',
-  error: 'badge-error',
-  info: 'badge-info',
-};
-
-const DOT_BG: Record<BadgeVariant, string> = {
-  success: 'bg-emerald-400',
-  warning: 'bg-amber-400',
-  error: 'bg-red-400',
-  info: 'bg-sky-400',
-};
-
-const statusConfig: Record<string, { variant: BadgeVariant; label: string }> = {
-  ready: { variant: 'success', label: 'MiniMax Ready' },
-  cli_missing: { variant: 'info', label: 'MiniMax CLI 未安装' },
-  cli_not_authenticated: { variant: 'warning', label: 'CLI 未登录' },
-  cli_version_unknown: { variant: 'warning', label: 'CLI 可能不是 MiniMax' },
-  api_key_missing: { variant: 'error', label: 'API Key 缺失' },
-  not_configured: { variant: 'info', label: 'CLI 未配置' },
-  error: { variant: 'error', label: '检测失败' },
-};
+import type { MinimaxStatus } from '@/src/types';
 
 export default function ProviderStatus() {
-  const minimaxStatus = useAppStore((s) => s.minimaxStatus);
-  const setMinimaxStatus = useAppStore((s) => s.setMinimaxStatus);
+  const [status, setStatus] = useState<MinimaxStatus | null>(null);
+  const [llmKeyReady, setLlmKeyReady] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.getProviderStatus()
-      .then((data) => setMinimaxStatus(data.minimax))
-      .catch(() => setMinimaxStatus('error'))
-      .finally(() => setLoading(false));
-  }, [setMinimaxStatus]);
+    api.getProviderStatus().then(data => {
+      setStatus(data.minimax);
+      setLlmKeyReady(data.llm_key_configured);
+    }).catch(() => {}).finally(() => setLoading(false));
+  }, []);
 
-  const cfg = statusConfig[minimaxStatus] || statusConfig.not_configured;
-  const badgeClass = BADGE_CLASSES[cfg.variant];
-  const dotBg = DOT_BG[cfg.variant];
+  if (loading) return <div className="flex gap-2 px-4 py-2"><span className="text-xs text-muted-dim animate-pulse-soft">检测中...</span></div>;
 
-  const glowColor = useMemo(() => {
-    switch (cfg.variant) {
-      case 'success': return 'rgba(16,185,129,0.5)';
-      case 'warning': return 'rgba(245,158,11,0.5)';
-      case 'error': return 'rgba(239,68,68,0.5)';
-      default: return 'rgba(148,163,184,0.4)';
-    }
-  }, [cfg.variant]);
-
-  if (loading) {
-    return (
-      <div className="flex items-center gap-3 px-4 py-2.5 bg-surface-light rounded-xl border border-white/[0.05] mb-8">
-        <span className={`w-1.5 h-1.5 rounded-full ${dotBg} animate-pulse-soft`} style={{ boxShadow: `0 0 6px ${glowColor}` }} />
-        <span className="text-xs text-muted-dim animate-pulse-soft">检测中...</span>
-        <div className="flex-1" />
-        <span className="badge-info text-[10px]">未连接</span>
-      </div>
-    );
-  }
+  const items = [
+    { label: 'CLI', ok: status?.cli_installed, okText: '已安装', failText: '未安装' },
+    { label: '认证', ok: status?.cli_authenticated, okText: '已登录', failText: '未登录' },
+    { label: 'API', ok: status?.api_connected, okText: '已连通', failText: '未验证' },
+    { label: 'LLM', ok: llmKeyReady, okText: 'Key 已配置', failText: 'Key 未配置' },
+  ];
 
   return (
     <div className="flex items-center gap-3 px-4 py-2.5 bg-surface-light rounded-xl border border-white/[0.05] mb-8">
-      <span
-        className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${dotBg}`}
-        style={{ boxShadow: `0 0 6px ${glowColor}` }}
-      />
-      <span className={`text-xs font-medium ${badgeClass}`}>
-        {cfg.label}
-      </span>
+      {items.map(item => (
+        <div key={item.label} className="flex items-center gap-1.5">
+          <span className={`w-1.5 h-1.5 rounded-full ${item.ok ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+          <span className={`text-[10px] font-medium ${item.ok ? 'text-emerald-400' : 'text-amber-400'}`}>
+            {item.label}: {item.ok ? item.okText : item.failText}
+          </span>
+        </div>
+      ))}
       <div className="flex-1" />
-      <span className="badge-info text-[10px]">未连接</span>
+      <span className="text-[10px] text-muted-dim">网易云 未连接</span>
     </div>
   );
 }
