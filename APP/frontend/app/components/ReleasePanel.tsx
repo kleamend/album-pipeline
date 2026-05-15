@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { api } from '@/src/api/client';
 
 const TABS = ['封面', '宣传视频', '宣传文案', '艺人故事', '平台检查'];
 
@@ -12,10 +13,10 @@ export default function ReleasePanel({ albumId }: Props) {
   const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/albums/' + albumId + '/deliverables')
+    api.listDeliverables(albumId)
       .then(res => res.json())
       .then(data => {/* update deliverable statuses */})
-      .catch(() => {});
+      .catch((e: any) => console.warn('Failed to load data:', e?.message || e));
   }, [albumId]);
 
   return (

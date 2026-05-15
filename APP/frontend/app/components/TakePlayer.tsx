@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { api } from '@/src/api/client';
 
 interface TakeVersion {
   id: string;
@@ -29,10 +30,10 @@ export default function TakePlayer({ albumId }: Props) {
   const selectedVersion = currentTrack ? selections[currentTrack.track_id] : null;
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/albums/' + albumId + '/takes')
+    api.listTakes(albumId)
       .then(res => res.json())
       .then(data => setTracks(data.tracks || []))
-      .catch(() => {});
+      .catch((e: any) => console.warn('Failed to load data:', e?.message || e));
   }, [albumId]);
 
   return (

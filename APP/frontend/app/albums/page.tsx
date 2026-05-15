@@ -13,7 +13,7 @@ export default function AlbumsPage() {
   const [filter, setFilter] = useState('全部');
 
   useEffect(() => {
-    api.listAlbums().then(setAlbums).catch(() => {});
+    api.listAlbums().then(setAlbums).catch((e: any) => console.warn('Failed to load data:', e?.message || e));
   }, []);
 
   const filteredAlbums = albums.filter(a => {

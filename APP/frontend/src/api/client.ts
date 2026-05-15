@@ -39,4 +39,16 @@ export const api = {
   getGenerationQueue: (albumId: string) => request<any>(`/albums/${albumId}/generation-queue`),
   confirmConcept: (albumId: string, approved: boolean) =>
     request<{ status: string }>(`/albums/${albumId}/decisions/concept`, { method: 'POST', body: JSON.stringify({ approved }) }),
+
+  // Config
+  getConfig: () => request<any>('/config'),
+  updateConfig: (data: Record<string, unknown>) => request<any>('/config', { method: 'POST', body: JSON.stringify(data) }),
+
+  // Takes (Phase 5)
+  listTakes: (albumId: string) => request<any>(`/albums/${albumId}/takes`),
+  selectTake: (albumId: string, trackId: string, version: string) =>
+    request<any>(`/albums/${albumId}/takes/select?track_id=${trackId}&version=${version}`, { method: 'POST' }),
+
+  // Deliverables (Phase 6)
+  listDeliverables: (albumId: string) => request<any>(`/albums/${albumId}/deliverables`),
 };

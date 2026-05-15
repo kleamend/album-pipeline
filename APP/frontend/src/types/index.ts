@@ -4,7 +4,7 @@ export type PipelinePhase = 'phase1' | 'phase2' | 'phase3' | 'phase4' | 'phase5'
 
 export type PhaseStatus = 'pending' | 'running' | 'waiting_user' | 'failed' | 'completed' | 'skipped';
 
-export type TrackStatus = 'planned' | 'round_running' | 'needs_revision' | 'finalized' | 'needs_review';
+export type TrackStatus = 'planned' | 'round_running' | 'needs_revision' | 'finalized' | 'needs_review' | 'take_selected' | 'transcoded';
 
 export type LanguageMode = 'chinese' | 'english' | 'bilingual' | 'instrumental';
 

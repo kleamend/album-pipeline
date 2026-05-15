@@ -42,7 +42,7 @@ export default function RecentProjects() {
   const setRecentAlbums = useAppStore((s) => s.setRecentAlbums);
 
   useEffect(() => {
-    api.listAlbums().then(setRecentAlbums).catch(() => {});
+    api.listAlbums().then(setRecentAlbums).catch((e: any) => console.warn('Failed to load data:', e?.message || e));
   }, [setRecentAlbums]);
 
   const albums = useMemo(() => recentAlbums.slice(0, 6), [recentAlbums]);

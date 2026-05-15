@@ -18,7 +18,7 @@ export default function MusicGenPanel({ albumId }: Props) {
         setPhaseStarted(true);
         api.getGenerationQueue(albumId).then((data: any) => setQueue(data.tracks));
       }
-    }).catch(() => {});
+    }).catch((e: any) => console.warn('Failed to load data:', e?.message || e));
   }, [albumId]);
 
   const handleStart = async () => {

@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Sidebar from '@/app/components/Sidebar';
-
-const BASE = 'http://localhost:8000';
+import { api } from '@/src/api/client';
 
 export default function SettingsPage() {
   const [llmKey, setLlmKey] = useState('');
@@ -18,8 +17,7 @@ export default function SettingsPage() {
   const [showKey, setShowKey] = useState(false);
 
   useEffect(() => {
-    fetch(`${BASE}/api/config`)
-      .then((res) => res.json())
+    api.getConfig()
       .then((data) => {
         setLlmKey(data.llm_api_key || '');
         setLlmBaseUrl(data.llm_base_url || '');
@@ -27,9 +25,8 @@ export default function SettingsPage() {
         setMusicModel(data.music_model || '');
         setMaxWorkers(data.max_workers || 2);
       })
-      .catch(() => {});
-    fetch(`${BASE}/api/providers/status`)
-      .then((res) => res.json())
+      .catch((e: any) => console.warn('Failed to load data:', e?.message || e));
+    api.getProviderStatus()
       .then((data) => {
         const labels: Record<string, string> = {
           ready: 'MiniMax CLI 已就绪',
@@ -51,25 +48,14 @@ export default function SettingsPage() {
     setError('');
 
     try {
-      const res = await fetch(`${BASE}/api/config`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          llm_api_key: llmKey,
-          llm_base_url: llmBaseUrl,
-          llm_model: llmModel,
-          music_model: musicModel,
-          max_workers: maxWorkers,
-        }),
+      const data = await api.updateConfig({
+        llm_api_key: llmKey,
+        llm_base_url: llmBaseUrl,
+        llm_model: llmModel,
+        music_model: musicModel,
+        max_workers: maxWorkers,
       });
 
-      if (!res.ok) {
-        const body = await res.text().catch(() => '');
-        const msg = body ? (() => { try { return JSON.parse(body).detail; } catch { return body.slice(0, 200); } })() : `HTTP ${res.status}`;
-        throw new Error(msg);
-      }
-
-      const data = await res.json();
       setLlmKey(data.llm_api_key || '');
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);

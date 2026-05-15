@@ -112,7 +112,11 @@ export default function ConceptReview({ albumId }: Props) {
             </div>
           )}
 
-          {result && (
+          {result && (() => {
+            const creative = result?.results?.creative;
+            const review = result?.review;
+            if (!creative) return null;
+            return (
             <>
               <div className="card-glow p-6 animate-fade-in-up">
                 <div className="section-header mb-5">核心概念</div>
@@ -120,27 +124,27 @@ export default function ConceptReview({ albumId }: Props) {
                   <div>
                     <span className="text-xs text-muted-dim tracking-wide uppercase">专辑名称</span>
                     <p className="text-white font-display text-xl font-semibold mt-2">
-                      《{result.results.creative.album_name_cn}》
-                      <span className="text-muted-dim font-sans text-sm font-normal">/ {result.results.creative.album_name_en}</span>
+                      《{creative.album_name_cn}》
+                      <span className="text-muted-dim font-sans text-sm font-normal">/ {creative.album_name_en}</span>
                     </p>
                   </div>
                   <div className="divider" />
                   <div>
                     <span className="text-xs text-muted-dim tracking-wide uppercase">核心概念</span>
-                    <p className="text-white mt-2 leading-relaxed">{result.results.creative.core_concept}</p>
+                    <p className="text-white mt-2 leading-relaxed">{creative.core_concept}</p>
                   </div>
                   <div className="divider" />
                   <div>
                     <span className="text-xs text-muted-dim tracking-wide uppercase">核心悖论</span>
-                    <p className="mt-2 font-medium text-gradient text-lg">{result.results.creative.core_paradox}</p>
+                    <p className="mt-2 font-medium text-gradient text-lg">{creative.core_paradox}</p>
                   </div>
-                  {(result.results.creative.narrative_axes?.length ?? 0) > 0 && (
+                  {(creative.narrative_axes?.length ?? 0) > 0 && (
                     <>
                       <div className="divider" />
                       <div>
                         <span className="text-xs text-muted-dim tracking-wide uppercase">叙事弧线</span>
                         <div className="mt-3 space-y-2">
-                          {result.results.creative.narrative_axes.map((axis: any, i: number) => (
+                          {creative.narrative_axes.map((axis: any, i: number) => (
                             <div key={i} className="flex items-start gap-2 text-sm">
                               <span className="text-accent-orange font-medium shrink-0">{axis.name}</span>
                               <span className="text-muted-dim">— {axis.meaning}</span>
@@ -153,11 +157,11 @@ export default function ConceptReview({ albumId }: Props) {
                 </div>
               </div>
 
-              {(result.results.creative.tracks?.length ?? 0) > 0 && (
+              {(creative.tracks?.length ?? 0) > 0 && (
                 <div className="card-glow p-6 animate-fade-in-up animate-delay-200">
                   <h2 className="section-header mb-4">曲目列表</h2>
                   <div className="space-y-2">
-                    {result.results.creative.tracks.map((t: any) => (
+                    {creative.tracks.map((t: any) => (
                       <div key={t.index} className="flex items-center gap-4 p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
                         <span className="text-xs text-muted-dim font-mono w-8">{String(t.index).padStart(2, '0')}</span>
                         <div className="flex-1">
@@ -173,15 +177,15 @@ export default function ConceptReview({ albumId }: Props) {
                 </div>
               )}
 
-              {result.review && (
+              {review && (
                 <div className="card-glow p-6 animate-scale-in">
                   <h2 className="section-header mb-5">评分总览</h2>
                   <div className="space-y-5">
                     {([
-                      ['概念原创性', result.review.conceptual_originality || 0],
-                      ['叙事连贯性', result.review.narrative_coherence || 0],
-                      ['市场潜力', result.review.market_potential || 0],
-                      ['音乐一致性', result.review.musical_consistency || 0],
+                      ['概念原创性', review.conceptual_originality || 0],
+                      ['叙事连贯性', review.narrative_coherence || 0],
+                      ['市场潜力', review.market_potential || 0],
+                      ['音乐一致性', review.musical_consistency || 0],
                     ]).map(([dim, score]) => (
                       <div key={dim}>
                         <div className="flex justify-between items-baseline text-sm mb-2">
@@ -195,7 +199,7 @@ export default function ConceptReview({ albumId }: Props) {
                     ))}
                     <div className="border-t border-white/[0.06] pt-5 mt-3 flex justify-between items-center">
                       <span className="text-white font-semibold text-base">总分</span>
-                      <span className="font-display text-4xl font-bold text-gradient tracking-tight">{result.review.total || 0}<span className="text-muted-dark font-sans text-xl font-normal ml-1.5">/100</span></span>
+                      <span className="font-display text-4xl font-bold text-gradient tracking-tight">{review.total || 0}<span className="text-muted-dark font-sans text-xl font-normal ml-1.5">/100</span></span>
                     </div>
                   </div>
                 </div>
@@ -210,7 +214,7 @@ export default function ConceptReview({ albumId }: Props) {
                 </div>
               )}
             </>
-          )}
+          );})()}
 
           {error && (
             <div className="card-glow p-4 border border-red-500/20 animate-fade-in-up">
